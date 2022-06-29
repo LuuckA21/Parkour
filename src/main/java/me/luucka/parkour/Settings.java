@@ -6,8 +6,6 @@ import me.luucka.parkour.config.IConfig;
 import me.luucka.parkour.config.entities.LazyItem;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 

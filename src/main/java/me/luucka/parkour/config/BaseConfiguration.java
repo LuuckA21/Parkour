@@ -164,18 +164,6 @@ public final class BaseConfiguration {
         return node.getInt();
     }
 
-//    ----- Double -----
-
-    public void setProperty(final String path, final double value) {
-        setInternal(path, value);
-    }
-
-    public double getDouble(final String path, final double def) {
-        final CommentedConfigurationNode node = getInternal(path);
-        if (node == null) return def;
-        return node.getDouble();
-    }
-
 //    ----- Raw -----
 
     public void setRaw(final String path, final Object value) {
@@ -195,14 +183,6 @@ public final class BaseConfiguration {
 
     public CommentedConfigurationNode newSection() {
         return loader.createNode();
-    }
-
-    public Set<String> getKeys() {
-        return ConfigurateUtil.getKeys(configurationNode);
-    }
-
-    public Map<String, CommentedConfigurationNode> getMap() {
-        return ConfigurateUtil.getMap(configurationNode);
     }
 
     public void removeProperty(String path) {

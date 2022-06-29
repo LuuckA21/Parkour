@@ -21,7 +21,6 @@ import org.bukkit.persistence.PersistentDataType;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
-import java.util.logging.Level;
 
 import static me.luucka.parkour.utils.Color.colorize;
 
@@ -93,7 +92,7 @@ public class SetupModeListeners implements Listener {
                 if (event.getAction() != Action.RIGHT_CLICK_AIR) return;
 
                 if (!plugin.getParkourSetupManager().getParkour(player).canSave()) {
-                    player.sendMessage(colorize(plugin.getMessages().setAllLocation()));
+                    player.sendMessage(colorize(plugin.getMessages().setAllParameters()));
                     event.setCancelled(true);
                     return;
                 }

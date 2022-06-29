@@ -57,7 +57,7 @@ public class Messages implements IConfig {
 
     private String cancel;
 
-    private String setAllLocation;
+    private String setAllParameters;
 
     private String targetWallSign;
 
@@ -157,8 +157,8 @@ public class Messages implements IConfig {
         return prefix + cancel.replace("{PARKOUR}", parkour);
     }
 
-    public String setAllLocation() {
-        return prefix + setAllLocation;
+    public String setAllParameters() {
+        return prefix + setAllParameters;
     }
 
     public String targetWallSign() {
@@ -199,155 +199,39 @@ public class Messages implements IConfig {
     public void reloadConfig() {
         config.load();
         prefix = _getPrefix();
-        noPermission = _getNoPermission();
-        noConsole = _getNoConsole();
-        reload = _getReload();
-        commandUsage = _getCommandUsage();
-        joinParkour = _getJoin();
-        quitParkour = _getQuit();
-        completeParkour = _getCompleteParkour();
-        notExists = _getNotExists();
-        joinDuringSetup = _getJoinDuringSetup();
-        joinDuringParkour = _getJoinDuringParkour();
-        alreadyInParkour = _getAlreadyInParkour();
-        alreadyInSetup = _getAlreadyInSetup();
-        notInParkour = _getNotInParkour();
-        enterSetupMode = _getEnterSetupMode();
-        deleteParkour = _getDeleteParkour();
-        setStart = _getSetStart();
-        setEnd = _getSetEnd();
-        setPos1 = _getSetPos1();
-        setPos2 = _getSetPos2();
-        save = _getSave();
-        cancel = _getCancel();
-        setAllLocation = _getSetAllLocation();
-        targetWallSign = _getTargetWallSign();
-        waitingInput = _getWaitingInput();
-        cancelInput = _getCancelInput();
-        addedPlayerCommands = _getAddedPlayerCommands();
-        addedConsoleCommands = _getAddedConsoleCommands();
-        clearPlayerCommands = _getClearPlayerCommands();
-        clearConsoleCommands = _getClearConsoleCommands();
+        noPermission = config.getString("no-permission", "");
+        noConsole = config.getString("no-console", "");
+        reload = config.getString("reload", "");
+        commandUsage = config.getString("command-usage", "");
+        joinParkour = config.getString("join-parkour", "");
+        quitParkour = config.getString("quit-parkour", "");
+        completeParkour = config.getString("complete-parkour", "");
+        notExists = config.getString("not-exists", "");
+        joinDuringSetup = config.getString("join-during-setup", "");
+        joinDuringParkour = config.getString("join-during-parkour", "");
+        alreadyInParkour = config.getString("already-in-parkour", "");
+        alreadyInSetup = config.getString("already-in-setup", "");
+        notInParkour = config.getString("not-in-parkour", "");
+        enterSetupMode = config.getString("enter-setup-mode", "");
+        deleteParkour = config.getString("delete-parkour", "");
+        setStart = config.getString("set-start", "");
+        setEnd = config.getString("set-end", "");
+        setPos1 = config.getString("set-pos1", "");
+        setPos2 = config.getString("set-pos2", "");
+        save = config.getString("save", "");
+        cancel = config.getString("cancel", "");
+        setAllParameters = config.getString("set-all-parameters", "");
+        targetWallSign = config.getString("target-wall-sign", "");
+        waitingInput = config.getString("waiting-input", "");
+        cancelInput = config.getString("cancel-input", "");
+        addedPlayerCommands = config.getString("added-player-commands", "");
+        addedConsoleCommands = config.getString("added-console-commands", "");
+        clearPlayerCommands = config.getString("clear-player-commands", "");
+        clearConsoleCommands = config.getString("clear-console-commands", "");
     }
 
     private String _getPrefix() {
         String prefix = config.getString("prefix", "");
         return prefix.isEmpty() ? "" : prefix + " ";
-    }
-
-    private String _getNoPermission() {
-        return config.getString("no-permission", "");
-    }
-
-    private String _getNoConsole() {
-        return config.getString("no-console", "");
-    }
-
-    private String _getReload() {
-        return config.getString("reload", "");
-    }
-
-    private String _getCommandUsage() {
-        return config.getString("command-usage", "");
-    }
-
-    private String _getJoin() {
-        return config.getString("join-parkour", "");
-    }
-
-    private String _getQuit() {
-        return config.getString("quit-parkour", "");
-    }
-
-    private String _getCompleteParkour() {
-        return config.getString("complete-parkour", "");
-    }
-
-    private String _getNotExists() {
-        return config.getString("not-exists", "");
-    }
-
-    private String _getJoinDuringSetup() {
-        return config.getString("join-during-setup", "");
-    }
-
-    private String _getJoinDuringParkour() {
-        return config.getString("join-during-parkour", "");
-    }
-
-    private String _getAlreadyInParkour() {
-        return config.getString("already-in-parkour", "");
-    }
-
-    private String _getAlreadyInSetup() {
-        return config.getString("already-in-setup", "");
-    }
-
-    private String _getNotInParkour() {
-        return config.getString("not-in-parkour", "");
-    }
-
-    private String _getEnterSetupMode() {
-        return config.getString("enter-setup-mode", "");
-    }
-
-    private String _getDeleteParkour() {
-        return config.getString("delete-parkour", "");
-    }
-
-    private String _getSetStart() {
-        return config.getString("set-start", "");
-    }
-
-    private String _getSetEnd() {
-        return config.getString("set-end", "");
-    }
-
-    private String _getSetPos1() {
-        return config.getString("set-pos1", "");
-    }
-
-    private String _getSetPos2() {
-        return config.getString("set-pos2", "");
-    }
-
-    private String _getSave() {
-        return config.getString("save", "");
-    }
-
-    private String _getCancel() {
-        return config.getString("cancel", "");
-    }
-
-    private String _getSetAllLocation() {
-        return config.getString("set-all-location", "");
-    }
-
-    private String _getTargetWallSign() {
-        return config.getString("target-wall-sign", "");
-    }
-
-    private String _getWaitingInput() {
-        return config.getString("waiting-input", "");
-    }
-
-    private String _getCancelInput() {
-        return config.getString("cancel-input", "");
-    }
-
-    private String _getAddedPlayerCommands() {
-        return config.getString("added-player-commands", "");
-    }
-
-    private String _getAddedConsoleCommands() {
-        return config.getString("added-console-commands", "");
-    }
-
-    private String _getClearPlayerCommands() {
-        return config.getString("clear-player-commands", "");
-    }
-
-    private String _getClearConsoleCommands() {
-        return config.getString("clear-console-commands", "");
     }
 }

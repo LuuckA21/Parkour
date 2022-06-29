@@ -1,0 +1,51 @@
+per-parkour-permission: false
+
+setup-items:
+  set-start:
+    material: "EMERALD"
+    name: "<#12a3e6><b>Set start"
+    lore:
+      - "<grey>(Right Click)"
+      - "<#2772e3>Set start Location of the parkour"
+  set-end:
+    material: "DIAMOND"
+    name: "<#e07f10><b>Set end"
+    lore:
+      - "<grey>(Right Click on Wall Sign)"
+      - "<#2772e3>Set end Location of the parkour"
+  wand:
+    material: "BLAZE_ROD"
+    name: "<#e8bc38><b>Region<#2772e3><b>Wand"
+    lore:
+      - "<grey>(Left Click on block) <#2772e3><b>Pos-1"
+      - "<grey>(Right Click on block) <#2772e3><b>Pos-2"
+  save:
+    material: "BOOK"
+    name: "<#10d40d><b>Save Parkour"
+    lore:
+      - "<grey>(Right Click)"
+      - "<#2772e3>Save parkour"
+  cancel:
+    material: "BARRIER"
+    name: "<#c91818><b>Cancel"
+    lore:
+      - "<grey>(Right Click)"
+      - "<#2772e3>Exit setup without save"
+  complete-player-cmd:
+    material: "PAPER"
+    name: "<#b229c2><b>Set player commands"
+    lore:
+      - "<grey>(Right Click) <#2772e3>Add commands"
+      - "<grey>(Shift + Left Click) <#2772e3>Delete all commands"
+  complete-console-cmd:
+    material: "MAP"
+    name: "<#b229c2><b>Set console commands"
+    lore:
+      - "<grey>(Right Click) <#2772e3>Add commands"
+      - "<grey>(Shift + Left Click) <#2772e3>Delete all commands"
+
+complete-wall-sign:
+  one: "{PREFIX}"
+  two: ""
+  three: "<green>{PARKOUR}"
+  four: "<grey>Click to complete"

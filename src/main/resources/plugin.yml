@@ -1,0 +1,8 @@
+name: Parkour
+version: '${project.version}'
+main: me.luucka.parkour.ParkourPlugin
+api-version: 1.19
+authors: [ LuuckA ]
+description: Parkour plugin
+libraries:
+  - org.spongepowered:configurate-yaml:${libs.configurate-yaml}

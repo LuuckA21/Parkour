@@ -4,6 +4,7 @@ import me.luucka.parkour.ParkourPlugin;
 import me.luucka.parkour.config.entities.LazyItem;
 import me.luucka.parkour.entities.SetupParkour;
 import me.luucka.parkour.utils.ItemBuilder;
+import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -40,6 +41,7 @@ public class ParkourSetupManager {
 
         inSetupMode.put(player.getUniqueId(), new SetupParkour(plugin, parkourName, !plugin.getParkourDataManager().exists(parkourName)));
         rollbackManager.save(player);
+        player.setGameMode(GameMode.CREATIVE);
         setSetupItem(player);
     }
 

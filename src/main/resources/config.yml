@@ -44,8 +44,20 @@ setup-items:
       - "<grey>(Right Click) <#2772e3>Add commands"
       - "<grey>(Shift + Left Click) <#2772e3>Delete all commands"
 
+parkour-item:
+  exit:
+    material: "BARRIER"
+    name: "<#d63e4d><b>Exit"
+    lore:
+      - "<grey>(Right Click)"
+      - "<#2772e3>Exit parkour"
+
 complete-wall-sign:
   one: "{PREFIX}"
   two: ""
   three: "<green>{PARKOUR}"
   four: "<grey>Click to complete"
+
+# Commands run by console when you quit parkour
+commands-on-quit:
+  - "cmd"

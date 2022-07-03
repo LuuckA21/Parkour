@@ -6,6 +6,7 @@ import me.luucka.parkour.config.IConfig;
 import me.luucka.parkour.config.entities.LazyItem;
 
 import java.io.File;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -41,7 +42,13 @@ public class Settings implements IConfig {
     @Getter
     private LazyItem completeConsoleCommands;
 
+    @Getter
+    private LazyItem exitParkourItem;
+
     private String[] completeSign;
+
+    @Getter
+    private List<String> commandsOnQuit;
 
     public String[] getCompleteSign(final String parkour) {
         for (int i = 0; i < completeSign.length; i++) {
@@ -68,12 +75,14 @@ public class Settings implements IConfig {
         cancelItem = config.getItem("setup-items.cancel");
         completePlayerCommands = config.getItem("setup-items.complete-player-cmd");
         completeConsoleCommands = config.getItem("setup-items.complete-console-cmd");
+        exitParkourItem = config.getItem("parkour-item.exit");
         completeSign = new String[] {
                 config.getString("complete-wall-sign.one", ""),
                 config.getString("complete-wall-sign.two", ""),
                 config.getString("complete-wall-sign.three", ""),
                 config.getString("complete-wall-sign.four", "")
         };
+        commandsOnQuit = config.getList("commands-on-quit", String.class);
     }
 
 }

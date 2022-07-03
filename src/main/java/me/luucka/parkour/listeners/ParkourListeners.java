@@ -3,6 +3,7 @@ package me.luucka.parkour.listeners;
 import me.luucka.parkour.ParkourPlugin;
 import me.luucka.parkour.entities.Cuboid;
 import me.luucka.parkour.utils.MaterialUtil;
+import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -13,6 +14,10 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerToggleFlightEvent;
+import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.persistence.PersistentDataType;
 
 import static me.luucka.parkour.utils.Color.colorize;
 
@@ -79,6 +84,31 @@ public class ParkourListeners implements Listener {
         if (!plugin.getParkourGameManager().isPlayerInParkour(player)) return;
 
         if (event.getCause() == EntityDamageEvent.DamageCause.FALL) event.setCancelled(true);
+    }
+
+    @EventHandler
+    public void onInteract(PlayerInteractEvent event) {
+        Player player = event.getPlayer();
+        if (!plugin.getParkourGameManager().isPlayerInParkour(player)) return;
+        if (event.getHand() != EquipmentSlot.HAND) return;
+        if (!event.hasItem()) return;
+
+        final ItemStack item = event.getItem();
+
+        NamespacedKey key = new NamespacedKey(plugin, "parkour-item");
+        PersistentDataContainer container = item.getItemMeta().getPersistentDataContainer();
+        if (container.has(key, PersistentDataType.STRING)) {
+            String sKey = container.get(key, PersistentDataType.STRING);
+
+            final String parkourName = plugin.getParkourGameManager().getParkourNamePlayerIsIn(player);
+
+            if (sKey.equalsIgnoreCase("EXIT")) {
+                if (event.getAction() != Action.RIGHT_CLICK_AIR) return;
+                plugin.getParkourGameManager().playerQuit(player, false);
+                player.sendMessage(colorize(plugin.getMessages().quitParkour(parkourName)));
+                event.setCancelled(true);
+            }
+        }
     }
 
 }

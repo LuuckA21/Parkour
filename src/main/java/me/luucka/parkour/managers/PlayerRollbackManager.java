@@ -25,7 +25,6 @@ public class PlayerRollbackManager {
         previousXpLevel.put(uuid, player.getLevel());
 
         player.getInventory().clear();
-        player.setGameMode(GameMode.CREATIVE);
     }
 
     public void restore(Player player) {

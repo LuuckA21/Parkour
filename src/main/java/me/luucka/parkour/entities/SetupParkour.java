@@ -38,6 +38,9 @@ public class SetupParkour {
 
     private List<String> completeConsoleCommands = new ArrayList<>();
 
+    @Setter
+    private int cooldown = -1;
+
     public SetupParkour(final ParkourPlugin plugin, final String parkourName, final boolean isNew) {
         this.plugin = plugin;
         this.parkourName = parkourName;
@@ -52,6 +55,7 @@ public class SetupParkour {
         regionTwo = plugin.getParkourDataManager().getLocationMax(parkourName);
         completePlayerCommands = plugin.getParkourDataManager().getCompletePlayerCommands(parkourName);
         completeConsoleCommands = plugin.getParkourDataManager().getCompleteConsoleCommands(parkourName);
+        cooldown = plugin.getParkourDataManager().getCooldown(parkourName);
     }
 
     public void addPlayerCommands(final String string) {
@@ -88,6 +92,7 @@ public class SetupParkour {
         plugin.getParkourDataManager().setRegion(parkourName, regionOne, regionTwo);
         plugin.getParkourDataManager().setCompletePlayerCommands(parkourName, completePlayerCommands);
         plugin.getParkourDataManager().setCompleteConsoleCommands(parkourName, completeConsoleCommands);
+        plugin.getParkourDataManager().setCooldown(parkourName, cooldown);
 
         Block endBlock = endLocation.getBlock();
         Sign sign = (Sign) endBlock.getState();
@@ -95,9 +100,6 @@ public class SetupParkour {
         for (int i = 0; i < lines.length; i++) {
             sign.line(i, colorize(lines[i]));
         }
-
-
-
         sign.update();
     }
 }

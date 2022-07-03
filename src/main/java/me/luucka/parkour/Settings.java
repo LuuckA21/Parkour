@@ -43,6 +43,9 @@ public class Settings implements IConfig {
     private LazyItem completeConsoleCommands;
 
     @Getter
+    private LazyItem setCooldown;
+
+    @Getter
     private LazyItem exitParkourItem;
 
     private String[] completeSign;
@@ -75,6 +78,7 @@ public class Settings implements IConfig {
         cancelItem = config.getItem("setup-items.cancel");
         completePlayerCommands = config.getItem("setup-items.complete-player-cmd");
         completeConsoleCommands = config.getItem("setup-items.complete-console-cmd");
+        setCooldown = config.getItem("setup-items.set-cooldown");
         exitParkourItem = config.getItem("parkour-item.exit");
         completeSign = new String[] {
                 config.getString("complete-wall-sign.one", ""),

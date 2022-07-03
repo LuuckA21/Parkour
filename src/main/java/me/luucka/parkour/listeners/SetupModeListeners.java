@@ -141,6 +141,13 @@ public class SetupModeListeners implements Listener {
                 }
 
                 event.setCancelled(true);
+            } else if (sKey.equalsIgnoreCase("COOLDOWN")) {
+                if (event.getAction() == Action.RIGHT_CLICK_AIR) {
+                    waitingChatInput.put(player.getUniqueId(), "COOLDOWN");
+                    player.sendMessage(colorize(plugin.getMessages().waitingCooldownInput()));
+                }
+
+                event.setCancelled(true);
             }
         }
     }
@@ -170,9 +177,16 @@ public class SetupModeListeners implements Listener {
         if (waitingChatInput.get(event.getPlayer().getUniqueId()).equalsIgnoreCase("PLAYER-CMD")) {
             plugin.getParkourSetupManager().getParkour(event.getPlayer()).addPlayerCommands(msg);
             event.getPlayer().sendMessage(colorize(plugin.getMessages().addedPlayerCommands(parkourName)));
+
+
         } else if (waitingChatInput.get(event.getPlayer().getUniqueId()).equalsIgnoreCase("CONSOLE-CMD")) {
             plugin.getParkourSetupManager().getParkour(event.getPlayer()).addConsoleCommands(msg);
             event.getPlayer().sendMessage(colorize(plugin.getMessages().addedConsoleCommands(parkourName)));
+
+
+        }  else if (waitingChatInput.get(event.getPlayer().getUniqueId()).equalsIgnoreCase("COOLDOWN")) {
+            plugin.getParkourSetupManager().getParkour(event.getPlayer()).setCooldown(Integer.parseInt(msg));
+            event.getPlayer().sendMessage(colorize(plugin.getMessages().addedCooldown(parkourName)));
         }
 
         event.setCancelled(true);

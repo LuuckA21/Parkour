@@ -61,6 +61,7 @@ public class ParkourSetupManager {
         final LazyItem cancelItem = plugin.getSettings().getCancelItem();
         final LazyItem completePlayerCommandsItem = plugin.getSettings().getCompletePlayerCommands();
         final LazyItem completeConsoleCommandsItem = plugin.getSettings().getCompleteConsoleCommands();
+        final LazyItem setCooldownItem = plugin.getSettings().getSetCooldown();
 
         ItemStack setStart = new ItemBuilder(Material.matchMaterial(setStartItem.material()))
                 .setDisplayName(colorize(setStartItem.name()))
@@ -104,12 +105,19 @@ public class ParkourSetupManager {
                 .setPersistentDataContainerValue(plugin, "setup-item", "CONSOLE-CMD")
                 .toItemStack();
 
+        ItemStack setCooldown = new ItemBuilder(Material.matchMaterial(setCooldownItem.material()))
+                .setDisplayName(colorize(setCooldownItem.name()))
+                .setLore(colorize(setCooldownItem.lore()))
+                .setPersistentDataContainerValue(plugin, "setup-item", "COOLDOWN")
+                .toItemStack();
+
         player.getInventory().setItem(0, setStart);
         player.getInventory().setItem(1, setEnd);
         player.getInventory().setItem(2, setRegion);
         player.getInventory().setItem(3, completePlayerCommands);
         player.getInventory().setItem(4, completeConsoleCommands);
-        player.getInventory().setItem(5, save);
+        player.getInventory().setItem(5, setCooldown);
+        player.getInventory().setItem(7, save);
         player.getInventory().setItem(8, cancel);
     }
 }

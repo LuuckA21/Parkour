@@ -105,7 +105,6 @@ public class ParkourListeners implements Listener {
             if (sKey.equalsIgnoreCase("EXIT")) {
                 if (event.getAction() != Action.RIGHT_CLICK_AIR) return;
                 plugin.getParkourGameManager().playerQuit(player, false);
-                player.sendMessage(colorize(plugin.getMessages().quitParkour(parkourName)));
                 event.setCancelled(true);
             }
         }

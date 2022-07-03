@@ -5,6 +5,13 @@ import me.luucka.parkour.config.BaseConfiguration;
 import me.luucka.parkour.config.IConfig;
 
 import java.io.File;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
+import java.util.Calendar;
 
 public class Messages implements IConfig {
 
@@ -72,6 +79,12 @@ public class Messages implements IConfig {
     private String clearPlayerCommands;
 
     private String clearConsoleCommands;
+
+    private String waitBeforeJoin;
+
+    private String waitingCooldownInput;
+
+    private String addedCooldown;
 
     public String noPermission() {
         return prefix + noPermission;
@@ -189,6 +202,23 @@ public class Messages implements IConfig {
         return prefix + clearConsoleCommands.replace("{PARKOUR}", parkour);
     }
 
+    public String waitBeforeJoin(final String parkour, final long currentDateTime) {
+        Instant instant = Instant.ofEpochMilli(currentDateTime);
+        LocalDateTime datetime = LocalDateTime.ofInstant(instant, ZoneOffset.UTC);
+        String formatted = DateTimeFormatter.ofPattern("HH:mm:ss").format(datetime);
+
+
+        return prefix + waitBeforeJoin.replace("{PARKOUR}", parkour).replace("{TIME}", formatted);
+    }
+
+    public String waitingCooldownInput() {
+        return prefix + waitingCooldownInput;
+    }
+
+    public String addedCooldown(final String parkour) {
+        return prefix + addedCooldown.replace("{PARKOUR}", parkour);
+    }
+
     public Messages(ParkourPlugin plugin) {
         this.plugin = plugin;
         this.config = new BaseConfiguration(new File(plugin.getDataFolder(), "messages.yml"), "/messages.yml");
@@ -228,6 +258,9 @@ public class Messages implements IConfig {
         addedConsoleCommands = config.getString("added-console-commands", "");
         clearPlayerCommands = config.getString("clear-player-commands", "");
         clearConsoleCommands = config.getString("clear-console-commands", "");
+        waitBeforeJoin = config.getString("wait-before-join", "");
+        waitingCooldownInput = config.getString("waiting-cooldown-input", "");
+        addedCooldown = config.getString("added-cooldown", "");
     }
 
     private String _getPrefix() {

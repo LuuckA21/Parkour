@@ -28,12 +28,17 @@ public class ParkourGameManager {
     }
 
     public void playerJoin(final Player player, final String parkourName) {
+        if (!plugin.getParkourCooldownManager().exists(player.getUniqueId(), parkourName)) {
+            plugin.getParkourCooldownManager().createCooldown(player.getUniqueId(), parkourName);
+        }
+        if (!canJoin(player, parkourName)) return;
+
+        player.sendMessage(colorize(plugin.getMessages().joinParkour(parkourName)));
         playersInParkour.put(player.getUniqueId(), parkourName);
         rollbackManager.save(player);
         player.teleport(plugin.getParkourDataManager().getStartLocation(parkourName));
         player.setFlying(false);
         setParkourItem(player);
-
     }
 
     public void playerQuit(final Player player, final boolean ended) {
@@ -42,6 +47,7 @@ public class ParkourGameManager {
         rollbackManager.restore(player);
 
         if (ended) {
+            plugin.getParkourCooldownManager().updateCooldown(player.getUniqueId(), lastParkour, (System.currentTimeMillis() + plugin.getParkourDataManager().getCooldown(lastParkour) * 1000L));
             for (String cmd : plugin.getParkourDataManager().getCompleteConsoleCommands(lastParkour)) {
                 cmd = cmd.replace("{PLAYER}", player.getName());
                 Bukkit.dispatchCommand(Bukkit.getConsoleSender(), cmd);
@@ -55,6 +61,8 @@ public class ParkourGameManager {
                 Bukkit.dispatchCommand(Bukkit.getConsoleSender(), cmd);
             }
         }
+
+        player.sendMessage(colorize(plugin.getMessages().quitParkour(lastParkour)));
     }
 
     public boolean isPlayerInParkour(final Player player) {
@@ -75,5 +83,18 @@ public class ParkourGameManager {
                 .toItemStack();
 
         player.getInventory().setItem(8, exit);
+    }
+
+    private boolean canJoin(final Player player, final String parkourName) {
+        if (player.hasPermission("parkour.bypass")) return true;
+        if (plugin.getParkourDataManager().getCooldown(parkourName) <= 0L) return true;
+
+        long systemTime = System.currentTimeMillis();
+        long playerTime = plugin.getParkourCooldownManager().getCooldown(player.getUniqueId(), parkourName);
+        if (systemTime < playerTime) {
+            player.sendMessage(colorize(plugin.getMessages().waitBeforeJoin(parkourName, playerTime - systemTime)));
+            return false;
+        }
+        return true;
     }
 }

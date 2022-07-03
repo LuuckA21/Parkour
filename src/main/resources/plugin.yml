@@ -6,3 +6,5 @@ authors: [ LuuckA ]
 description: Parkour plugin
 libraries:
   - org.spongepowered:configurate-yaml:${libs.configurate-yaml}
+  - com.zaxxer:HikariCP:${libs.hikaricp}
+  - org.xerial:sqlite-jdbc:${libs.sqlite}

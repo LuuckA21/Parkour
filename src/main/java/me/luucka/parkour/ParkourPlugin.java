@@ -6,6 +6,7 @@ import me.luucka.parkour.commands.ParkourCommand;
 import me.luucka.parkour.config.IConfig;
 import me.luucka.parkour.listeners.ParkourListeners;
 import me.luucka.parkour.listeners.SetupModeListeners;
+import me.luucka.parkour.managers.ParkourCooldownManager;
 import me.luucka.parkour.managers.ParkourGameManager;
 import me.luucka.parkour.managers.ParkourDataManager;
 import me.luucka.parkour.managers.ParkourSetupManager;
@@ -31,6 +32,9 @@ public final class ParkourPlugin extends JavaPlugin {
     @Getter
     private ParkourSetupManager parkourSetupManager;
 
+    @Getter
+    private ParkourCooldownManager parkourCooldownManager;
+
     private final List<IConfig> configList = new ArrayList<>();
 
     @Override
@@ -47,6 +51,8 @@ public final class ParkourPlugin extends JavaPlugin {
         parkourGameManager = new ParkourGameManager(this);
 
         parkourSetupManager = new ParkourSetupManager(this);
+
+        parkourCooldownManager = new ParkourCooldownManager(this);
 
         getServer().getPluginManager().registerEvents(new SetupModeListeners(this), this);
         getServer().getPluginManager().registerEvents(new ParkourListeners(this), this);

@@ -34,23 +34,32 @@ public class ParkourCommand extends BaseCommand {
 
         switch (cmd) {
             case JOIN -> {
-                if (args.length < cmd.argsNeeded) throw new NotEnoughArgumentsException(plugin.getMessages().commandUsage("/parkour join <parkour>"));
+                if (args.length < cmd.argsNeeded)
+                    throw new NotEnoughArgumentsException(plugin.getMessages().commandUsage("/parkour join <parkour>"));
+
+                if (plugin.getParkourSetupManager().isInSetupMode(sender.getPlayer()))
+                    throw new Exception(plugin.getMessages().joinDuringSetup());
+                if (plugin.getParkourGameManager().isPlayerInParkour(sender.getPlayer()))
+                    throw new Exception(plugin.getMessages().alreadyInParkour());
 
                 final String parkourName = args[1].toLowerCase();
 
-                if (!plugin.getParkourDataManager().exists(parkourName)) throw new Exception(plugin.getMessages().notExists(parkourName));
-                if (plugin.getSettings().isPerParkourPermission() && !sender.hasPermission("parkour." + parkourName)) throw new InsufficientPermissionException(plugin.getMessages().noPermission());
-                if (plugin.getParkourSetupManager().isInSetupMode(sender.getPlayer())) throw new Exception(plugin.getMessages().joinDuringSetup());
-                if (plugin.getParkourGameManager().isPlayerInParkour(sender.getPlayer())) throw new Exception(plugin.getMessages().alreadyInParkour());
+                if (!plugin.getParkourDataManager().exists(parkourName))
+                    throw new Exception(plugin.getMessages().notExists(parkourName));
+
+                if (!sender.hasPermission("parkour.bypass")) {
+                    if (plugin.getSettings().isPerParkourPermission()
+                            && !sender.hasPermission("parkour.join." + parkourName)) {
+                        throw new InsufficientPermissionException(plugin.getMessages().noPermission());
+                    }
+                }
 
                 plugin.getParkourGameManager().playerJoin(sender.getPlayer(), parkourName);
-                sender.sendMessage(plugin.getMessages().joinParkour(parkourName));
             }
             case QUIT -> {
-                if (!plugin.getParkourGameManager().isPlayerInParkour(sender.getPlayer())) throw new Exception(plugin.getMessages().notInParkour());
-                final String parkourName = plugin.getParkourGameManager().getParkourNamePlayerIsIn(sender.getPlayer());
+                if (!plugin.getParkourGameManager().isPlayerInParkour(sender.getPlayer()))
+                    throw new Exception(plugin.getMessages().notInParkour());
                 plugin.getParkourGameManager().playerQuit(sender.getPlayer(), false);
-                sender.sendMessage(plugin.getMessages().quitParkour(parkourName));
             }
         }
     }
@@ -63,11 +72,11 @@ public class ParkourCommand extends BaseCommand {
                 options.add(ct.name().toLowerCase());
             }
             return options;
-        }else if (args.length == 2 && !args[0].equalsIgnoreCase("quit")) {
+        } else if (args.length == 2 && !args[0].equalsIgnoreCase("quit")) {
             if (plugin.getSettings().isPerParkourPermission()) {
                 final List<String> options = new ArrayList<>();
                 for (final String parkour : plugin.getParkourDataManager().getAllParkoursName()) {
-                    if (sender.hasPermission("parkour." + parkour)) {
+                    if (sender.hasPermission("parkour.join." + parkour)) {
                         options.add(parkour);
                     }
                 }

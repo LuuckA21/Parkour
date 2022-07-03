@@ -23,6 +23,8 @@ not-in-parkour: "<#d63e4d>You are not in a parkour"
 enter-setup-mode: "<#31e31e>You entered setup mode for <grey>{PARKOUR} <#31e31e>Parkour"
 delete-parkour: "<#d63e4d>You have deleted <grey>{PARKOUR} <#d63e4d>Parkour"
 
+wait-before-join: "<#d63e4d>You have to wait <grey>{TIME} <#d63e4d>before join <grey>{PARKOUR} <#d63e4d>Parkour"
+
 # Setup mode
 set-start: "<#2772e3>Set start location for <grey>{PARKOUR} <#2772e3>Parkour"
 set-end: "<#2772e3>Set end location for <grey>{PARKOUR} <#2772e3>Parkour"
@@ -38,3 +40,5 @@ added-player-commands: "<#31e31e>You have added player commands to <grey>{PARKOU
 added-console-commands: "<#31e31e>You have added console commands to <grey>{PARKOUR} <#31e31e>Parkour"
 clear-player-commands: "<#d63e4d>You have deleted all player commands from <grey>{PARKOUR} <#d63e4d>Parkour"
 clear-console-commands: "<#d63e4d>You have deleted all console commands from <grey>{PARKOUR} <#d63e4d>Parkour"
+waiting-cooldown-input: "<#31e31e>Write seconds cooldown in chat"
+added-cooldown: "<#31e31e>You have added cooldown to <grey>{PARKOUR} <#31e31e>Parkour"

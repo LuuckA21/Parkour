@@ -91,6 +91,12 @@ public class ParkourDataManager implements IConfig {
         configuration.save();
     }
 
+    public void setCooldown(final String name, final int time) {
+        final BaseConfiguration configuration = parkourData.get(name);
+        configuration.setProperty("cooldown", time);
+        configuration.save();
+    }
+
     public Location getStartLocation(final String name) {
         return parkourData.get(name).getLocation("start-location").location();
     }
@@ -113,6 +119,10 @@ public class ParkourDataManager implements IConfig {
 
     public Location getLocationMax(final String name) {
         return parkourData.get(name).getLocation("region.max").location();
+    }
+
+    public int getCooldown(final String name) {
+        return parkourData.get(name).getInt("cooldown", -1);
     }
 
     public Cuboid getCuboid(final String name) {

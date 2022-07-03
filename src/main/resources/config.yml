@@ -19,18 +19,6 @@ setup-items:
     lore:
       - "<grey>(Left Click on block) <#2772e3><b>Pos-1"
       - "<grey>(Right Click on block) <#2772e3><b>Pos-2"
-  save:
-    material: "BOOK"
-    name: "<#10d40d><b>Save Parkour"
-    lore:
-      - "<grey>(Right Click)"
-      - "<#2772e3>Save parkour"
-  cancel:
-    material: "BARRIER"
-    name: "<#c91818><b>Cancel"
-    lore:
-      - "<grey>(Right Click)"
-      - "<#2772e3>Exit setup without save"
   complete-player-cmd:
     material: "PAPER"
     name: "<#b229c2><b>Set player commands"
@@ -43,6 +31,24 @@ setup-items:
     lore:
       - "<grey>(Right Click) <#2772e3>Add commands"
       - "<grey>(Shift + Left Click) <#2772e3>Delete all commands"
+  set-cooldown:
+    material: "CLOCK"
+    name: "<#96e823><b>Set cooldown"
+    lore:
+      - "<grey>(Right Click)"
+      - "<#2772e3>Set cooldown Parkour"
+  save:
+    material: "BOOK"
+    name: "<#10d40d><b>Save Parkour"
+    lore:
+      - "<grey>(Right Click)"
+      - "<#2772e3>Save parkour"
+  cancel:
+    material: "BARRIER"
+    name: "<#c91818><b>Cancel"
+    lore:
+      - "<grey>(Right Click)"
+      - "<#2772e3>Exit setup without save"
 
 parkour-item:
   exit:

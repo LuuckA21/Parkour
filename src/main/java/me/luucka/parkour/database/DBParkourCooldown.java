@@ -19,7 +19,7 @@ public class DBParkourCooldown {
             "`uuid` VARCHAR(36) NOT NULL," +
             "`parkour` VARCHAR(50) NOT NULL," +
             "`time` int64 NOT NULL," +
-            "PRIMARY KEY (`uuid`))";
+            "PRIMARY KEY (`uuid`, `parkour`))";
 
     public DBParkourCooldown(ParkourPlugin plugin) throws SQLException {
         this.plugin = plugin;

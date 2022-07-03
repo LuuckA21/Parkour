@@ -11,11 +11,17 @@ public class LazyLocation {
     private final double y;
     private final double z;
 
-    public LazyLocation(String world, double x, double y, double z) {
+    private final float yaw;
+
+    private final float pitch;
+
+    public LazyLocation(String world, double x, double y, double z, float yaw, float pitch) {
         this.world = world;
         this.x = x;
         this.y = y;
         this.z = z;
+        this.yaw = yaw;
+        this.pitch = pitch;
     }
 
     public String world() {
@@ -34,6 +40,14 @@ public class LazyLocation {
         return z;
     }
 
+    public float yaw() {
+        return yaw;
+    }
+
+    public float pitch() {
+        return pitch;
+    }
+
     public Location location() {
         if (this.world == null || this.world.isEmpty()) {
             return null;
@@ -41,7 +55,7 @@ public class LazyLocation {
 
         World world = Bukkit.getWorld(this.world);
 
-        return new Location(world, x, y, z);
+        return new Location(world, x, y, z, yaw, pitch);
     }
 
     public static LazyLocation fromLocation(final Location location) {
@@ -49,7 +63,9 @@ public class LazyLocation {
                 location.getWorld().getName(),
                 location.getX(),
                 location.getY(),
-                location.getZ()
+                location.getZ(),
+                location.getYaw(),
+                location.getPitch()
         );
     }
 }

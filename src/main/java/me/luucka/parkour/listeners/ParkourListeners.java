@@ -59,7 +59,6 @@ public class ParkourListeners implements Listener {
         final String parkourName = plugin.getParkourGameManager().getParkourNamePlayerIsIn(player);
         if (plugin.getParkourDataManager().getEndLocation(parkourName).equals(event.getClickedBlock().getLocation())) {
             plugin.getParkourGameManager().playerQuit(event.getPlayer(), true);
-            player.sendMessage(colorize(plugin.getMessages().completeParkour(parkourName)));
         }
     }
 

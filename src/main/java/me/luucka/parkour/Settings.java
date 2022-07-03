@@ -54,10 +54,11 @@ public class Settings implements IConfig {
     private List<String> commandsOnQuit;
 
     public String[] getCompleteSign(final String parkour) {
+        final String[] newSign = new String[4];
         for (int i = 0; i < completeSign.length; i++) {
-            completeSign[i] = completeSign[i].replace("{PARKOUR}", parkour).replace("{PREFIX}", plugin.getMessages().getPrefix());
+            newSign[i] = completeSign[i].replace("{PARKOUR}", parkour).replace("{PREFIX}", plugin.getMessages().getPrefix());
         }
-        return completeSign;
+        return newSign;
     }
 
     public Settings(final ParkourPlugin plugin) {

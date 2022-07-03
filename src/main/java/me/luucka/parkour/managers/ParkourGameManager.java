@@ -47,6 +47,7 @@ public class ParkourGameManager {
         rollbackManager.restore(player);
 
         if (ended) {
+            player.sendMessage(colorize(plugin.getMessages().completeParkour(lastParkour)));
             plugin.getParkourCooldownManager().updateCooldown(player.getUniqueId(), lastParkour, (System.currentTimeMillis() + plugin.getParkourDataManager().getCooldown(lastParkour) * 1000L));
             for (String cmd : plugin.getParkourDataManager().getCompleteConsoleCommands(lastParkour)) {
                 cmd = cmd.replace("{PLAYER}", player.getName());
@@ -60,9 +61,8 @@ public class ParkourGameManager {
                 cmd = cmd.replace("{PLAYER}", player.getName());
                 Bukkit.dispatchCommand(Bukkit.getConsoleSender(), cmd);
             }
+            player.sendMessage(colorize(plugin.getMessages().quitParkour(lastParkour)));
         }
-
-        player.sendMessage(colorize(plugin.getMessages().quitParkour(lastParkour)));
     }
 
     public boolean isPlayerInParkour(final Player player) {

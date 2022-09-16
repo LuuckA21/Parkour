@@ -58,8 +58,7 @@ public class ParkourGameManager {
             }
         } else {
             for (String cmd : plugin.getSettings().getCommandsOnQuit()) {
-                cmd = cmd.replace("{PLAYER}", player.getName());
-                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), cmd);
+                player.performCommand(cmd);
             }
             player.sendMessage(colorize(plugin.getMessages().quitParkour(lastParkour)));
         }
@@ -76,7 +75,7 @@ public class ParkourGameManager {
     private void setParkourItem(final Player player) {
         final LazyItem exitItem = plugin.getSettings().getExitParkourItem();
 
-        ItemStack exit = new ItemBuilder(Material.matchMaterial(exitItem.material()))
+        ItemStack exit = new ItemBuilder(exitItem.material())
                 .setDisplayName(colorize(exitItem.name()))
                 .setLore(colorize(exitItem.lore()))
                 .setPersistentDataContainerValue(plugin, "parkour-item", "EXIT")

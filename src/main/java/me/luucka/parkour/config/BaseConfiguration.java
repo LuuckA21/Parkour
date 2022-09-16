@@ -17,13 +17,16 @@ import java.io.IOException;
 import java.lang.reflect.Type;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public final class BaseConfiguration {
 
-    private static final Logger LOGGER = Logger.getLogger("Parkour");
+    private static final Logger logger = Logger.getLogger("Parkour");
 
     private Class<?> resourceClass = BaseConfiguration.class;
     private final File configFile;
@@ -58,6 +61,10 @@ public final class BaseConfiguration {
         return configurationNode;
     }
 
+    public File getFile() {
+        return configFile;
+    }
+
 //    ----- Location -----
 
     public void setProperty(String path, final Location location) {
@@ -75,7 +82,7 @@ public final class BaseConfiguration {
         }
     }
 
-//    ----- Item -----
+//    ----- Item -------------------------------------------------------------------------------------------------------
 
     public LazyItem getItem(final String path) {
         final CommentedConfigurationNode node = path == null ? getRootNode() : getSection(path);
@@ -88,7 +95,7 @@ public final class BaseConfiguration {
         }
     }
 
-//    ----- List -----
+//    ----- List -------------------------------------------------------------------------------------------------------
 
     public void setProperty(final String path, final List<?> list) {
         setInternal(path, list);
@@ -98,7 +105,7 @@ public final class BaseConfiguration {
         try {
             toSplitRoot(path, configurationNode).set(type, list);
         } catch (SerializationException e) {
-            LOGGER.log(Level.SEVERE, e.getMessage(), e);
+            logger.log(Level.SEVERE, e.getMessage(), e);
         }
     }
 
@@ -113,7 +120,7 @@ public final class BaseConfiguration {
             if (list == null) return new ArrayList<>();
             return list;
         } catch (SerializationException e) {
-            LOGGER.log(Level.SEVERE, e.getMessage(), e);
+            logger.log(Level.SEVERE, e.getMessage(), e);
             return new ArrayList<>();
         }
     }
@@ -123,7 +130,7 @@ public final class BaseConfiguration {
         return node != null && node.isList();
     }
 
-//    ----- String -----
+//    ----- String -----------------------------------------------------------------------------------------------------
 
     public void setProperty(final String path, final String value) {
         setInternal(path, value);
@@ -135,7 +142,7 @@ public final class BaseConfiguration {
         return node.getString();
     }
 
-//    ----- Boolean -----
+//    ----- Boolean ----------------------------------------------------------------------------------------------------
 
     public void setProperty(final String path, final boolean value) {
         setInternal(path, value);
@@ -152,7 +159,19 @@ public final class BaseConfiguration {
         return node != null && node.raw() instanceof Boolean;
     }
 
-//    ----- Int -----
+//    ----- Long -------------------------------------------------------------------------------------------------------
+
+    public void setProperty(final String path, final long value) {
+        setInternal(path, value);
+    }
+
+    public long getLong(final String path, final long def) {
+        final CommentedConfigurationNode node = getInternal(path);
+        if (node == null) return def;
+        return node.getLong();
+    }
+
+//    ----- Int --------------------------------------------------------------------------------------------------------
 
     public void setProperty(final String path, final int value) {
         setInternal(path, value);
@@ -164,7 +183,31 @@ public final class BaseConfiguration {
         return node.getInt();
     }
 
-//    ----- Raw -----
+//    ----- Double -----------------------------------------------------------------------------------------------------
+
+    public void setProperty(final String path, final double value) {
+        setInternal(path, value);
+    }
+
+    public double getDouble(final String path, final double def) {
+        final CommentedConfigurationNode node = getInternal(path);
+        if (node == null) return def;
+        return node.getDouble();
+    }
+
+//    ----- Float ------------------------------------------------------------------------------------------------------
+
+    public void setProperty(final String path, final float value) {
+        setInternal(path, value);
+    }
+
+    public float getFloat(final String path, final float def) {
+        final CommentedConfigurationNode node = getInternal(path);
+        if (node == null) return def;
+        return node.getFloat();
+    }
+
+//    ----- Raw --------------------------------------------------------------------------------------------------------
 
     public void setRaw(final String path, final Object value) {
         setInternal(path, value);
@@ -174,6 +217,8 @@ public final class BaseConfiguration {
         final CommentedConfigurationNode node = getInternal(path);
         return node == null ? null : node.raw();
     }
+
+//    ----- Section ----------------------------------------------------------------------------------------------------
 
     public CommentedConfigurationNode getSection(final String path) {
         final CommentedConfigurationNode node = toSplitRoot(path, configurationNode);
@@ -185,13 +230,25 @@ public final class BaseConfiguration {
         return loader.createNode();
     }
 
+//    ----- Utils -------------------------------------------------------------------------------------------------------
+
+    public Set<String> getKeys(final String path) {
+        final CommentedConfigurationNode configurationNode = getSection(path);
+        return ConfigurateUtil.getKeys(configurationNode);
+    }
+
+    public Map<String, CommentedConfigurationNode> getMap(final String path) {
+        final CommentedConfigurationNode configurationNode = getSection(path);
+        return ConfigurateUtil.getMap(configurationNode);
+    }
+
     public void removeProperty(String path) {
         final CommentedConfigurationNode node = getInternal(path);
         if (node != null) {
             try {
                 node.set(null);
             } catch (SerializationException e) {
-                LOGGER.log(Level.SEVERE, e.getMessage(), e);
+                logger.log(Level.SEVERE, e.getMessage(), e);
             }
         }
     }
@@ -200,7 +257,7 @@ public final class BaseConfiguration {
         try {
             toSplitRoot(path, configurationNode).set(value);
         } catch (SerializationException e) {
-            LOGGER.log(Level.SEVERE, e.getMessage(), e);
+            logger.log(Level.SEVERE, e.getMessage(), e);
         }
     }
 
@@ -224,20 +281,19 @@ public final class BaseConfiguration {
     public void load() {
         if (configFile.getParentFile() != null && !configFile.getParentFile().exists()) {
             if (!configFile.getParentFile().mkdirs()) {
-                LOGGER.log(Level.SEVERE, "Failed to create config: ", configFile.toString());
+                logger.log(Level.SEVERE, "Failed to create file: ", configFile.toString());
             }
         }
 
         if (!configFile.exists()) {
             try {
                 if (templateName != null) {
-                    //Files.copy(getResource(templateName), configFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
                     Files.copy(resourceClass.getResourceAsStream(templateName), configFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
                 } else {
                     this.configFile.createNewFile();
                 }
             } catch (IOException e) {
-                LOGGER.log(Level.SEVERE, "Failed to create config " + configFile, e);
+                logger.log(Level.SEVERE, "Failed to create file " + configFile, e);
             }
         }
 
@@ -246,12 +302,13 @@ public final class BaseConfiguration {
         } catch (final ParsingException e) {
             final File broken = new File(configFile.getAbsolutePath() + ".broken." + System.currentTimeMillis());
             if (configFile.renameTo(broken)) {
-                LOGGER.log(Level.SEVERE, "The file " + configFile + " is broken, it has been renamed to " + broken, e.getCause());
+                logger.log(Level.SEVERE, "The file " + configFile + " is broken, it has been renamed to " + broken, e.getCause());
                 return;
             }
-            LOGGER.log(Level.SEVERE, "The file " + configFile + " is broken. A backup file has failed to be created", e.getCause());
+            logger.log(Level.SEVERE, "The file " + configFile + " is broken. A backup file has failed to be created", e.getCause());
         } catch (final ConfigurateException e) {
-            LOGGER.log(Level.SEVERE, e.getMessage(), e);;
+            logger.log(Level.SEVERE, e.getMessage(), e);
+            ;
         } finally {
             if (configurationNode == null) {
                 configurationNode = loader.createNode();

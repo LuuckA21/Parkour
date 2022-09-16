@@ -64,6 +64,6 @@ complete-wall-sign:
   three: "<green>{PARKOUR}"
   four: "<grey>Click to complete"
 
-# Commands run by console when you quit parkour
+# Commands run by Player when quit parkour
 commands-on-quit:
   - "cmd"

@@ -4,12 +4,14 @@ import me.luucka.parkour.ParkourPlugin;
 import me.luucka.parkour.entities.Cuboid;
 import me.luucka.parkour.utils.MaterialUtil;
 import org.bukkit.NamespacedKey;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityShootBowEvent;
+import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -43,9 +45,19 @@ public class ParkourListeners implements Listener {
 
     @EventHandler
     public void onBowShoot(EntityShootBowEvent event) {
-        if (!(event.getEntity() instanceof Player)) return;
-        if (plugin.getParkourGameManager().isPlayerInParkour((Player) event.getEntity())) {
+        if (!(event.getEntity() instanceof Player player)) return;
+        if (plugin.getParkourGameManager().isPlayerInParkour(player)) {
             event.setCancelled(true);
+        }
+    }
+
+    @EventHandler
+    public void onEnderPearlThrow(ProjectileLaunchEvent event) {
+        if (!(event.getEntity().getShooter() instanceof Player player)) return;
+        if (plugin.getParkourGameManager().isPlayerInParkour(player)) {
+            if (event.getEntityType() == EntityType.ENDER_PEARL) {
+                event.setCancelled(true);
+            }
         }
     }
 

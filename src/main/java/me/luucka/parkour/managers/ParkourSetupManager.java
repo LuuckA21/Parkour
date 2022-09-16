@@ -63,49 +63,49 @@ public class ParkourSetupManager {
         final LazyItem completeConsoleCommandsItem = plugin.getSettings().getCompleteConsoleCommands();
         final LazyItem setCooldownItem = plugin.getSettings().getSetCooldown();
 
-        ItemStack setStart = new ItemBuilder(Material.matchMaterial(setStartItem.material()))
+        ItemStack setStart = new ItemBuilder(setStartItem.material())
                 .setDisplayName(colorize(setStartItem.name()))
                 .setLore(colorize(setStartItem.lore()))
                 .setPersistentDataContainerValue(plugin, "setup-item", "SETSTART")
                 .toItemStack();
 
-        ItemStack setEnd = new ItemBuilder(Material.matchMaterial(setEndItem.material()))
+        ItemStack setEnd = new ItemBuilder(setEndItem.material())
                 .setDisplayName(colorize(setEndItem.name()))
                 .setLore(colorize(setEndItem.lore()))
                 .setPersistentDataContainerValue(plugin, "setup-item", "SETEND")
                 .toItemStack();
 
-        ItemStack setRegion = new ItemBuilder(Material.matchMaterial(wandItem.material()))
+        ItemStack setRegion = new ItemBuilder(wandItem.material())
                 .setDisplayName(colorize(wandItem.name()))
                 .setLore(colorize(wandItem.lore()))
                 .setPersistentDataContainerValue(plugin, "setup-item", "WAND")
                 .toItemStack();
 
-        ItemStack save = new ItemBuilder(Material.matchMaterial(saveItem.material()))
+        ItemStack save = new ItemBuilder(saveItem.material())
                 .setDisplayName(colorize(saveItem.name()))
                 .setLore(colorize(saveItem.lore()))
                 .setPersistentDataContainerValue(plugin, "setup-item", "SAVE")
                 .toItemStack();
 
-        ItemStack cancel = new ItemBuilder(Material.matchMaterial(cancelItem.material()))
+        ItemStack cancel = new ItemBuilder(cancelItem.material())
                 .setDisplayName(colorize(cancelItem.name()))
                 .setLore(colorize(cancelItem.lore()))
                 .setPersistentDataContainerValue(plugin, "setup-item", "CANCEL")
                 .toItemStack();
 
-        ItemStack completePlayerCommands = new ItemBuilder(Material.matchMaterial(completePlayerCommandsItem.material()))
+        ItemStack completePlayerCommands = new ItemBuilder(completePlayerCommandsItem.material())
                 .setDisplayName(colorize(completePlayerCommandsItem.name()))
                 .setLore(colorize(completePlayerCommandsItem.lore()))
                 .setPersistentDataContainerValue(plugin, "setup-item", "PLAYER-CMD")
                 .toItemStack();
 
-        ItemStack completeConsoleCommands = new ItemBuilder(Material.matchMaterial(completeConsoleCommandsItem.material()))
+        ItemStack completeConsoleCommands = new ItemBuilder(completeConsoleCommandsItem.material())
                 .setDisplayName(colorize(completeConsoleCommandsItem.name()))
                 .setLore(colorize(completeConsoleCommandsItem.lore()))
                 .setPersistentDataContainerValue(plugin, "setup-item", "CONSOLE-CMD")
                 .toItemStack();
 
-        ItemStack setCooldown = new ItemBuilder(Material.matchMaterial(setCooldownItem.material()))
+        ItemStack setCooldown = new ItemBuilder(setCooldownItem.material())
                 .setDisplayName(colorize(setCooldownItem.name()))
                 .setLore(colorize(setCooldownItem.lore()))
                 .setPersistentDataContainerValue(plugin, "setup-item", "COOLDOWN")

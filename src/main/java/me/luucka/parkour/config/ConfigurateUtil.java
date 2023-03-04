@@ -7,7 +7,8 @@ import java.util.*;
 
 public final class ConfigurateUtil {
 
-    private ConfigurateUtil() {}
+    private ConfigurateUtil() {
+    }
 
     public static Set<String> getRootNodeKeys(final BaseConfiguration config) {
         return getKeys(config.getRootNode());

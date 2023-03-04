@@ -6,7 +6,7 @@
 
     <groupId>me.luucka</groupId>
     <artifactId>Parkour</artifactId>
-    <version>Build-5</version>
+    <version>Build-6</version>
     <packaging>jar</packaging>
 
     <name>Parkour</name>
@@ -16,10 +16,11 @@
         <java.version>17</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <libs.lombok>1.18.24</libs.lombok>
+        <libs.lombok>1.18.26</libs.lombok>
         <libs.configurate-yaml>4.1.2</libs.configurate-yaml>
-        <libs.hikaricp>5.0.1</libs.hikaricp>
-        <libs.sqlite>3.39.3.0</libs.sqlite>
+        <libs.mongodb>4.9.0</libs.mongodb>
+        <libs.anvilgui>1.6.3-SNAPSHOT</libs.anvilgui>
+        <libs.helplib>ee58f42fae</libs.helplib>
 
     </properties>
 
@@ -69,8 +70,12 @@
             <url>https://oss.sonatype.org/content/groups/public/</url>
         </repository>
         <repository>
-            <id>sk89q-repo</id>
-            <url>https://maven.enginehub.org/repo/</url>
+            <id>codemc-snapshots</id>
+            <url>https://repo.codemc.io/repository/maven-snapshots/</url>
+        </repository>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
         </repository>
     </repositories>
 
@@ -78,9 +83,10 @@
         <dependency>
             <groupId>io.papermc.paper</groupId>
             <artifactId>paper-api</artifactId>
-            <version>1.19.2-R0.1-SNAPSHOT</version>
+            <version>1.19.3-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
+
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
@@ -94,15 +100,22 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>com.zaxxer</groupId>
-            <artifactId>HikariCP</artifactId>
-            <version>${libs.hikaricp}</version>
+            <groupId>org.mongodb</groupId>
+            <artifactId>mongodb-driver-sync</artifactId>
+            <version>${libs.mongodb}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>net.wesjd</groupId>
+            <artifactId>anvilgui</artifactId>
+            <version>${libs.anvilgui}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>org.xerial</groupId>
-            <artifactId>sqlite-jdbc</artifactId>
-            <version>${libs.sqlite}</version>
+            <groupId>com.github.LuuckA21</groupId>
+            <artifactId>HelpLib</artifactId>
+            <version>${libs.helplib}</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>

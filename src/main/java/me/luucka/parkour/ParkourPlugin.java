@@ -1,15 +1,14 @@
 package me.luucka.parkour;
 
 import lombok.Getter;
+import me.luucka.helplib.config.IConfig;
 import me.luucka.parkour.commands.PAdminCommand;
 import me.luucka.parkour.commands.ParkourCommand;
-import me.luucka.parkour.config.IConfig;
 import me.luucka.parkour.listeners.ParkourListeners;
 import me.luucka.parkour.listeners.SetupModeListeners;
-import me.luucka.parkour.managers.ParkourCooldownManager;
-import me.luucka.parkour.managers.ParkourGameManager;
-import me.luucka.parkour.managers.ParkourDataManager;
-import me.luucka.parkour.managers.ParkourSetupManager;
+import me.luucka.parkour.managers.DataManager;
+import me.luucka.parkour.managers.GameManager;
+import me.luucka.parkour.managers.SetupManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.ArrayList;
@@ -24,16 +23,16 @@ public final class ParkourPlugin extends JavaPlugin {
     private Messages messages;
 
     @Getter
-    private ParkourDataManager parkourDataManager;
+    private DataManager dataManager;
 
     @Getter
-    private ParkourGameManager parkourGameManager;
+    private GameManager gameManager;
 
     @Getter
-    private ParkourSetupManager parkourSetupManager;
+    private SetupManager setupManager;
 
-    @Getter
-    private ParkourCooldownManager parkourCooldownManager;
+//    @Getter
+//    private CooldownManager cooldownManager;
 
     private final List<IConfig> configList = new ArrayList<>();
 
@@ -45,14 +44,14 @@ public final class ParkourPlugin extends JavaPlugin {
         messages = new Messages(this);
         configList.add(messages);
 
-        parkourDataManager = new ParkourDataManager(this);
-        configList.add(parkourDataManager);
+        dataManager = new DataManager(this);
+        configList.add(dataManager);
 
-        parkourGameManager = new ParkourGameManager(this);
+        gameManager = new GameManager(this);
 
-        parkourSetupManager = new ParkourSetupManager(this);
+        setupManager = new SetupManager(this);
 
-        parkourCooldownManager = new ParkourCooldownManager(this);
+//        cooldownManager = new CooldownManager(this);
 
         getServer().getPluginManager().registerEvents(new SetupModeListeners(this), this);
         getServer().getPluginManager().registerEvents(new ParkourListeners(this), this);

@@ -1,0 +1,20 @@
+name: Parkour
+version: '${project.version}'
+main: me.luucka.parkour.ParkourPlugin
+loader: me.luucka.parkour.ParkourPluginLoader
+api-version: 1.19
+authors: [ LuuckA ]
+description: Parkour plugin
+dependencies:
+  - name: configurate-yaml
+    required: true
+    bootstrap: true
+  - name: mongodb-driver-sync
+    required: true
+    bootstrap: true
+  - name: anvilgui
+    required: true
+    bootstrap: true
+  - name: HelpLib
+    required: true
+    bootstrap: true

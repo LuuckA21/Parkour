@@ -11,95 +11,104 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static me.luucka.parkour.utils.Color.colorize;
+import static me.luucka.helplib.color.MMColor.toComponent;
 
 public class SetupParkour {
 
     private final ParkourPlugin plugin;
 
     @Getter
-    private final String parkourName;
+    private String name;
 
-    private final boolean isNew;
+    private Parkour parkour;
 
+    @Getter
     @Setter
     private Location startLocation;
 
+    @Getter
     @Setter
     private Location endLocation;
 
+    @Getter
     @Setter
-    private Location regionOne;
+    private Location minRegion;
 
+    @Getter
     @Setter
-    private Location regionTwo;
+    private Location maxRegion;
 
-    private List<String> completePlayerCommands = new ArrayList<>();
+    @Getter
+    private List<String> playerCommands = new ArrayList<>();
 
-    private List<String> completeConsoleCommands = new ArrayList<>();
+    @Getter
+    private List<String> consoleCommands = new ArrayList<>();
 
+    @Getter
     @Setter
-    private int cooldown = -1;
+    private long cooldown = -1L;
 
-    public SetupParkour(final ParkourPlugin plugin, final String parkourName, final boolean isNew) {
+    public SetupParkour(final ParkourPlugin plugin, final Parkour parkour) {
         this.plugin = plugin;
-        this.parkourName = parkourName;
-        this.isNew = isNew;
-        if (!isNew) loadExistParkour();
+        this.name = parkour.getName();
+        this.parkour = parkour;
+        this.startLocation = parkour.getStartLocation();
+        this.endLocation = parkour.getEndLocation();
+        this.minRegion = parkour.getMinRegion();
+        this.maxRegion = parkour.getMaxRegion();
+        this.playerCommands = parkour.getPlayerCommands();
+        this.consoleCommands = parkour.getConsoleCommands();
+        this.cooldown = parkour.getCooldown();
+        parkour.setupMode();
     }
 
-    private void loadExistParkour() {
-        startLocation = plugin.getParkourDataManager().getStartLocation(parkourName);
-        endLocation = plugin.getParkourDataManager().getEndLocation(parkourName);
-        regionOne = plugin.getParkourDataManager().getLocationMin(parkourName);
-        regionTwo = plugin.getParkourDataManager().getLocationMax(parkourName);
-        completePlayerCommands = plugin.getParkourDataManager().getCompletePlayerCommands(parkourName);
-        completeConsoleCommands = plugin.getParkourDataManager().getCompleteConsoleCommands(parkourName);
-        cooldown = plugin.getParkourDataManager().getCooldown(parkourName);
+    public SetupParkour(final ParkourPlugin plugin, final String name) {
+        this.plugin = plugin;
+        this.name = name;
     }
 
     public void addPlayerCommands(final String string) {
-        completePlayerCommands.addAll(Arrays.asList(string.split(";")));
+        playerCommands.addAll(Arrays.asList(string.split(";")));
     }
 
-    public void clearCompletePlayerCommands() {
-        completePlayerCommands.clear();
+    public void clearPlayerCommands() {
+        playerCommands.clear();
     }
 
     public void addConsoleCommands(final String string) {
-        completeConsoleCommands.addAll(Arrays.asList(string.split(";")));
+        consoleCommands.addAll(Arrays.asList(string.split(";")));
     }
 
-    public void clearCompleteConsoleCommands() {
-        completeConsoleCommands.clear();
+    public void clearConsoleCommands() {
+        consoleCommands.clear();
     }
 
     public boolean canSave() {
         return startLocation != null
                 && endLocation != null
-                && regionOne != null
-                && regionTwo != null
-                && completePlayerCommands.size() >= 1
-                && completeConsoleCommands.size() >= 1;
+                && minRegion != null
+                && maxRegion != null
+                && playerCommands.size() >= 1
+                && consoleCommands.size() >= 1;
     }
 
-    public void saveToConfig() {
-        if (isNew) {
-            plugin.getParkourDataManager().create(parkourName);
+    public void save() {
+        if (this.parkour == null) {
+            plugin.getDataManager().create(this);
+        } else {
+            this.parkour.update(this);
         }
-        plugin.getParkourDataManager().setStartLoc(parkourName, startLocation);
-        plugin.getParkourDataManager().setEndLoc(parkourName, endLocation);
-        plugin.getParkourDataManager().setRegion(parkourName, regionOne, regionTwo);
-        plugin.getParkourDataManager().setCompletePlayerCommands(parkourName, completePlayerCommands);
-        plugin.getParkourDataManager().setCompleteConsoleCommands(parkourName, completeConsoleCommands);
-        plugin.getParkourDataManager().setCooldown(parkourName, cooldown);
 
         Block endBlock = endLocation.getBlock();
         Sign sign = (Sign) endBlock.getState();
-        final String[] lines = plugin.getSettings().getCompleteSign(parkourName);
+        final String[] lines = plugin.getSettings().getCompleteSign(name);
         for (int i = 0; i < lines.length; i++) {
-            sign.line(i, colorize(lines[i]));
+            sign.line(i, toComponent(lines[i]));
         }
         sign.update();
+    }
+
+    public void cancel() {
+        if (this.parkour != null) this.parkour.playMode();
     }
 }

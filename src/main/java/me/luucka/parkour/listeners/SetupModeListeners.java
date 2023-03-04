@@ -1,194 +1,193 @@
 package me.luucka.parkour.listeners;
 
-import io.papermc.paper.event.player.AsyncChatEvent;
+import me.luucka.helplib.item.ItemBuilder;
+import me.luucka.helplib.utils.MaterialUtil;
 import me.luucka.parkour.ParkourPlugin;
-import me.luucka.parkour.utils.MaterialUtil;
-import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
+import net.wesjd.anvilgui.AnvilGUI;
+import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
-import org.bukkit.event.player.PlayerChangedWorldEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.*;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.List;
 
-import static me.luucka.parkour.utils.Color.colorize;
+import static me.luucka.helplib.color.MMColor.toComponent;
 
 public class SetupModeListeners implements Listener {
 
     private final ParkourPlugin plugin;
 
-    private final Map<UUID, String> waitingChatInput = new HashMap<>();
-
-    public SetupModeListeners(ParkourPlugin plugin) {
+    public SetupModeListeners(final ParkourPlugin plugin) {
         this.plugin = plugin;
     }
 
     @EventHandler
-    public void onServerQuit(PlayerQuitEvent event) {
-        if (!plugin.getParkourSetupManager().isInSetupMode(event.getPlayer())) return;
-        plugin.getParkourSetupManager().removeFromSetup(event.getPlayer());
-    }
-
-    @EventHandler
-    public void onInteract(PlayerInteractEvent event) {
-        Player player = event.getPlayer();
-        if (!plugin.getParkourSetupManager().isInSetupMode(player)) return;
+    public void onInteract(final PlayerInteractEvent event) {
+        final Player player = event.getPlayer();
+        if (!plugin.getSetupManager().isPlayerInSetupMode(player)) return;
         if (event.getHand() != EquipmentSlot.HAND) return;
         if (!event.hasItem()) return;
 
         final ItemStack item = event.getItem();
+        if (item == null) return;
 
         NamespacedKey key = new NamespacedKey(plugin, "setup-item");
         PersistentDataContainer container = item.getItemMeta().getPersistentDataContainer();
         if (container.has(key, PersistentDataType.STRING)) {
-            String sKey = container.get(key, PersistentDataType.STRING);
+            final String sKey = container.get(key, PersistentDataType.STRING);
+            if (sKey == null) return;
 
-            final String parkourName = plugin.getParkourSetupManager().getParkour(player).getParkourName();
-
-            if (sKey.equalsIgnoreCase("SETSTART")) {
-                if (event.getAction() != Action.RIGHT_CLICK_AIR) return;
-                plugin.getParkourSetupManager().getParkour(player).setStartLocation(player.getLocation());
-                player.sendMessage(colorize(plugin.getMessages().setStart(parkourName)));
-                event.setCancelled(true);
+            final String parkourName = plugin.getSetupManager().getParkour(player).getName();
 
 
-            } else if (sKey.equalsIgnoreCase("SETEND")) {
-                if (event.getAction() != Action.RIGHT_CLICK_BLOCK) return;
-                Block targetBlock = event.getClickedBlock();
-                if (!MaterialUtil.isWallSign(targetBlock.getType())) {
-                    player.sendMessage(colorize(plugin.getMessages().targetWallSign()));
-                    return;
-                }
-
-                plugin.getParkourSetupManager().getParkour(player).setEndLocation(targetBlock.getLocation());
-                player.sendMessage(colorize(plugin.getMessages().setEnd(parkourName)));
-                event.setCancelled(true);
-
-
-            } else if (sKey.equalsIgnoreCase("WAND")) {
-                if (event.getAction() == Action.LEFT_CLICK_BLOCK) {
-                    plugin.getParkourSetupManager().getParkour(player).setRegionOne(event.getClickedBlock().getLocation());
-                    player.sendMessage(colorize(plugin.getMessages().setPos1(parkourName)));
-                    event.setCancelled(true);
-                } else if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-                    plugin.getParkourSetupManager().getParkour(player).setRegionTwo(event.getClickedBlock().getLocation());
-                    player.sendMessage(colorize(plugin.getMessages().setPos2(parkourName)));
+            switch (sKey) {
+                case "SETSTART" -> {
+                    if (event.getAction() != Action.RIGHT_CLICK_AIR) return;
+                    plugin.getSetupManager().getParkour(player).setStartLocation(player.getLocation());
+                    player.sendMessage(toComponent(plugin.getMessages().setStart(parkourName)));
                     event.setCancelled(true);
                 }
-
-
-            } else if (sKey.equalsIgnoreCase("SAVE")) {
-                if (event.getAction() != Action.RIGHT_CLICK_AIR) return;
-
-                if (!plugin.getParkourSetupManager().getParkour(player).canSave()) {
-                    player.sendMessage(colorize(plugin.getMessages().setAllParameters()));
+                case "SETEND" -> {
+                    if (event.getAction() != Action.RIGHT_CLICK_BLOCK) return;
+                    final Block targetBlock = event.getClickedBlock();
+                    if (targetBlock == null) return;
+                    if (!MaterialUtil.isWallSign(targetBlock.getType())) {
+                        player.sendMessage(toComponent(plugin.getMessages().targetWallSign()));
+                        return;
+                    }
+                    plugin.getSetupManager().getParkour(player).setEndLocation(targetBlock.getLocation());
+                    player.sendMessage(toComponent(plugin.getMessages().setEnd(parkourName)));
                     event.setCancelled(true);
-                    return;
                 }
-
-                plugin.getParkourSetupManager().getParkour(player).saveToConfig();
-
-                plugin.getParkourSetupManager().removeFromSetup(player);
-
-                player.sendMessage(colorize(plugin.getMessages().save(parkourName)));
-
-                event.setCancelled(true);
-
-            } else if (sKey.equalsIgnoreCase("CANCEL")) {
-                if (event.getAction() != Action.RIGHT_CLICK_AIR) return;
-
-                plugin.getParkourSetupManager().removeFromSetup(player);
-
-                player.sendMessage(colorize(plugin.getMessages().cancel(parkourName)));
-
-                event.setCancelled(true);
-
-
-            } else if (sKey.equalsIgnoreCase("PLAYER-CMD")) {
-                if (event.getAction() == Action.RIGHT_CLICK_AIR) {
-                    waitingChatInput.put(player.getUniqueId(), "PLAYER-CMD");
-                    player.sendMessage(colorize(plugin.getMessages().waitingInput()));
+                case "WAND" -> {
+                    if (event.getAction() == Action.LEFT_CLICK_BLOCK) {
+                        plugin.getSetupManager().getParkour(player).setMinRegion(event.getClickedBlock().getLocation());
+                        player.sendMessage(toComponent(plugin.getMessages().setPos1(parkourName)));
+                        event.setCancelled(true);
+                    } else if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+                        plugin.getSetupManager().getParkour(player).setMaxRegion(event.getClickedBlock().getLocation());
+                        player.sendMessage(toComponent(plugin.getMessages().setPos2(parkourName)));
+                        event.setCancelled(true);
+                    }
                 }
-
-                if (player.isSneaking() && event.getAction() == Action.LEFT_CLICK_AIR) {
-                    plugin.getParkourSetupManager().getParkour(player).clearCompletePlayerCommands();
-                    player.sendMessage(colorize(plugin.getMessages().clearPlayerCommands(parkourName)));
+                case "SAVE" -> {
+                    if (event.getAction() != Action.RIGHT_CLICK_AIR) return;
+                    if (!plugin.getSetupManager().getParkour(player).canSave()) {
+                        player.sendMessage(toComponent(plugin.getMessages().setAllParameters()));
+                        event.setCancelled(true);
+                        return;
+                    }
+                    plugin.getSetupManager().getParkour(player).save();
+                    plugin.getSetupManager().removePlayerFromSetupMode(player);
+                    player.sendMessage(toComponent(plugin.getMessages().save(parkourName)));
+                    event.setCancelled(true);
                 }
-
-                event.setCancelled(true);
-
-
-            } else if (sKey.equalsIgnoreCase("CONSOLE-CMD")) {
-                if (event.getAction() == Action.RIGHT_CLICK_AIR) {
-                    waitingChatInput.put(player.getUniqueId(), "CONSOLE-CMD");
-                    player.sendMessage(colorize(plugin.getMessages().waitingInput()));
+                case "CANCEL" -> {
+                    if (event.getAction() != Action.RIGHT_CLICK_AIR) return;
+                    plugin.getSetupManager().getParkour(player).cancel();
+                    plugin.getSetupManager().removePlayerFromSetupMode(player);
+                    player.sendMessage(toComponent(plugin.getMessages().cancel(parkourName)));
+                    event.setCancelled(true);
                 }
-
-                if (player.isSneaking() && event.getAction() == Action.LEFT_CLICK_AIR) {
-                    plugin.getParkourSetupManager().getParkour(player).clearCompleteConsoleCommands();
-                    player.sendMessage(colorize(plugin.getMessages().clearConsoleCommands(parkourName)));
+                case "PLAYER-CMD" -> {
+                    if (event.getAction() == Action.RIGHT_CLICK_AIR) {
+                        new AnvilGUI.Builder()
+                                .title(LegacyComponentSerializer.legacySection().serialize(toComponent(plugin.getMessages().waitingInput())))
+                                .text("...")
+                                .itemLeft(new ItemBuilder(Material.PAPER).setDisplayName(toComponent("Set Players Commands")).toItemStack())
+                                .onComplete(completion -> {
+                                    plugin.getSetupManager().getParkour(player).addPlayerCommands(completion.getText());
+                                    player.sendMessage(toComponent(plugin.getMessages().addedPlayerCommands(parkourName)));
+                                    return List.of(AnvilGUI.ResponseAction.close());
+                                })
+                                .plugin(plugin)
+                                .open(player);
+                    }
+                    if (player.isSneaking() && event.getAction() == Action.LEFT_CLICK_AIR) {
+                        plugin.getSetupManager().getParkour(player).clearPlayerCommands();
+                        player.sendMessage(toComponent(plugin.getMessages().clearPlayerCommands(parkourName)));
+                    }
+                    event.setCancelled(true);
                 }
-
-                event.setCancelled(true);
-            } else if (sKey.equalsIgnoreCase("COOLDOWN")) {
-                if (event.getAction() == Action.RIGHT_CLICK_AIR) {
-                    waitingChatInput.put(player.getUniqueId(), "COOLDOWN");
-                    player.sendMessage(colorize(plugin.getMessages().waitingCooldownInput()));
+                case "CONSOLE-CMD" -> {
+                    if (event.getAction() == Action.RIGHT_CLICK_AIR) {
+                        new AnvilGUI.Builder()
+                                .title(LegacyComponentSerializer.legacySection().serialize(toComponent(plugin.getMessages().waitingInput())))
+                                .text("...")
+                                .itemLeft(new ItemBuilder(Material.MAP).setDisplayName(toComponent("Set Console Commands")).toItemStack())
+                                .onComplete(completion -> {
+                                    plugin.getSetupManager().getParkour(player).addConsoleCommands(completion.getText());
+                                    player.sendMessage(toComponent(plugin.getMessages().addedConsoleCommands(parkourName)));
+                                    return List.of(AnvilGUI.ResponseAction.close());
+                                })
+                                .plugin(plugin)
+                                .open(player);
+                    }
+                    if (player.isSneaking() && event.getAction() == Action.LEFT_CLICK_AIR) {
+                        plugin.getSetupManager().getParkour(player).clearConsoleCommands();
+                        player.sendMessage(toComponent(plugin.getMessages().clearConsoleCommands(parkourName)));
+                    }
+                    event.setCancelled(true);
                 }
-
-                event.setCancelled(true);
+                case "COOLDOWN" -> {
+                    if (event.getAction() == Action.RIGHT_CLICK_AIR) {
+                        new AnvilGUI.Builder()
+                                .title(LegacyComponentSerializer.legacySection().serialize(toComponent(plugin.getMessages().waitingCooldownInput())))
+                                .text("...")
+                                .itemLeft(new ItemBuilder(Material.CLOCK).setDisplayName(toComponent("Set Cooldown")).toItemStack())
+                                .onComplete(completion -> {
+                                    int cooldown = 0;
+                                    try {
+                                        cooldown = Integer.parseInt(completion.getText());
+                                    } catch (final NumberFormatException e) {
+                                        return List.of(AnvilGUI.ResponseAction.replaceInputText("Please insert a integer value"));
+                                    }
+                                    plugin.getSetupManager().getParkour(player).setCooldown(cooldown);
+                                    player.sendMessage(toComponent(plugin.getMessages().addedCooldown(parkourName)));
+                                    return List.of(AnvilGUI.ResponseAction.close());
+                                })
+                                .plugin(plugin)
+                                .open(player);
+                    }
+                    event.setCancelled(true);
+                }
             }
         }
     }
 
     @EventHandler
-    public void onPlayerChangeWorld(PlayerChangedWorldEvent event) {
-        if (!plugin.getParkourSetupManager().isInSetupMode(event.getPlayer())) return;
-        plugin.getParkourSetupManager().removeFromSetup(event.getPlayer());
-        event.getPlayer().sendMessage(colorize(plugin.getMessages().cancel(plugin.getParkourSetupManager().getParkour(event.getPlayer()).getParkourName())));
+    public void onPlayerChangeWorld(final PlayerChangedWorldEvent event) {
+        if (!plugin.getSetupManager().isPlayerInSetupMode(event.getPlayer())) return;
+        plugin.getSetupManager().getParkour(event.getPlayer()).cancel();
+        plugin.getSetupManager().removePlayerFromSetupMode(event.getPlayer());
+        event.getPlayer().sendMessage(toComponent(plugin.getMessages().cancel(plugin.getSetupManager().getParkour(event.getPlayer()).getName())));
     }
 
     @EventHandler
-    public void onPlayerChat(AsyncChatEvent event) {
-        if (!plugin.getParkourSetupManager().isInSetupMode(event.getPlayer())) return;
-        if (!waitingChatInput.containsKey(event.getPlayer().getUniqueId())) return;
+    public void onServerQuit(final PlayerQuitEvent event) {
+        if (!plugin.getSetupManager().isPlayerInSetupMode(event.getPlayer())) return;
+        plugin.getSetupManager().getParkour(event.getPlayer()).cancel();
+        plugin.getSetupManager().removePlayerFromSetupMode(event.getPlayer());
+    }
 
-        final String msg = MiniMessage.miniMessage().serialize(event.originalMessage());
-        final String parkourName = plugin.getParkourSetupManager().getParkour(event.getPlayer()).getParkourName();
+    @EventHandler
+    public void onItemDrop(final PlayerDropItemEvent event) {
+        if (!plugin.getSetupManager().isPlayerInSetupMode(event.getPlayer())) return;
+        event.setCancelled(true);
+    }
 
-        if (msg.equalsIgnoreCase("cancel")) {
-            waitingChatInput.remove(event.getPlayer().getUniqueId());
-            event.getPlayer().sendMessage(colorize(plugin.getMessages().cancelInput()));
-            event.setCancelled(true);
-            return;
-        }
-
-        if (waitingChatInput.get(event.getPlayer().getUniqueId()).equalsIgnoreCase("PLAYER-CMD")) {
-            plugin.getParkourSetupManager().getParkour(event.getPlayer()).addPlayerCommands(msg);
-            event.getPlayer().sendMessage(colorize(plugin.getMessages().addedPlayerCommands(parkourName)));
-
-
-        } else if (waitingChatInput.get(event.getPlayer().getUniqueId()).equalsIgnoreCase("CONSOLE-CMD")) {
-            plugin.getParkourSetupManager().getParkour(event.getPlayer()).addConsoleCommands(msg);
-            event.getPlayer().sendMessage(colorize(plugin.getMessages().addedConsoleCommands(parkourName)));
-
-
-        }  else if (waitingChatInput.get(event.getPlayer().getUniqueId()).equalsIgnoreCase("COOLDOWN")) {
-            plugin.getParkourSetupManager().getParkour(event.getPlayer()).setCooldown(Integer.parseInt(msg));
-            event.getPlayer().sendMessage(colorize(plugin.getMessages().addedCooldown(parkourName)));
-        }
-
+    @EventHandler
+    public void onSwapHandItem(final PlayerSwapHandItemsEvent event) {
+        if (!plugin.getSetupManager().isPlayerInSetupMode(event.getPlayer())) return;
         event.setCancelled(true);
     }
 

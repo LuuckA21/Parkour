@@ -13,7 +13,7 @@ public class Cuboid {
     private final int minZ;
     private final int maxZ;
 
-    public Cuboid(Location loc1, Location loc2) {
+    public Cuboid(final Location loc1, final Location loc2) {
         this(loc1.getWorld(), loc1.getBlockX(), loc1.getBlockY(), loc1.getBlockZ(), loc2.getBlockX(), loc2.getBlockY(), loc2.getBlockZ());
     }
 

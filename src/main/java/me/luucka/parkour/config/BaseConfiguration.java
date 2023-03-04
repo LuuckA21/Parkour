@@ -17,16 +17,13 @@ import java.io.IOException;
 import java.lang.reflect.Type;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public final class BaseConfiguration {
 
-    private static final Logger logger = Logger.getLogger("Parkour");
+    private static final Logger LOGGER = Logger.getLogger("TestPlugin");
 
     private Class<?> resourceClass = BaseConfiguration.class;
     private final File configFile;
@@ -65,7 +62,7 @@ public final class BaseConfiguration {
         return configFile;
     }
 
-//    ----- Location -----
+//    ----- Location ---------------------------------------------------------------------------------------------------
 
     public void setProperty(String path, final Location location) {
         setInternal(path, LazyLocation.fromLocation(location));
@@ -74,7 +71,6 @@ public final class BaseConfiguration {
     public LazyLocation getLocation(final String path) {
         final CommentedConfigurationNode node = path == null ? getRootNode() : getSection(path);
         if (node == null) return null;
-
         try {
             return node.get(LazyLocation.class);
         } catch (SerializationException e) {
@@ -82,12 +78,25 @@ public final class BaseConfiguration {
         }
     }
 
-//    ----- Item -------------------------------------------------------------------------------------------------------
+    public Map<String, LazyLocation> getLocationSectionMap(final String path) {
+        final CommentedConfigurationNode node = getSection(path);
+        final Map<String, LazyLocation> result = new HashMap<>();
+        for (final Map.Entry<String, CommentedConfigurationNode> entry : ConfigurateUtil.getMap(node).entrySet()) {
+            final CommentedConfigurationNode jailNode = entry.getValue();
+            try {
+                result.put(entry.getKey().toLowerCase(Locale.ENGLISH), jailNode.get(LazyLocation.class));
+            } catch (SerializationException e) {
+                LOGGER.log(Level.WARNING, "Error serializing key " + entry.getKey(), e);
+            }
+        }
+        return result;
+    }
+
+    //    ----- Item -------------------------------------------------------------------------------------------------------
 
     public LazyItem getItem(final String path) {
         final CommentedConfigurationNode node = path == null ? getRootNode() : getSection(path);
         if (node == null) return null;
-
         try {
             return node.get(LazyItem.class);
         } catch (SerializationException e) {
@@ -105,7 +114,7 @@ public final class BaseConfiguration {
         try {
             toSplitRoot(path, configurationNode).set(type, list);
         } catch (SerializationException e) {
-            logger.log(Level.SEVERE, e.getMessage(), e);
+            LOGGER.log(Level.SEVERE, e.getMessage(), e);
         }
     }
 
@@ -120,7 +129,7 @@ public final class BaseConfiguration {
             if (list == null) return new ArrayList<>();
             return list;
         } catch (SerializationException e) {
-            logger.log(Level.SEVERE, e.getMessage(), e);
+            LOGGER.log(Level.SEVERE, e.getMessage(), e);
             return new ArrayList<>();
         }
     }
@@ -248,7 +257,7 @@ public final class BaseConfiguration {
             try {
                 node.set(null);
             } catch (SerializationException e) {
-                logger.log(Level.SEVERE, e.getMessage(), e);
+                LOGGER.log(Level.SEVERE, e.getMessage(), e);
             }
         }
     }
@@ -257,7 +266,7 @@ public final class BaseConfiguration {
         try {
             toSplitRoot(path, configurationNode).set(value);
         } catch (SerializationException e) {
-            logger.log(Level.SEVERE, e.getMessage(), e);
+            LOGGER.log(Level.SEVERE, e.getMessage(), e);
         }
     }
 
@@ -281,7 +290,7 @@ public final class BaseConfiguration {
     public void load() {
         if (configFile.getParentFile() != null && !configFile.getParentFile().exists()) {
             if (!configFile.getParentFile().mkdirs()) {
-                logger.log(Level.SEVERE, "Failed to create file: ", configFile.toString());
+                LOGGER.log(Level.SEVERE, "Failed to create file: ", configFile.toString());
             }
         }
 
@@ -293,7 +302,7 @@ public final class BaseConfiguration {
                     this.configFile.createNewFile();
                 }
             } catch (IOException e) {
-                logger.log(Level.SEVERE, "Failed to create file " + configFile, e);
+                LOGGER.log(Level.SEVERE, "Failed to create file " + configFile, e);
             }
         }
 
@@ -302,12 +311,12 @@ public final class BaseConfiguration {
         } catch (final ParsingException e) {
             final File broken = new File(configFile.getAbsolutePath() + ".broken." + System.currentTimeMillis());
             if (configFile.renameTo(broken)) {
-                logger.log(Level.SEVERE, "The file " + configFile + " is broken, it has been renamed to " + broken, e.getCause());
+                LOGGER.log(Level.SEVERE, "The file " + configFile + " is broken, it has been renamed to " + broken, e.getCause());
                 return;
             }
-            logger.log(Level.SEVERE, "The file " + configFile + " is broken. A backup file has failed to be created", e.getCause());
+            LOGGER.log(Level.SEVERE, "The file " + configFile + " is broken. A backup file has failed to be created", e.getCause());
         } catch (final ConfigurateException e) {
-            logger.log(Level.SEVERE, e.getMessage(), e);
+            LOGGER.log(Level.SEVERE, e.getMessage(), e);
             ;
         } finally {
             if (configurationNode == null) {

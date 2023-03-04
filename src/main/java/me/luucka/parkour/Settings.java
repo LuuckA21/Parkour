@@ -1,8 +1,8 @@
 package me.luucka.parkour;
 
 import lombok.Getter;
+import me.luucka.helplib.config.IConfig;
 import me.luucka.parkour.config.BaseConfiguration;
-import me.luucka.parkour.config.IConfig;
 import me.luucka.parkour.config.entities.LazyItem;
 
 import java.io.File;
@@ -53,6 +53,9 @@ public class Settings implements IConfig {
     @Getter
     private List<String> commandsOnQuit;
 
+    @Getter
+    private String mongoDbConnectionUri;
+
     public String[] getCompleteSign(final String parkour) {
         final String[] newSign = new String[4];
         for (int i = 0; i < completeSign.length; i++) {
@@ -81,13 +84,14 @@ public class Settings implements IConfig {
         completeConsoleCommands = config.getItem("setup-items.complete-console-cmd");
         setCooldown = config.getItem("setup-items.set-cooldown");
         exitParkourItem = config.getItem("parkour-item.exit");
-        completeSign = new String[] {
+        completeSign = new String[]{
                 config.getString("complete-wall-sign.one", ""),
                 config.getString("complete-wall-sign.two", ""),
                 config.getString("complete-wall-sign.three", ""),
                 config.getString("complete-wall-sign.four", "")
         };
         commandsOnQuit = config.getList("commands-on-quit", String.class);
+        mongoDbConnectionUri = config.getString("mongodb-connection-uri", "");
     }
 
 }

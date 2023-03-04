@@ -1,12 +1,14 @@
 package me.luucka.parkour.commands;
 
+import me.luucka.helplib.commands.BaseCommand;
+import me.luucka.helplib.commands.CommandSource;
 import me.luucka.parkour.ParkourPlugin;
-import me.luucka.parkour.exceptions.InsufficientPermissionException;
-import me.luucka.parkour.exceptions.NotEnoughArgumentsException;
+import me.luucka.parkour.entities.Parkour;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 public class ParkourCommand extends BaseCommand {
 
@@ -22,7 +24,7 @@ public class ParkourCommand extends BaseCommand {
     public void execute(CommandSource sender, String[] args) throws Exception {
         if (!sender.isPlayer()) throw new Exception(plugin.getMessages().noConsole());
 
-        if (args.length < 1) throw new NotEnoughArgumentsException(plugin.getMessages().commandUsage(getUsage()));
+        if (args.length < 1) throw new Exception(plugin.getMessages().commandUsage(getUsage()));
 
         final CommandType cmd;
 
@@ -35,31 +37,32 @@ public class ParkourCommand extends BaseCommand {
         switch (cmd) {
             case JOIN -> {
                 if (args.length < cmd.argsNeeded)
-                    throw new NotEnoughArgumentsException(plugin.getMessages().commandUsage("/parkour join <parkour>"));
+                    throw new Exception(plugin.getMessages().commandUsage("/parkour join <parkour>"));
 
-                if (plugin.getParkourSetupManager().isInSetupMode(sender.getPlayer()))
+                if (plugin.getSetupManager().isPlayerInSetupMode(sender.getPlayer()))
                     throw new Exception(plugin.getMessages().joinDuringSetup());
-                if (plugin.getParkourGameManager().isPlayerInParkour(sender.getPlayer()))
+                if (plugin.getGameManager().isPlayerInParkourGame(sender.getPlayer()))
                     throw new Exception(plugin.getMessages().alreadyInParkour());
 
                 final String parkourName = args[1].toLowerCase();
+                Optional<Parkour> optionalParkour = plugin.getDataManager().getPlayableParkour(parkourName);
 
-                if (!plugin.getParkourDataManager().exists(parkourName))
+                if (optionalParkour.isEmpty())
                     throw new Exception(plugin.getMessages().notExists(parkourName));
 
                 if (!sender.hasPermission("parkour.bypass")) {
                     if (plugin.getSettings().isPerParkourPermission()
                             && !sender.hasPermission("parkour.join." + parkourName)) {
-                        throw new InsufficientPermissionException(plugin.getMessages().noPermission());
+                        throw new Exception(plugin.getMessages().noPermission());
                     }
                 }
 
-                plugin.getParkourGameManager().playerJoin(sender.getPlayer(), parkourName);
+                plugin.getGameManager().playerJoin(sender.getPlayer(), optionalParkour.get());
             }
             case QUIT -> {
-                if (!plugin.getParkourGameManager().isPlayerInParkour(sender.getPlayer()))
+                if (!plugin.getGameManager().isPlayerInParkourGame(sender.getPlayer()))
                     throw new Exception(plugin.getMessages().notInParkour());
-                plugin.getParkourGameManager().playerQuit(sender.getPlayer(), false);
+                plugin.getGameManager().playerQuit(sender.getPlayer(), false);
             }
         }
     }
@@ -75,14 +78,14 @@ public class ParkourCommand extends BaseCommand {
         } else if (args.length == 2 && !args[0].equalsIgnoreCase("quit")) {
             if (plugin.getSettings().isPerParkourPermission()) {
                 final List<String> options = new ArrayList<>();
-                for (final String parkour : plugin.getParkourDataManager().getAllParkoursName()) {
+                for (final String parkour : plugin.getDataManager().getAllParkoursName()) {
                     if (sender.hasPermission("parkour.join." + parkour)) {
                         options.add(parkour);
                     }
                 }
                 return options;
             }
-            return plugin.getParkourDataManager().getAllParkoursName();
+            return plugin.getDataManager().getAllParkoursName();
         }
 
         return Collections.emptyList();

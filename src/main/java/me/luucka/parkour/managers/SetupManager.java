@@ -1,11 +1,10 @@
 package me.luucka.parkour.managers;
 
+import me.luucka.helplib.item.ItemBuilder;
 import me.luucka.parkour.ParkourPlugin;
 import me.luucka.parkour.config.entities.LazyItem;
 import me.luucka.parkour.entities.SetupParkour;
-import me.luucka.parkour.utils.ItemBuilder;
 import org.bukkit.GameMode;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -13,47 +12,45 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import static me.luucka.parkour.utils.Color.colorize;
+import static me.luucka.helplib.color.MMColor.toComponent;
 
-public class ParkourSetupManager {
+public class SetupManager {
 
     private final ParkourPlugin plugin;
 
     private final PlayerRollbackManager rollbackManager;
 
-    private final Map<UUID, SetupParkour> inSetupMode = new HashMap<>();
+    private final Map<UUID, SetupParkour> playerInSetup = new HashMap<>();
 
-    public ParkourSetupManager(ParkourPlugin plugin) {
+    public SetupManager(ParkourPlugin plugin) {
         this.plugin = plugin;
         this.rollbackManager = new PlayerRollbackManager();
     }
 
-    public boolean isInSetupMode(final Player player) {
-        return inSetupMode.containsKey(player.getUniqueId());
+    public boolean isPlayerInSetupMode(final Player player) {
+        return playerInSetup.containsKey(player.getUniqueId());
     }
 
     public SetupParkour getParkour(final Player player) {
-        return inSetupMode.get(player.getUniqueId());
+        return playerInSetup.get(player.getUniqueId());
     }
 
-    public void addToSetup(final Player player, final String parkourName) {
-        if (isInSetupMode(player)) return;
+    public void addPlayerToSetupMode(final Player player, final SetupParkour parkour) {
+        if (isPlayerInSetupMode(player)) return;
 
-        inSetupMode.put(player.getUniqueId(), new SetupParkour(plugin, parkourName, !plugin.getParkourDataManager().exists(parkourName)));
+        playerInSetup.put(player.getUniqueId(), parkour);
         rollbackManager.save(player);
         player.setGameMode(GameMode.CREATIVE);
-        setSetupItem(player);
+        setSetupItems(player);
     }
 
-    public void removeFromSetup(final Player player) {
-        if (!isInSetupMode(player)) return;
-
-        inSetupMode.remove(player.getUniqueId());
-
+    public void removePlayerFromSetupMode(final Player player) {
+        if (!isPlayerInSetupMode(player)) return;
+        playerInSetup.remove(player.getUniqueId());
         rollbackManager.restore(player);
     }
 
-    private void setSetupItem(final Player player) {
+    private void setSetupItems(final Player player) {
         final LazyItem setStartItem = plugin.getSettings().getSetStartItem();
         final LazyItem setEndItem = plugin.getSettings().getSetEndItem();
         final LazyItem wandItem = plugin.getSettings().getWandItem();
@@ -64,50 +61,50 @@ public class ParkourSetupManager {
         final LazyItem setCooldownItem = plugin.getSettings().getSetCooldown();
 
         ItemStack setStart = new ItemBuilder(setStartItem.material())
-                .setDisplayName(colorize(setStartItem.name()))
-                .setLore(colorize(setStartItem.lore()))
+                .setDisplayName(toComponent(setStartItem.name()))
+                .setLore(toComponent(setStartItem.lore()))
                 .setPersistentDataContainerValue(plugin, "setup-item", "SETSTART")
                 .toItemStack();
 
         ItemStack setEnd = new ItemBuilder(setEndItem.material())
-                .setDisplayName(colorize(setEndItem.name()))
-                .setLore(colorize(setEndItem.lore()))
+                .setDisplayName(toComponent(setEndItem.name()))
+                .setLore(toComponent(setEndItem.lore()))
                 .setPersistentDataContainerValue(plugin, "setup-item", "SETEND")
                 .toItemStack();
 
         ItemStack setRegion = new ItemBuilder(wandItem.material())
-                .setDisplayName(colorize(wandItem.name()))
-                .setLore(colorize(wandItem.lore()))
+                .setDisplayName(toComponent(wandItem.name()))
+                .setLore(toComponent(wandItem.lore()))
                 .setPersistentDataContainerValue(plugin, "setup-item", "WAND")
                 .toItemStack();
 
         ItemStack save = new ItemBuilder(saveItem.material())
-                .setDisplayName(colorize(saveItem.name()))
-                .setLore(colorize(saveItem.lore()))
+                .setDisplayName(toComponent(saveItem.name()))
+                .setLore(toComponent(saveItem.lore()))
                 .setPersistentDataContainerValue(plugin, "setup-item", "SAVE")
                 .toItemStack();
 
         ItemStack cancel = new ItemBuilder(cancelItem.material())
-                .setDisplayName(colorize(cancelItem.name()))
-                .setLore(colorize(cancelItem.lore()))
+                .setDisplayName(toComponent(cancelItem.name()))
+                .setLore(toComponent(cancelItem.lore()))
                 .setPersistentDataContainerValue(plugin, "setup-item", "CANCEL")
                 .toItemStack();
 
         ItemStack completePlayerCommands = new ItemBuilder(completePlayerCommandsItem.material())
-                .setDisplayName(colorize(completePlayerCommandsItem.name()))
-                .setLore(colorize(completePlayerCommandsItem.lore()))
+                .setDisplayName(toComponent(completePlayerCommandsItem.name()))
+                .setLore(toComponent(completePlayerCommandsItem.lore()))
                 .setPersistentDataContainerValue(plugin, "setup-item", "PLAYER-CMD")
                 .toItemStack();
 
         ItemStack completeConsoleCommands = new ItemBuilder(completeConsoleCommandsItem.material())
-                .setDisplayName(colorize(completeConsoleCommandsItem.name()))
-                .setLore(colorize(completeConsoleCommandsItem.lore()))
+                .setDisplayName(toComponent(completeConsoleCommandsItem.name()))
+                .setLore(toComponent(completeConsoleCommandsItem.lore()))
                 .setPersistentDataContainerValue(plugin, "setup-item", "CONSOLE-CMD")
                 .toItemStack();
 
         ItemStack setCooldown = new ItemBuilder(setCooldownItem.material())
-                .setDisplayName(colorize(setCooldownItem.name()))
-                .setLore(colorize(setCooldownItem.lore()))
+                .setDisplayName(toComponent(setCooldownItem.name()))
+                .setLore(toComponent(setCooldownItem.lore()))
                 .setPersistentDataContainerValue(plugin, "setup-item", "COOLDOWN")
                 .toItemStack();
 

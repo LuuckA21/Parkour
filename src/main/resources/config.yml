@@ -67,3 +67,6 @@ complete-wall-sign:
 # Commands run by Player when quit parkour
 commands-on-quit:
   - "cmd"
+
+# - For more information, please see https://docs.mongodb.com/manual/reference/connection-string/
+mongodb-connection-uri: ''

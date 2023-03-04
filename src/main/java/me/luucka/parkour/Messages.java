@@ -1,8 +1,8 @@
 package me.luucka.parkour;
 
 import lombok.Getter;
+import me.luucka.helplib.config.IConfig;
 import me.luucka.parkour.config.BaseConfiguration;
-import me.luucka.parkour.config.IConfig;
 
 import java.io.File;
 import java.time.Instant;
@@ -66,8 +66,6 @@ public class Messages implements IConfig {
     private String targetWallSign;
 
     private String waitingInput;
-
-    private String cancelInput;
 
     private String addedPlayerCommands;
 
@@ -176,11 +174,7 @@ public class Messages implements IConfig {
     }
 
     public String waitingInput() {
-        return prefix + waitingInput;
-    }
-
-    public String cancelInput() {
-        return prefix + cancelInput;
+        return waitingInput;
     }
 
     public String addedPlayerCommands(final String parkour) {
@@ -209,7 +203,7 @@ public class Messages implements IConfig {
     }
 
     public String waitingCooldownInput() {
-        return prefix + waitingCooldownInput;
+        return waitingCooldownInput;
     }
 
     public String addedCooldown(final String parkour) {
@@ -250,7 +244,6 @@ public class Messages implements IConfig {
         setAllParameters = config.getString("set-all-parameters", "");
         targetWallSign = config.getString("target-wall-sign", "");
         waitingInput = config.getString("waiting-input", "");
-        cancelInput = config.getString("cancel-input", "");
         addedPlayerCommands = config.getString("added-player-commands", "");
         addedConsoleCommands = config.getString("added-console-commands", "");
         clearPlayerCommands = config.getString("clear-player-commands", "");

@@ -1,12 +1,15 @@
 package me.luucka.parkour.commands;
 
+import me.luucka.helplib.commands.BaseCommand;
+import me.luucka.helplib.commands.CommandSource;
 import me.luucka.parkour.ParkourPlugin;
-import me.luucka.parkour.exceptions.InsufficientPermissionException;
-import me.luucka.parkour.exceptions.NotEnoughArgumentsException;
+import me.luucka.parkour.entities.Parkour;
+import me.luucka.parkour.entities.SetupParkour;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 public class PAdminCommand extends BaseCommand {
 
@@ -22,9 +25,9 @@ public class PAdminCommand extends BaseCommand {
     public void execute(CommandSource sender, String[] args) throws Exception {
         if (!sender.isPlayer()) throw new Exception(plugin.getMessages().noConsole());
 
-        if (!testPermissionSilent(sender.getSender())) throw new InsufficientPermissionException(plugin.getMessages().noPermission());
+        if (!testPermissionSilent(sender.getSender())) throw new Exception(plugin.getMessages().noPermission());
 
-        if (args.length < 1) throw new NotEnoughArgumentsException(plugin.getMessages().commandUsage(getUsage()));
+        if (args.length < 1) throw new Exception(plugin.getMessages().commandUsage(getUsage()));
 
         final CommandType cmd;
 
@@ -36,18 +39,26 @@ public class PAdminCommand extends BaseCommand {
 
         switch (cmd) {
             case SETUP -> {
-                if (args.length < cmd.argsNeeded) throw new NotEnoughArgumentsException(plugin.getMessages().commandUsage("/padmin setup <parkour>"));
-                if (plugin.getParkourGameManager().isPlayerInParkour(sender.getPlayer())) throw new Exception(plugin.getMessages().joinDuringParkour());
-                if (plugin.getParkourSetupManager().isInSetupMode(sender.getPlayer())) throw new Exception(plugin.getMessages().alreadyInSetup());
+                if (args.length < cmd.argsNeeded)
+                    throw new Exception(plugin.getMessages().commandUsage("/padmin setup <parkour>"));
+                final String parkourName = args[1].toLowerCase();
+                if (plugin.getGameManager().isPlayerInParkourGame(sender.getPlayer()))
+                    throw new Exception(plugin.getMessages().joinDuringParkour());
+                if (plugin.getSetupManager().isPlayerInSetupMode(sender.getPlayer()))
+                    throw new Exception(plugin.getMessages().alreadyInSetup());
 
-                plugin.getParkourSetupManager().addToSetup(sender.getPlayer(), args[1].toLowerCase());
-                sender.sendMessage(plugin.getMessages().enterSetupMode(args[1]));
+                final Optional<Parkour> optionalParkour = plugin.getDataManager().getPlayableParkour(parkourName);
+                plugin.getSetupManager().addPlayerToSetupMode(sender.getPlayer(), optionalParkour.map(parkour -> new SetupParkour(plugin, parkour)).orElseGet(() -> new SetupParkour(plugin, parkourName)));
+                sender.sendMessage(plugin.getMessages().enterSetupMode(parkourName));
             }
             case DELETE -> {
-                if (args.length < cmd.argsNeeded) throw new NotEnoughArgumentsException(plugin.getMessages().commandUsage("/padmin delete <parkour>"));
-                if (!plugin.getParkourDataManager().exists(args[1].toLowerCase())) throw new Exception(plugin.getMessages().notExists(args[1]));
-                plugin.getParkourDataManager().delete(args[1].toLowerCase());
-                sender.sendMessage(plugin.getMessages().deleteParkour(args[1]));
+                if (args.length < cmd.argsNeeded)
+                    throw new Exception(plugin.getMessages().commandUsage("/padmin delete <parkour>"));
+                final String parkourName = args[1].toLowerCase();
+                Optional<Parkour> optionalParkour = plugin.getDataManager().getParkour(parkourName);
+                if (optionalParkour.isEmpty()) throw new Exception(plugin.getMessages().notExists(args[1]));
+                plugin.getDataManager().delete(optionalParkour.get());
+                sender.sendMessage(plugin.getMessages().deleteParkour(parkourName));
             }
             case RELOAD -> {
                 plugin.reload();
@@ -67,7 +78,7 @@ public class PAdminCommand extends BaseCommand {
             }
             return options;
         } else if (args.length == 2) {
-            return plugin.getParkourDataManager().getAllParkoursName();
+            return plugin.getDataManager().getAllParkoursName();
         }
 
         return Collections.emptyList();

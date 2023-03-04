@@ -1,0 +1,83 @@
+package me.luucka.parkour.managers;
+
+import me.luucka.helplib.config.IConfig;
+import me.luucka.parkour.ParkourPlugin;
+import me.luucka.parkour.config.BaseConfiguration;
+import me.luucka.parkour.entities.Parkour;
+import me.luucka.parkour.entities.SetupParkour;
+
+import java.io.File;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+public class DataManager implements IConfig {
+
+    private static final Logger LOGGER = Logger.getLogger("Parkour");
+
+    private final ParkourPlugin plugin;
+
+    private final File dataFolder;
+
+    private final Set<Parkour> parkours = new HashSet<>();
+
+    public DataManager(final ParkourPlugin plugin) {
+        this.plugin = plugin;
+        this.dataFolder = new File(this.plugin.getDataFolder(), "parkours");
+        if (!this.dataFolder.exists()) {
+            this.dataFolder.mkdirs();
+        }
+        reloadConfig();
+    }
+
+    public List<String> getAllParkoursName() {
+        return parkours.stream().map(Parkour::getName).toList();
+    }
+
+    public boolean exists(final String name) {
+        return parkours.stream().anyMatch(p -> p.getName().equalsIgnoreCase(name));
+    }
+
+    public Optional<Parkour> getPlayableParkour(final String name) {
+        return parkours.stream().filter(p -> p.getName().equalsIgnoreCase(name) && p.getStatus() == Parkour.Status.PLAY).findAny();
+    }
+
+    public Optional<Parkour> getParkour(final String name) {
+        return parkours.stream().filter(p -> p.getName().equalsIgnoreCase(name)).findAny();
+    }
+
+    public void create(final SetupParkour setupParkour) {
+        if (!exists(setupParkour.getName())) {
+            final File file = new File(dataFolder, setupParkour.getName() + ".yml");
+            final BaseConfiguration configuration = new BaseConfiguration(file);
+            parkours.add(new Parkour(configuration, setupParkour));
+        }
+    }
+
+    public void delete(final Parkour parkour) {
+        parkours.remove(parkour);
+        parkour.delete();
+    }
+
+    @Override
+    public void reloadConfig() {
+        parkours.clear();
+        final File[] fileList = dataFolder.listFiles();
+        if (fileList.length >= 1) {
+            for (final File file : fileList) {
+                final String fileName = file.getName();
+                if (file.isFile() && fileName.endsWith(".yml")) {
+                    try {
+                        final BaseConfiguration configuration = new BaseConfiguration(file);
+                        parkours.add(new Parkour(configuration));
+                    } catch (final Exception ex) {
+                        LOGGER.log(Level.WARNING, "Parkour file '" + fileName + "' loading error!");
+                    }
+                }
+            }
+        }
+    }
+}

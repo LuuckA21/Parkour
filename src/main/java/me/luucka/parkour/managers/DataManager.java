@@ -1,8 +1,8 @@
 package me.luucka.parkour.managers;
 
-import me.luucka.helplib.config.IConfig;
 import me.luucka.parkour.ParkourPlugin;
 import me.luucka.parkour.config.BaseConfiguration;
+import me.luucka.parkour.config.IConfig;
 import me.luucka.parkour.entities.Parkour;
 import me.luucka.parkour.entities.SetupParkour;
 
@@ -17,16 +17,11 @@ import java.util.logging.Logger;
 public class DataManager implements IConfig {
 
     private static final Logger LOGGER = Logger.getLogger("Parkour");
-
-    private final ParkourPlugin plugin;
-
     private final File dataFolder;
-
     private final Set<Parkour> parkours = new HashSet<>();
 
     public DataManager(final ParkourPlugin plugin) {
-        this.plugin = plugin;
-        this.dataFolder = new File(this.plugin.getDataFolder(), "parkours");
+        this.dataFolder = new File(plugin.getDataFolder(), "parkours");
         if (!this.dataFolder.exists()) {
             this.dataFolder.mkdirs();
         }
@@ -38,15 +33,15 @@ public class DataManager implements IConfig {
     }
 
     public boolean exists(final String name) {
-        return parkours.stream().anyMatch(p -> p.getName().equalsIgnoreCase(name));
+        return parkours.stream().anyMatch(parkour -> parkour.getName().equalsIgnoreCase(name));
     }
 
     public Optional<Parkour> getPlayableParkour(final String name) {
-        return parkours.stream().filter(p -> p.getName().equalsIgnoreCase(name) && p.getStatus() == Parkour.Status.PLAY).findAny();
+        return parkours.stream().filter(parkour -> parkour.getName().equalsIgnoreCase(name) && parkour.getStatus() == Parkour.Status.PLAY).findFirst();
     }
 
     public Optional<Parkour> getParkour(final String name) {
-        return parkours.stream().filter(p -> p.getName().equalsIgnoreCase(name)).findAny();
+        return parkours.stream().filter(parkour -> parkour.getName().equalsIgnoreCase(name)).findFirst();
     }
 
     public void create(final SetupParkour setupParkour) {
@@ -71,8 +66,7 @@ public class DataManager implements IConfig {
                 final String fileName = file.getName();
                 if (file.isFile() && fileName.endsWith(".yml")) {
                     try {
-                        final BaseConfiguration configuration = new BaseConfiguration(file);
-                        parkours.add(new Parkour(configuration));
+                        parkours.add(new Parkour(new BaseConfiguration(file)));
                     } catch (final Exception ex) {
                         LOGGER.log(Level.WARNING, "Parkour file '" + fileName + "' loading error!");
                     }

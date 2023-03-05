@@ -3,6 +3,8 @@ package me.luucka.parkour.entities;
 import lombok.Getter;
 import lombok.Setter;
 import me.luucka.parkour.ParkourPlugin;
+import me.luucka.parkour.Settings;
+import me.luucka.parkour.managers.DataManager;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
@@ -11,11 +13,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static me.luucka.helplib.color.MMColor.toComponent;
+import static me.luucka.parkour.utils.MMColor.toComponent;
 
 public class SetupParkour {
-
-    private final ParkourPlugin plugin;
+    private final DataManager dataManager;
+    private final Settings settings;
 
     @Getter
     private String name;
@@ -49,7 +51,8 @@ public class SetupParkour {
     private long cooldown = -1L;
 
     public SetupParkour(final ParkourPlugin plugin, final Parkour parkour) {
-        this.plugin = plugin;
+        this.dataManager = plugin.getDataManager();
+        this.settings = plugin.getSettings();
         this.name = parkour.getName();
         this.parkour = parkour;
         this.startLocation = parkour.getStartLocation();
@@ -63,7 +66,8 @@ public class SetupParkour {
     }
 
     public SetupParkour(final ParkourPlugin plugin, final String name) {
-        this.plugin = plugin;
+        this.dataManager = plugin.getDataManager();
+        this.settings = plugin.getSettings();
         this.name = name;
     }
 
@@ -94,14 +98,14 @@ public class SetupParkour {
 
     public void save() {
         if (this.parkour == null) {
-            plugin.getDataManager().create(this);
+            dataManager.create(this);
         } else {
             this.parkour.update(this);
         }
 
         Block endBlock = endLocation.getBlock();
         Sign sign = (Sign) endBlock.getState();
-        final String[] lines = plugin.getSettings().getCompleteSign(name);
+        final String[] lines = settings.getCompleteSign(name);
         for (int i = 0; i < lines.length; i++) {
             sign.line(i, toComponent(lines[i]));
         }

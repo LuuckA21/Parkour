@@ -15,13 +15,11 @@ public class ParkourPluginLoader implements PluginLoader {
         MavenLibraryResolver resolver = new MavenLibraryResolver();
 
         resolver.addRepository(new RemoteRepository.Builder("sonatype", "default", "https://oss.sonatype.org/content/groups/public/").build());
-        resolver.addRepository(new RemoteRepository.Builder("jitpack", "default", "https://jitpack.io").build());
         resolver.addRepository(new RemoteRepository.Builder("codemc", "default", "https://repo.codemc.io/repository/maven-snapshots/").build());
 
         resolver.addDependency(new Dependency(new DefaultArtifact("org.spongepowered:configurate-yaml:4.1.2"), null));
         resolver.addDependency(new Dependency(new DefaultArtifact("org.mongodb:mongodb-driver-sync:4.9.0"), null));
         resolver.addDependency(new Dependency(new DefaultArtifact("net.wesjd:anvilgui:1.6.3-SNAPSHOT"), null));
-        resolver.addDependency(new Dependency(new DefaultArtifact("com.github.LuuckA21:HelpLib:2b1add0eb1"), null));
 
         classpathBuilder.addLibrary(resolver);
     }

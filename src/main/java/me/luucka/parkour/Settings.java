@@ -1,8 +1,8 @@
 package me.luucka.parkour;
 
 import lombok.Getter;
-import me.luucka.helplib.config.IConfig;
 import me.luucka.parkour.config.BaseConfiguration;
+import me.luucka.parkour.config.IConfig;
 import me.luucka.parkour.config.entities.LazyItem;
 
 import java.io.File;
@@ -14,7 +14,7 @@ public class Settings implements IConfig {
 
     private static final Logger LOGGER = Logger.getLogger("Parkour");
 
-    private final ParkourPlugin plugin;
+    private final Messages messages;
 
     private final BaseConfiguration config;
 
@@ -59,13 +59,13 @@ public class Settings implements IConfig {
     public String[] getCompleteSign(final String parkour) {
         final String[] newSign = new String[4];
         for (int i = 0; i < completeSign.length; i++) {
-            newSign[i] = completeSign[i].replace("{PARKOUR}", parkour).replace("{PREFIX}", plugin.getMessages().getPrefix());
+            newSign[i] = completeSign[i].replace("{PARKOUR}", parkour).replace("{PREFIX}", messages.getPrefix());
         }
         return newSign;
     }
 
     public Settings(final ParkourPlugin plugin) {
-        this.plugin = plugin;
+        this.messages = plugin.getMessages();
         this.config = new BaseConfiguration(new File(plugin.getDataFolder(), "config.yml"), "/config.yml");
         reloadConfig();
         if (perParkourPermission) LOGGER.log(Level.INFO, "Using Per-Parkour-Permission");

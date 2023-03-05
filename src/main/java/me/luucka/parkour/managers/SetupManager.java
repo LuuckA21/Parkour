@@ -1,9 +1,10 @@
 package me.luucka.parkour.managers;
 
-import me.luucka.helplib.item.ItemBuilder;
 import me.luucka.parkour.ParkourPlugin;
+import me.luucka.parkour.Settings;
 import me.luucka.parkour.config.entities.LazyItem;
 import me.luucka.parkour.entities.SetupParkour;
+import me.luucka.parkour.utils.ItemBuilder;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -12,18 +13,19 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import static me.luucka.helplib.color.MMColor.toComponent;
+import static me.luucka.parkour.utils.MMColor.toComponent;
 
 public class SetupManager {
 
     private final ParkourPlugin plugin;
-
+    private final Settings settings;
     private final PlayerRollbackManager rollbackManager;
 
     private final Map<UUID, SetupParkour> playerInSetup = new HashMap<>();
 
     public SetupManager(ParkourPlugin plugin) {
         this.plugin = plugin;
+        this.settings = plugin.getSettings();
         this.rollbackManager = new PlayerRollbackManager();
     }
 
@@ -31,7 +33,7 @@ public class SetupManager {
         return playerInSetup.containsKey(player.getUniqueId());
     }
 
-    public SetupParkour getParkour(final Player player) {
+    public SetupParkour getSetupParkourByPlayer(final Player player) {
         return playerInSetup.get(player.getUniqueId());
     }
 
@@ -51,14 +53,14 @@ public class SetupManager {
     }
 
     private void setSetupItems(final Player player) {
-        final LazyItem setStartItem = plugin.getSettings().getSetStartItem();
-        final LazyItem setEndItem = plugin.getSettings().getSetEndItem();
-        final LazyItem wandItem = plugin.getSettings().getWandItem();
-        final LazyItem saveItem = plugin.getSettings().getSaveItem();
-        final LazyItem cancelItem = plugin.getSettings().getCancelItem();
-        final LazyItem completePlayerCommandsItem = plugin.getSettings().getCompletePlayerCommands();
-        final LazyItem completeConsoleCommandsItem = plugin.getSettings().getCompleteConsoleCommands();
-        final LazyItem setCooldownItem = plugin.getSettings().getSetCooldown();
+        final LazyItem setStartItem = settings.getSetStartItem();
+        final LazyItem setEndItem = settings.getSetEndItem();
+        final LazyItem wandItem = settings.getWandItem();
+        final LazyItem saveItem = settings.getSaveItem();
+        final LazyItem cancelItem = settings.getCancelItem();
+        final LazyItem completePlayerCommandsItem = settings.getCompletePlayerCommands();
+        final LazyItem completeConsoleCommandsItem = settings.getCompleteConsoleCommands();
+        final LazyItem setCooldownItem = settings.getSetCooldown();
 
         ItemStack setStart = new ItemBuilder(setStartItem.material())
                 .setDisplayName(toComponent(setStartItem.name()))

@@ -1,11 +1,14 @@
 package me.luucka.parkour.listeners;
 
-import me.luucka.helplib.item.ItemBuilder;
-import me.luucka.helplib.utils.MaterialUtil;
+import me.luucka.parkour.Messages;
 import me.luucka.parkour.ParkourPlugin;
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
+import me.luucka.parkour.Settings;
+import me.luucka.parkour.config.entities.LazyItem;
+import me.luucka.parkour.entities.SetupParkour;
+import me.luucka.parkour.managers.SetupManager;
+import me.luucka.parkour.utils.ItemBuilder;
+import me.luucka.parkour.utils.MaterialUtil;
 import net.wesjd.anvilgui.AnvilGUI;
-import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -20,20 +23,27 @@ import org.bukkit.persistence.PersistentDataType;
 
 import java.util.List;
 
-import static me.luucka.helplib.color.MMColor.toComponent;
+import static me.luucka.parkour.utils.MMColor.toComponent;
+import static me.luucka.parkour.utils.MMColor.toLegacy;
 
 public class SetupModeListeners implements Listener {
 
     private final ParkourPlugin plugin;
+    private final SetupManager setupManager;
+    private final Messages messages;
+    private final Settings settings;
 
     public SetupModeListeners(final ParkourPlugin plugin) {
         this.plugin = plugin;
+        this.setupManager = plugin.getSetupManager();
+        this.messages = plugin.getMessages();
+        this.settings = plugin.getSettings();
     }
 
     @EventHandler
     public void onInteract(final PlayerInteractEvent event) {
         final Player player = event.getPlayer();
-        if (!plugin.getSetupManager().isPlayerInSetupMode(player)) return;
+        if (!setupManager.isPlayerInSetupMode(player)) return;
         if (event.getHand() != EquipmentSlot.HAND) return;
         if (!event.hasItem()) return;
 
@@ -46,14 +56,13 @@ public class SetupModeListeners implements Listener {
             final String sKey = container.get(key, PersistentDataType.STRING);
             if (sKey == null) return;
 
-            final String parkourName = plugin.getSetupManager().getParkour(player).getName();
-
+            final SetupParkour parkour = setupManager.getSetupParkourByPlayer(player);
 
             switch (sKey) {
                 case "SETSTART" -> {
                     if (event.getAction() != Action.RIGHT_CLICK_AIR) return;
-                    plugin.getSetupManager().getParkour(player).setStartLocation(player.getLocation());
-                    player.sendMessage(toComponent(plugin.getMessages().setStart(parkourName)));
+                    parkour.setStartLocation(player.getLocation());
+                    player.sendMessage(toComponent(messages.setStart(parkour.getName())));
                     event.setCancelled(true);
                 }
                 case "SETEND" -> {
@@ -61,98 +70,106 @@ public class SetupModeListeners implements Listener {
                     final Block targetBlock = event.getClickedBlock();
                     if (targetBlock == null) return;
                     if (!MaterialUtil.isWallSign(targetBlock.getType())) {
-                        player.sendMessage(toComponent(plugin.getMessages().targetWallSign()));
+                        player.sendMessage(toComponent(messages.targetWallSign()));
                         return;
                     }
-                    plugin.getSetupManager().getParkour(player).setEndLocation(targetBlock.getLocation());
-                    player.sendMessage(toComponent(plugin.getMessages().setEnd(parkourName)));
+                    parkour.setEndLocation(targetBlock.getLocation());
+                    player.sendMessage(toComponent(messages.setEnd(parkour.getName())));
                     event.setCancelled(true);
                 }
                 case "WAND" -> {
+                    final Block targetBlock;
                     if (event.getAction() == Action.LEFT_CLICK_BLOCK) {
-                        plugin.getSetupManager().getParkour(player).setMinRegion(event.getClickedBlock().getLocation());
-                        player.sendMessage(toComponent(plugin.getMessages().setPos1(parkourName)));
+                        targetBlock = event.getClickedBlock();
+                        if (targetBlock == null) return;
+                        parkour.setMinRegion(targetBlock.getLocation());
+                        player.sendMessage(toComponent(messages.setPos1(parkour.getName())));
                         event.setCancelled(true);
                     } else if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-                        plugin.getSetupManager().getParkour(player).setMaxRegion(event.getClickedBlock().getLocation());
-                        player.sendMessage(toComponent(plugin.getMessages().setPos2(parkourName)));
+                        targetBlock = event.getClickedBlock();
+                        if (targetBlock == null) return;
+                        parkour.setMaxRegion(event.getClickedBlock().getLocation());
+                        player.sendMessage(toComponent(messages.setPos2(parkour.getName())));
                         event.setCancelled(true);
                     }
                 }
                 case "SAVE" -> {
                     if (event.getAction() != Action.RIGHT_CLICK_AIR) return;
-                    if (!plugin.getSetupManager().getParkour(player).canSave()) {
-                        player.sendMessage(toComponent(plugin.getMessages().setAllParameters()));
+                    if (!parkour.canSave()) {
+                        player.sendMessage(toComponent(messages.setAllParameters()));
                         event.setCancelled(true);
                         return;
                     }
-                    plugin.getSetupManager().getParkour(player).save();
-                    plugin.getSetupManager().removePlayerFromSetupMode(player);
-                    player.sendMessage(toComponent(plugin.getMessages().save(parkourName)));
+                    parkour.save();
+                    setupManager.removePlayerFromSetupMode(player);
+                    player.sendMessage(toComponent(messages.save(parkour.getName())));
                     event.setCancelled(true);
                 }
                 case "CANCEL" -> {
                     if (event.getAction() != Action.RIGHT_CLICK_AIR) return;
-                    plugin.getSetupManager().getParkour(player).cancel();
-                    plugin.getSetupManager().removePlayerFromSetupMode(player);
-                    player.sendMessage(toComponent(plugin.getMessages().cancel(parkourName)));
+                    parkour.cancel();
+                    setupManager.removePlayerFromSetupMode(player);
+                    player.sendMessage(toComponent(messages.cancel(parkour.getName())));
                     event.setCancelled(true);
                 }
                 case "PLAYER-CMD" -> {
                     if (event.getAction() == Action.RIGHT_CLICK_AIR) {
+                        final LazyItem lazyItem = settings.getCompletePlayerCommands();
                         new AnvilGUI.Builder()
-                                .title(LegacyComponentSerializer.legacySection().serialize(toComponent(plugin.getMessages().waitingInput())))
+                                .title(toLegacy(toComponent(messages.waitingInput())))
                                 .text("...")
-                                .itemLeft(new ItemBuilder(Material.PAPER).setDisplayName(toComponent("Set Players Commands")).toItemStack())
+                                .itemLeft(new ItemBuilder(lazyItem.material()).setDisplayName(toComponent(lazyItem.name())).toItemStack())
                                 .onComplete(completion -> {
-                                    plugin.getSetupManager().getParkour(player).addPlayerCommands(completion.getText());
-                                    player.sendMessage(toComponent(plugin.getMessages().addedPlayerCommands(parkourName)));
+                                    parkour.addPlayerCommands(completion.getText());
+                                    player.sendMessage(toComponent(messages.addedPlayerCommands(parkour.getName())));
                                     return List.of(AnvilGUI.ResponseAction.close());
                                 })
                                 .plugin(plugin)
                                 .open(player);
                     }
                     if (player.isSneaking() && event.getAction() == Action.LEFT_CLICK_AIR) {
-                        plugin.getSetupManager().getParkour(player).clearPlayerCommands();
-                        player.sendMessage(toComponent(plugin.getMessages().clearPlayerCommands(parkourName)));
+                        parkour.clearPlayerCommands();
+                        player.sendMessage(toComponent(messages.clearPlayerCommands(parkour.getName())));
                     }
                     event.setCancelled(true);
                 }
                 case "CONSOLE-CMD" -> {
                     if (event.getAction() == Action.RIGHT_CLICK_AIR) {
+                        final LazyItem lazyItem = settings.getCompleteConsoleCommands();
                         new AnvilGUI.Builder()
-                                .title(LegacyComponentSerializer.legacySection().serialize(toComponent(plugin.getMessages().waitingInput())))
+                                .title(toLegacy(toComponent(messages.waitingInput())))
                                 .text("...")
-                                .itemLeft(new ItemBuilder(Material.MAP).setDisplayName(toComponent("Set Console Commands")).toItemStack())
+                                .itemLeft(new ItemBuilder(lazyItem.material()).setDisplayName(toComponent(lazyItem.name())).toItemStack())
                                 .onComplete(completion -> {
-                                    plugin.getSetupManager().getParkour(player).addConsoleCommands(completion.getText());
-                                    player.sendMessage(toComponent(plugin.getMessages().addedConsoleCommands(parkourName)));
+                                    parkour.addConsoleCommands(completion.getText());
+                                    player.sendMessage(toComponent(messages.addedConsoleCommands(parkour.getName())));
                                     return List.of(AnvilGUI.ResponseAction.close());
                                 })
                                 .plugin(plugin)
                                 .open(player);
                     }
                     if (player.isSneaking() && event.getAction() == Action.LEFT_CLICK_AIR) {
-                        plugin.getSetupManager().getParkour(player).clearConsoleCommands();
-                        player.sendMessage(toComponent(plugin.getMessages().clearConsoleCommands(parkourName)));
+                        parkour.clearConsoleCommands();
+                        player.sendMessage(toComponent(messages.clearConsoleCommands(parkour.getName())));
                     }
                     event.setCancelled(true);
                 }
                 case "COOLDOWN" -> {
                     if (event.getAction() == Action.RIGHT_CLICK_AIR) {
+                        final LazyItem lazyItem = settings.getSetCooldown();
                         new AnvilGUI.Builder()
-                                .title(LegacyComponentSerializer.legacySection().serialize(toComponent(plugin.getMessages().waitingCooldownInput())))
+                                .title(toLegacy(toComponent(messages.waitingCooldownInput())))
                                 .text("...")
-                                .itemLeft(new ItemBuilder(Material.CLOCK).setDisplayName(toComponent("Set Cooldown")).toItemStack())
+                                .itemLeft(new ItemBuilder(lazyItem.material()).setDisplayName(toComponent(lazyItem.name())).toItemStack())
                                 .onComplete(completion -> {
-                                    int cooldown = 0;
+                                    long cooldown = -1;
                                     try {
-                                        cooldown = Integer.parseInt(completion.getText());
+                                        cooldown = Long.parseLong(completion.getText());
                                     } catch (final NumberFormatException e) {
-                                        return List.of(AnvilGUI.ResponseAction.replaceInputText("Please insert a integer value"));
+                                        return List.of(AnvilGUI.ResponseAction.replaceInputText(toLegacy(toComponent(messages.getInsertValidCooldownValue()))));
                                     }
-                                    plugin.getSetupManager().getParkour(player).setCooldown(cooldown);
-                                    player.sendMessage(toComponent(plugin.getMessages().addedCooldown(parkourName)));
+                                    parkour.setCooldown(cooldown);
+                                    player.sendMessage(toComponent(messages.addedCooldown(parkour.getName())));
                                     return List.of(AnvilGUI.ResponseAction.close());
                                 })
                                 .plugin(plugin)
@@ -166,28 +183,32 @@ public class SetupModeListeners implements Listener {
 
     @EventHandler
     public void onPlayerChangeWorld(final PlayerChangedWorldEvent event) {
-        if (!plugin.getSetupManager().isPlayerInSetupMode(event.getPlayer())) return;
-        plugin.getSetupManager().getParkour(event.getPlayer()).cancel();
-        plugin.getSetupManager().removePlayerFromSetupMode(event.getPlayer());
-        event.getPlayer().sendMessage(toComponent(plugin.getMessages().cancel(plugin.getSetupManager().getParkour(event.getPlayer()).getName())));
+        final Player player = event.getPlayer();
+        if (!setupManager.isPlayerInSetupMode(player)) return;
+        final SetupParkour parkour = setupManager.getSetupParkourByPlayer(player);
+        parkour.cancel();
+        setupManager.removePlayerFromSetupMode(player);
+        player.sendMessage(toComponent(messages.cancel(parkour.getName())));
     }
 
     @EventHandler
     public void onServerQuit(final PlayerQuitEvent event) {
-        if (!plugin.getSetupManager().isPlayerInSetupMode(event.getPlayer())) return;
-        plugin.getSetupManager().getParkour(event.getPlayer()).cancel();
-        plugin.getSetupManager().removePlayerFromSetupMode(event.getPlayer());
+        final Player player = event.getPlayer();
+        if (!setupManager.isPlayerInSetupMode(player)) return;
+        final SetupParkour parkour = setupManager.getSetupParkourByPlayer(player);
+        parkour.cancel();
+        setupManager.removePlayerFromSetupMode(event.getPlayer());
     }
 
     @EventHandler
     public void onItemDrop(final PlayerDropItemEvent event) {
-        if (!plugin.getSetupManager().isPlayerInSetupMode(event.getPlayer())) return;
+        if (!setupManager.isPlayerInSetupMode(event.getPlayer())) return;
         event.setCancelled(true);
     }
 
     @EventHandler
     public void onSwapHandItem(final PlayerSwapHandItemsEvent event) {
-        if (!plugin.getSetupManager().isPlayerInSetupMode(event.getPlayer())) return;
+        if (!setupManager.isPlayerInSetupMode(event.getPlayer())) return;
         event.setCancelled(true);
     }
 

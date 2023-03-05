@@ -6,7 +6,7 @@
 
     <groupId>me.luucka</groupId>
     <artifactId>Parkour</artifactId>
-    <version>Build-6</version>
+    <version>Build-7</version>
     <packaging>jar</packaging>
 
     <name>Parkour</name>
@@ -73,10 +73,6 @@
             <id>codemc-snapshots</id>
             <url>https://repo.codemc.io/repository/maven-snapshots/</url>
         </repository>
-        <repository>
-            <id>jitpack.io</id>
-            <url>https://jitpack.io</url>
-        </repository>
     </repositories>
 
     <dependencies>
@@ -110,12 +106,6 @@
             <groupId>net.wesjd</groupId>
             <artifactId>anvilgui</artifactId>
             <version>${libs.anvilgui}</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.github.LuuckA21</groupId>
-            <artifactId>HelpLib</artifactId>
-            <version>${libs.helplib}</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>

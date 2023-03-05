@@ -69,4 +69,4 @@ commands-on-quit:
   - "cmd"
 
 # - For more information, please see https://docs.mongodb.com/manual/reference/connection-string/
-mongodb-connection-uri: ''
+mongodb-connection-uri: "mongodb://localhost:27017/"

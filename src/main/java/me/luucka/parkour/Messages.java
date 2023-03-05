@@ -1,8 +1,8 @@
 package me.luucka.parkour;
 
 import lombok.Getter;
-import me.luucka.helplib.config.IConfig;
 import me.luucka.parkour.config.BaseConfiguration;
+import me.luucka.parkour.config.IConfig;
 
 import java.io.File;
 import java.time.Instant;
@@ -11,8 +11,6 @@ import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 
 public class Messages implements IConfig {
-
-    private final ParkourPlugin plugin;
 
     private final BaseConfiguration config;
 
@@ -80,6 +78,8 @@ public class Messages implements IConfig {
     private String waitingCooldownInput;
 
     private String addedCooldown;
+
+    private String insertValidCooldownValue;
 
     public String noPermission() {
         return prefix + noPermission;
@@ -210,8 +210,11 @@ public class Messages implements IConfig {
         return prefix + addedCooldown.replace("{PARKOUR}", parkour);
     }
 
+    public String getInsertValidCooldownValue() {
+        return insertValidCooldownValue;
+    }
+
     public Messages(ParkourPlugin plugin) {
-        this.plugin = plugin;
         this.config = new BaseConfiguration(new File(plugin.getDataFolder(), "messages.yml"), "/messages.yml");
         reloadConfig();
     }
@@ -251,6 +254,7 @@ public class Messages implements IConfig {
         waitBeforeJoin = config.getString("wait-before-join", "");
         waitingCooldownInput = config.getString("waiting-cooldown-input", "");
         addedCooldown = config.getString("added-cooldown", "");
+        insertValidCooldownValue = config.getString("insert-valid-cooldown-value", "");
     }
 
     private String _getPrefix() {

@@ -16,7 +16,7 @@ public class LazyItemTypeSerializer implements TypeSerializer<LazyItem> {
 
         Material material;
         try {
-            material = Material.valueOf(node.node("material").getString().toUpperCase());
+            material = Material.valueOf(node.node("material").getString("BARRIER").toUpperCase());
         } catch (final IllegalArgumentException e) {
             material = Material.BARRIER;
         }

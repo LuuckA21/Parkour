@@ -36,9 +36,7 @@ public class ParkourCommand extends BaseCommand {
     @Override
     public void execute(CommandSource sender, String[] args) throws Exception {
         if (!sender.isPlayer()) throw new Exception(messages.noConsole());
-        final Player player = sender.getPlayer();
-
-        if (args.length < 1) throw new Exception(messages.commandUsage(getUsage()));
+        if (args.length < CommandType.getMinArgsNeeded()) throw new Exception(messages.commandUsage(getUsage()));
 
         final CommandType cmd;
         try {
@@ -46,6 +44,8 @@ public class ParkourCommand extends BaseCommand {
         } catch (final IllegalArgumentException ex) {
             throw new Exception(messages.commandUsage(getUsage()));
         }
+
+        final Player player = sender.getPlayer();
 
         switch (cmd) {
             case JOIN -> {
@@ -81,8 +81,7 @@ public class ParkourCommand extends BaseCommand {
                 );
             }
             case QUIT -> {
-                if (!gameManager.isPlayerInGame(player))
-                    throw new Exception(messages.notInParkour());
+                if (!gameManager.isPlayerInGame(player)) throw new Exception(messages.notInParkour());
                 gameManager.playerQuit(player, false);
             }
         }
@@ -120,6 +119,14 @@ public class ParkourCommand extends BaseCommand {
 
         CommandType(int argsNeeded) {
             this.argsNeeded = argsNeeded;
+        }
+
+        public static int getMinArgsNeeded() {
+            int min = values()[0].argsNeeded;
+            for (CommandType ct : values()) {
+                if (ct.argsNeeded < min) min = ct.argsNeeded;
+            }
+            return min;
         }
     }
 }

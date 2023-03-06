@@ -36,24 +36,21 @@ public class PAdminCommand extends BaseCommand {
     @Override
     public void execute(CommandSource sender, String[] args) throws Exception {
         if (!sender.isPlayer()) throw new Exception(messages.noConsole());
-        final Player player = sender.getPlayer();
-
         if (!testPermissionSilent(sender.getSender())) throw new Exception(messages.noPermission());
-
-        if (args.length < 1) throw new Exception(messages.commandUsage(getUsage()));
+        if (args.length < CommandType.getMinArgsNeeded()) throw new Exception(messages.commandUsage(getUsage()));
 
         final CommandType cmd;
-
         try {
             cmd = CommandType.valueOf(args[0].toUpperCase());
         } catch (final IllegalArgumentException ex) {
             throw new Exception(messages.commandUsage(getUsage()));
         }
 
+        final Player player = sender.getPlayer();
+
         switch (cmd) {
             case SETUP -> {
-                if (args.length < cmd.argsNeeded)
-                    throw new Exception(messages.commandUsage("/padmin setup <parkour>"));
+                if (args.length < cmd.argsNeeded) throw new Exception(messages.commandUsage("/padmin setup <parkour>"));
 
                 final String parkourName = args[1].toLowerCase();
                 if (gameManager.isPlayerInGame(player))
@@ -114,6 +111,14 @@ public class PAdminCommand extends BaseCommand {
 
         CommandType(int argsNeeded) {
             this.argsNeeded = argsNeeded;
+        }
+
+        public static int getMinArgsNeeded() {
+            int min = values()[0].argsNeeded;
+            for (CommandType ct : values()) {
+                if (ct.argsNeeded < min) min = ct.argsNeeded;
+            }
+            return min;
         }
     }
 }

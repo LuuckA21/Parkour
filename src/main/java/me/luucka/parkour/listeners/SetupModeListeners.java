@@ -3,7 +3,6 @@ package me.luucka.parkour.listeners;
 import me.luucka.parkour.Messages;
 import me.luucka.parkour.ParkourPlugin;
 import me.luucka.parkour.Settings;
-import me.luucka.parkour.config.entities.LazyItem;
 import me.luucka.parkour.entities.SetupParkour;
 import me.luucka.parkour.managers.SetupManager;
 import me.luucka.parkour.utils.ItemBuilder;
@@ -93,6 +92,68 @@ public class SetupModeListeners implements Listener {
                         event.setCancelled(true);
                     }
                 }
+                case "PLAYER-CMD" -> {
+                    if (event.getAction() == Action.RIGHT_CLICK_AIR) {
+                        new AnvilGUI.Builder()
+                                .title(toLegacy(toComponent(messages.waitingInput())))
+                                .text("...")
+                                .itemLeft(new ItemBuilder(settings.getPlayerCommandsItem().getType()).setDisplayName(settings.getPlayerCommandsItem().displayName()).toItemStack())
+                                .onComplete(completion -> {
+                                    parkour.addPlayerCommands(completion.getText());
+                                    player.sendMessage(toComponent(messages.addedPlayerCommands(parkour.getName())));
+                                    return List.of(AnvilGUI.ResponseAction.close());
+                                })
+                                .plugin(plugin)
+                                .open(player);
+                    }
+                    if (player.isSneaking() && event.getAction() == Action.LEFT_CLICK_AIR) {
+                        parkour.clearPlayerCommands();
+                        player.sendMessage(toComponent(messages.clearPlayerCommands(parkour.getName())));
+                    }
+                    event.setCancelled(true);
+                }
+                case "CONSOLE-CMD" -> {
+                    if (event.getAction() == Action.RIGHT_CLICK_AIR) {
+                        new AnvilGUI.Builder()
+                                .title(toLegacy(toComponent(messages.waitingInput())))
+                                .text("...")
+                                .itemLeft(new ItemBuilder(settings.getConsoleCommandsItem().getType()).setDisplayName(settings.getConsoleCommandsItem().displayName()).toItemStack())
+                                .onComplete(completion -> {
+                                    parkour.addConsoleCommands(completion.getText());
+                                    player.sendMessage(toComponent(messages.addedConsoleCommands(parkour.getName())));
+                                    return List.of(AnvilGUI.ResponseAction.close());
+                                })
+                                .plugin(plugin)
+                                .open(player);
+                    }
+                    if (player.isSneaking() && event.getAction() == Action.LEFT_CLICK_AIR) {
+                        parkour.clearConsoleCommands();
+                        player.sendMessage(toComponent(messages.clearConsoleCommands(parkour.getName())));
+                    }
+                    event.setCancelled(true);
+                }
+                case "COOLDOWN" -> {
+                    if (event.getAction() == Action.RIGHT_CLICK_AIR) {
+                        new AnvilGUI.Builder()
+                                .title(toLegacy(toComponent(messages.waitingCooldownInput())))
+                                .text("...")
+                                .itemLeft(new ItemBuilder(settings.getCooldownItem().getType()).setDisplayName(settings.getCooldownItem().displayName()).toItemStack())
+                                .onComplete(completion -> {
+                                    long cooldown = -1;
+                                    try {
+                                        cooldown = Long.parseLong(completion.getText());
+                                    } catch (final NumberFormatException e) {
+                                        return List.of(AnvilGUI.ResponseAction.replaceInputText(toLegacy(toComponent(messages.getInsertValidCooldownValue()))));
+                                    }
+                                    parkour.setCooldown(cooldown);
+                                    player.sendMessage(toComponent(messages.addedCooldown(parkour.getName())));
+                                    return List.of(AnvilGUI.ResponseAction.close());
+                                })
+                                .plugin(plugin)
+                                .open(player);
+                    }
+                    event.setCancelled(true);
+                }
                 case "SAVE" -> {
                     if (event.getAction() != Action.RIGHT_CLICK_AIR) return;
                     if (!parkour.canSave()) {
@@ -110,71 +171,6 @@ public class SetupModeListeners implements Listener {
                     parkour.cancel();
                     setupManager.removePlayerFromSetupMode(player);
                     player.sendMessage(toComponent(messages.cancel(parkour.getName())));
-                    event.setCancelled(true);
-                }
-                case "PLAYER-CMD" -> {
-                    if (event.getAction() == Action.RIGHT_CLICK_AIR) {
-                        final LazyItem lazyItem = settings.getCompletePlayerCommands();
-                        new AnvilGUI.Builder()
-                                .title(toLegacy(toComponent(messages.waitingInput())))
-                                .text("...")
-                                .itemLeft(new ItemBuilder(lazyItem.material()).setDisplayName(toComponent(lazyItem.name())).toItemStack())
-                                .onComplete(completion -> {
-                                    parkour.addPlayerCommands(completion.getText());
-                                    player.sendMessage(toComponent(messages.addedPlayerCommands(parkour.getName())));
-                                    return List.of(AnvilGUI.ResponseAction.close());
-                                })
-                                .plugin(plugin)
-                                .open(player);
-                    }
-                    if (player.isSneaking() && event.getAction() == Action.LEFT_CLICK_AIR) {
-                        parkour.clearPlayerCommands();
-                        player.sendMessage(toComponent(messages.clearPlayerCommands(parkour.getName())));
-                    }
-                    event.setCancelled(true);
-                }
-                case "CONSOLE-CMD" -> {
-                    if (event.getAction() == Action.RIGHT_CLICK_AIR) {
-                        final LazyItem lazyItem = settings.getCompleteConsoleCommands();
-                        new AnvilGUI.Builder()
-                                .title(toLegacy(toComponent(messages.waitingInput())))
-                                .text("...")
-                                .itemLeft(new ItemBuilder(lazyItem.material()).setDisplayName(toComponent(lazyItem.name())).toItemStack())
-                                .onComplete(completion -> {
-                                    parkour.addConsoleCommands(completion.getText());
-                                    player.sendMessage(toComponent(messages.addedConsoleCommands(parkour.getName())));
-                                    return List.of(AnvilGUI.ResponseAction.close());
-                                })
-                                .plugin(plugin)
-                                .open(player);
-                    }
-                    if (player.isSneaking() && event.getAction() == Action.LEFT_CLICK_AIR) {
-                        parkour.clearConsoleCommands();
-                        player.sendMessage(toComponent(messages.clearConsoleCommands(parkour.getName())));
-                    }
-                    event.setCancelled(true);
-                }
-                case "COOLDOWN" -> {
-                    if (event.getAction() == Action.RIGHT_CLICK_AIR) {
-                        final LazyItem lazyItem = settings.getSetCooldown();
-                        new AnvilGUI.Builder()
-                                .title(toLegacy(toComponent(messages.waitingCooldownInput())))
-                                .text("...")
-                                .itemLeft(new ItemBuilder(lazyItem.material()).setDisplayName(toComponent(lazyItem.name())).toItemStack())
-                                .onComplete(completion -> {
-                                    long cooldown = -1;
-                                    try {
-                                        cooldown = Long.parseLong(completion.getText());
-                                    } catch (final NumberFormatException e) {
-                                        return List.of(AnvilGUI.ResponseAction.replaceInputText(toLegacy(toComponent(messages.getInsertValidCooldownValue()))));
-                                    }
-                                    parkour.setCooldown(cooldown);
-                                    player.sendMessage(toComponent(messages.addedCooldown(parkour.getName())));
-                                    return List.of(AnvilGUI.ResponseAction.close());
-                                })
-                                .plugin(plugin)
-                                .open(player);
-                    }
                     event.setCancelled(true);
                 }
             }

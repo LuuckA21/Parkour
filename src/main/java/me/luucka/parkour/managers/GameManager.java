@@ -3,12 +3,9 @@ package me.luucka.parkour.managers;
 import me.luucka.parkour.Messages;
 import me.luucka.parkour.ParkourPlugin;
 import me.luucka.parkour.Settings;
-import me.luucka.parkour.config.entities.LazyItem;
 import me.luucka.parkour.entities.Parkour;
-import me.luucka.parkour.utils.ItemBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -40,7 +37,7 @@ public class GameManager {
         rollbackManager.save(player);
         player.teleport(parkour.getStartLocation());
         player.setFlying(false);
-        setParkourItem(player);
+        player.getInventory().setItem(8, settings.getExitItem());
     }
 
     public void playerQuit(final Player player, final boolean ended) {
@@ -76,15 +73,5 @@ public class GameManager {
 
     public Parkour getParkourByPlayer(final Player player) {
         return playersInGame.get(player.getUniqueId());
-    }
-
-    private void setParkourItem(final Player player) {
-        final LazyItem exitItem = settings.getExitParkourItem();
-        ItemStack exit = new ItemBuilder(exitItem.material())
-                .setDisplayName(toComponent(exitItem.name()))
-                .setLore(toComponent(exitItem.lore()))
-                .setPersistentDataContainerValue(plugin, "parkour-item", "EXIT")
-                .toItemStack();
-        player.getInventory().setItem(8, exit);
     }
 }

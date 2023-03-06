@@ -4,6 +4,8 @@ import lombok.Getter;
 import me.luucka.parkour.config.BaseConfiguration;
 import me.luucka.parkour.config.IConfig;
 import me.luucka.parkour.config.entities.LazyItem;
+import me.luucka.parkour.utils.ItemBuilder;
+import org.bukkit.inventory.ItemStack;
 
 import java.io.File;
 import java.util.List;
@@ -13,7 +15,7 @@ import java.util.logging.Logger;
 public class Settings implements IConfig {
 
     private static final Logger LOGGER = Logger.getLogger("Parkour");
-
+    private final ParkourPlugin plugin;
     private final Messages messages;
 
     private final BaseConfiguration config;
@@ -22,31 +24,31 @@ public class Settings implements IConfig {
     private boolean perParkourPermission;
 
     @Getter
-    private LazyItem setStartItem;
+    private ItemStack startItem;
 
     @Getter
-    private LazyItem setEndItem;
+    private ItemStack endItem;
 
     @Getter
-    private LazyItem wandItem;
+    private ItemStack wandItem;
 
     @Getter
-    private LazyItem saveItem;
+    private ItemStack playerCommandsItem;
 
     @Getter
-    private LazyItem cancelItem;
+    private ItemStack consoleCommandsItem;
 
     @Getter
-    private LazyItem completePlayerCommands;
+    private ItemStack cooldownItem;
 
     @Getter
-    private LazyItem completeConsoleCommands;
+    private ItemStack saveItem;
 
     @Getter
-    private LazyItem setCooldown;
+    private ItemStack cancelItem;
 
     @Getter
-    private LazyItem exitParkourItem;
+    private ItemStack exitItem;
 
     private String[] completeSign;
 
@@ -65,6 +67,7 @@ public class Settings implements IConfig {
     }
 
     public Settings(final ParkourPlugin plugin) {
+        this.plugin = plugin;
         this.messages = plugin.getMessages();
         this.config = new BaseConfiguration(new File(plugin.getDataFolder(), "config.yml"), "/config.yml");
         reloadConfig();
@@ -75,15 +78,15 @@ public class Settings implements IConfig {
     public void reloadConfig() {
         config.load();
         perParkourPermission = config.getBoolean("per-parkour-permission", false);
-        setStartItem = config.getItem("setup-items.set-start");
-        setEndItem = config.getItem("setup-items.set-end");
-        wandItem = config.getItem("setup-items.wand");
-        saveItem = config.getItem("setup-items.save");
-        cancelItem = config.getItem("setup-items.cancel");
-        completePlayerCommands = config.getItem("setup-items.complete-player-cmd");
-        completeConsoleCommands = config.getItem("setup-items.complete-console-cmd");
-        setCooldown = config.getItem("setup-items.set-cooldown");
-        exitParkourItem = config.getItem("parkour-item.exit");
+        startItem = toItemStack(config.getItem("setup-items.set-start"), "SETSTART");
+        endItem = toItemStack(config.getItem("setup-items.set-end"), "SETEND");
+        wandItem = toItemStack(config.getItem("setup-items.wand"), "WAND");
+        playerCommandsItem = toItemStack(config.getItem("setup-items.complete-player-cmd"), "PLAYER-CMD");
+        consoleCommandsItem = toItemStack(config.getItem("setup-items.complete-console-cmd"), "CONSOLE-CMD");
+        cooldownItem = toItemStack(config.getItem("setup-items.set-cooldown"), "COOLDOWN");
+        saveItem = toItemStack(config.getItem("setup-items.save"), "SAVE");
+        cancelItem = toItemStack(config.getItem("setup-items.cancel"), "CANCEL");
+        exitItem = toItemStack(config.getItem("parkour-item.exit"), "EXIT");
         completeSign = new String[]{
                 config.getString("complete-wall-sign.one", ""),
                 config.getString("complete-wall-sign.two", ""),
@@ -92,6 +95,14 @@ public class Settings implements IConfig {
         };
         commandsOnQuit = config.getList("commands-on-quit", String.class);
         mongoDbConnectionUri = config.getString("mongodb-connection-uri", "");
+    }
+
+    private ItemStack toItemStack(final LazyItem item, final String persistentValue) {
+        return new ItemBuilder(item.material())
+                .setDisplayName(item.name())
+                .setLore(item.lore())
+                .setPersistentDataContainerValue(plugin, "setup-item", persistentValue)
+                .toItemStack();
     }
 
 }

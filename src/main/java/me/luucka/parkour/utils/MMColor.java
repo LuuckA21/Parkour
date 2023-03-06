@@ -7,7 +7,7 @@ import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import java.util.List;
 
 /**
- * MMColor class help you with Kyori adventury {@link Component}
+ * MMColor class help you with Kyori adventure {@link Component}
  */
 public final class MMColor {
 
@@ -53,6 +53,26 @@ public final class MMColor {
      */
     public static String toLegacy(final Component input) {
         return LegacyComponentSerializer.legacySection().serialize(input);
+    }
+
+    /**
+     * Generate {@link String} from a {@link Component}
+     *
+     * @param input {@link Component} to convert
+     * @return {@link String} generated from a {@link Component}
+     */
+    public static String toMMString(final Component input) {
+        return MiniMessage.miniMessage().serialize(input);
+    }
+
+    /**
+     * Generate List of {@link String} from a List of {@link Component}
+     *
+     * @param input list of {@link Component} to convert
+     * @return List of {@link String} generated from a List of {@link Component}
+     */
+    public static List<String> toMMString(final List<Component> input) {
+        return input.stream().map(MMColor::toMMString).toList();
     }
 
 }

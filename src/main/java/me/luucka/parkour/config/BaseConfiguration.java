@@ -5,6 +5,7 @@ import me.luucka.parkour.config.entities.LazyLocation;
 import me.luucka.parkour.config.serializers.LazyItemTypeSerializer;
 import me.luucka.parkour.config.serializers.LocationTypeSerializer;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.spongepowered.configurate.CommentedConfigurationNode;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.loader.ParsingException;
@@ -20,6 +21,8 @@ import java.nio.file.StandardCopyOption;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import static me.luucka.parkour.utils.MMColor.toComponent;
 
 public final class BaseConfiguration {
 
@@ -96,11 +99,11 @@ public final class BaseConfiguration {
 
     public LazyItem getItem(final String path) {
         final CommentedConfigurationNode node = path == null ? getRootNode() : getSection(path);
-        if (node == null) return null;
+        if (node == null) return new LazyItem(Material.BARRIER, toComponent("name"), toComponent(List.of("lore")));
         try {
             return node.get(LazyItem.class);
         } catch (SerializationException e) {
-            return null;
+            return new LazyItem(Material.BARRIER, toComponent("name"), toComponent(List.of("lore")));
         }
     }
 

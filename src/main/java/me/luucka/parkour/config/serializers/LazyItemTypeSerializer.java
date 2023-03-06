@@ -8,6 +8,10 @@ import org.spongepowered.configurate.serialize.SerializationException;
 import org.spongepowered.configurate.serialize.TypeSerializer;
 
 import java.lang.reflect.Type;
+import java.util.ArrayList;
+
+import static me.luucka.parkour.utils.MMColor.toComponent;
+import static me.luucka.parkour.utils.MMColor.toMMString;
 
 public class LazyItemTypeSerializer implements TypeSerializer<LazyItem> {
 
@@ -23,15 +27,15 @@ public class LazyItemTypeSerializer implements TypeSerializer<LazyItem> {
 
         return new LazyItem(
                 material,
-                node.node("name").getString(),
-                node.node("lore").getList(String.class)
+                toComponent(node.node("name").getString()),
+                toComponent(node.node("lore").getList(String.class, new ArrayList<>()))
         );
     }
 
     @Override
     public void serialize(Type type, @Nullable LazyItem item, ConfigurationNode node) throws SerializationException {
         node.node("material").set(String.class, item.material().name());
-        node.node("name").set(String.class, item.name());
-        node.node("lore").setList(String.class, item.lore());
+        node.node("name").set(String.class, toMMString(item.name()));
+        node.node("lore").setList(String.class, toMMString(item.lore()));
     }
 }

@@ -21,7 +21,7 @@ public class SetupManager {
         this.rollbackManager = new PlayerRollbackManager();
     }
 
-    public boolean isPlayerInSetupMode(final Player player) {
+    public boolean isPlayerInSetup(final Player player) {
         return playerInSetup.containsKey(player.getUniqueId());
     }
 
@@ -29,22 +29,22 @@ public class SetupManager {
         return playerInSetup.get(player.getUniqueId());
     }
 
-    public void addPlayerToSetupMode(final Player player, final SetupParkour parkour) {
-        if (isPlayerInSetupMode(player)) return;
+    public void playerJoin(final Player player, final SetupParkour parkour) {
+        if (isPlayerInSetup(player)) return;
 
         playerInSetup.put(player.getUniqueId(), parkour);
         rollbackManager.save(player);
         player.setGameMode(GameMode.CREATIVE);
-        setSetupItems(player);
+        setItems(player);
     }
 
-    public void removePlayerFromSetupMode(final Player player) {
-        if (!isPlayerInSetupMode(player)) return;
+    public void playerQuit(final Player player) {
+        if (!isPlayerInSetup(player)) return;
         playerInSetup.remove(player.getUniqueId());
         rollbackManager.restore(player);
     }
 
-    private void setSetupItems(final Player player) {
+    private void setItems(final Player player) {
         player.getInventory().setItem(0, settings.getStartItem());
         player.getInventory().setItem(1, settings.getEndItem());
         player.getInventory().setItem(2, settings.getWandItem());

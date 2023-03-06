@@ -57,7 +57,7 @@ public class ParkourCommand extends BaseCommand {
                 gameManager.playerJoin(
                         player,
                         dataManager.getPlayableParkour(parkourName).map(parkour -> {
-                            if (setupManager.isPlayerInSetupMode(player))
+                            if (setupManager.isPlayerInSetup(player))
                                 throw new RuntimeException(messages.joinDuringSetup());
 
                             if (gameManager.isPlayerInGame(player))

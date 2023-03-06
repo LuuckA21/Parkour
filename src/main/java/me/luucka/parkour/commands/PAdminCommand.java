@@ -58,10 +58,10 @@ public class PAdminCommand extends BaseCommand {
                 final String parkourName = args[1].toLowerCase();
                 if (gameManager.isPlayerInGame(player))
                     throw new Exception(messages.joinDuringParkour());
-                if (setupManager.isPlayerInSetupMode(player))
+                if (setupManager.isPlayerInSetup(player))
                     throw new Exception(messages.alreadyInSetup());
 
-                setupManager.addPlayerToSetupMode(
+                setupManager.playerJoin(
                         player,
                         dataManager.getPlayableParkour(parkourName).map(
                                 parkour -> new SetupParkour(plugin, parkour)

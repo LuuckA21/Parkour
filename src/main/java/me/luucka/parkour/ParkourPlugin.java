@@ -7,7 +7,7 @@ import me.luucka.parkour.commands.ParkourCommand;
 import me.luucka.parkour.config.IConfig;
 import me.luucka.parkour.listeners.ParkourListeners;
 import me.luucka.parkour.listeners.PlayerListener;
-import me.luucka.parkour.listeners.SetupModeListeners;
+import me.luucka.parkour.listeners.SetupListeners;
 import me.luucka.parkour.managers.DataManager;
 import me.luucka.parkour.managers.GameManager;
 import me.luucka.parkour.managers.PlayerDataManager;
@@ -56,7 +56,7 @@ public final class ParkourPlugin extends JavaPlugin {
 
         setupManager = new SetupManager(this);
 
-        getServer().getPluginManager().registerEvents(new SetupModeListeners(this), this);
+        getServer().getPluginManager().registerEvents(new SetupListeners(this), this);
         getServer().getPluginManager().registerEvents(new ParkourListeners(this), this);
         getServer().getPluginManager().registerEvents(new PlayerListener(this), this);
 

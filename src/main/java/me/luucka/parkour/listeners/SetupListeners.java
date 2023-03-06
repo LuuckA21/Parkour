@@ -5,7 +5,6 @@ import me.luucka.parkour.ParkourPlugin;
 import me.luucka.parkour.Settings;
 import me.luucka.parkour.entities.SetupParkour;
 import me.luucka.parkour.managers.SetupManager;
-import me.luucka.parkour.utils.ItemBuilder;
 import me.luucka.parkour.utils.MaterialUtil;
 import net.wesjd.anvilgui.AnvilGUI;
 import org.bukkit.NamespacedKey;
@@ -14,7 +13,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
-import org.bukkit.event.player.*;
+import org.bukkit.event.player.PlayerChangedWorldEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerKickEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
@@ -25,14 +27,14 @@ import java.util.List;
 import static me.luucka.parkour.utils.MMColor.toComponent;
 import static me.luucka.parkour.utils.MMColor.toLegacy;
 
-public class SetupModeListeners implements Listener {
+public class SetupListeners implements Listener {
 
     private final ParkourPlugin plugin;
     private final SetupManager setupManager;
     private final Messages messages;
     private final Settings settings;
 
-    public SetupModeListeners(final ParkourPlugin plugin) {
+    public SetupListeners(final ParkourPlugin plugin) {
         this.plugin = plugin;
         this.setupManager = plugin.getSetupManager();
         this.messages = plugin.getMessages();
@@ -40,9 +42,9 @@ public class SetupModeListeners implements Listener {
     }
 
     @EventHandler
-    public void onInteract(final PlayerInteractEvent event) {
+    public void playerUseSetupItems(final PlayerInteractEvent event) {
         final Player player = event.getPlayer();
-        if (!setupManager.isPlayerInSetupMode(player)) return;
+        if (!setupManager.isPlayerInSetup(player)) return;
         if (event.getHand() != EquipmentSlot.HAND) return;
         if (!event.hasItem()) return;
 
@@ -97,7 +99,7 @@ public class SetupModeListeners implements Listener {
                         new AnvilGUI.Builder()
                                 .title(toLegacy(toComponent(messages.waitingInput())))
                                 .text("...")
-                                .itemLeft(new ItemBuilder(settings.getPlayerCommandsItem().getType()).setDisplayName(settings.getPlayerCommandsItem().displayName()).toItemStack())
+                                .itemLeft(new ItemStack(settings.getPlayerCommandsItem().getType()))
                                 .onComplete(completion -> {
                                     parkour.addPlayerCommands(completion.getText());
                                     player.sendMessage(toComponent(messages.addedPlayerCommands(parkour.getName())));
@@ -117,7 +119,7 @@ public class SetupModeListeners implements Listener {
                         new AnvilGUI.Builder()
                                 .title(toLegacy(toComponent(messages.waitingInput())))
                                 .text("...")
-                                .itemLeft(new ItemBuilder(settings.getConsoleCommandsItem().getType()).setDisplayName(settings.getConsoleCommandsItem().displayName()).toItemStack())
+                                .itemLeft(new ItemStack(settings.getConsoleCommandsItem().getType()))
                                 .onComplete(completion -> {
                                     parkour.addConsoleCommands(completion.getText());
                                     player.sendMessage(toComponent(messages.addedConsoleCommands(parkour.getName())));
@@ -137,7 +139,7 @@ public class SetupModeListeners implements Listener {
                         new AnvilGUI.Builder()
                                 .title(toLegacy(toComponent(messages.waitingCooldownInput())))
                                 .text("...")
-                                .itemLeft(new ItemBuilder(settings.getCooldownItem().getType()).setDisplayName(settings.getCooldownItem().displayName()).toItemStack())
+                                .itemLeft(new ItemStack(settings.getCooldownItem().getType()))
                                 .onComplete(completion -> {
                                     long cooldown = -1;
                                     try {
@@ -162,14 +164,14 @@ public class SetupModeListeners implements Listener {
                         return;
                     }
                     parkour.save();
-                    setupManager.removePlayerFromSetupMode(player);
+                    setupManager.playerQuit(player);
                     player.sendMessage(toComponent(messages.save(parkour.getName())));
                     event.setCancelled(true);
                 }
                 case "CANCEL" -> {
                     if (event.getAction() != Action.RIGHT_CLICK_AIR) return;
                     parkour.cancel();
-                    setupManager.removePlayerFromSetupMode(player);
+                    setupManager.playerQuit(player);
                     player.sendMessage(toComponent(messages.cancel(parkour.getName())));
                     event.setCancelled(true);
                 }
@@ -180,32 +182,27 @@ public class SetupModeListeners implements Listener {
     @EventHandler
     public void onPlayerChangeWorld(final PlayerChangedWorldEvent event) {
         final Player player = event.getPlayer();
-        if (!setupManager.isPlayerInSetupMode(player)) return;
+        if (!setupManager.isPlayerInSetup(player)) return;
         final SetupParkour parkour = setupManager.getSetupParkourByPlayer(player);
         parkour.cancel();
-        setupManager.removePlayerFromSetupMode(player);
+        setupManager.playerQuit(player);
         player.sendMessage(toComponent(messages.cancel(parkour.getName())));
     }
 
     @EventHandler
     public void onServerQuit(final PlayerQuitEvent event) {
         final Player player = event.getPlayer();
-        if (!setupManager.isPlayerInSetupMode(player)) return;
-        final SetupParkour parkour = setupManager.getSetupParkourByPlayer(player);
-        parkour.cancel();
-        setupManager.removePlayerFromSetupMode(event.getPlayer());
+        if (!setupManager.isPlayerInSetup(player)) return;
+        setupManager.getSetupParkourByPlayer(player).cancel();
+        setupManager.playerQuit(event.getPlayer());
     }
 
     @EventHandler
-    public void onItemDrop(final PlayerDropItemEvent event) {
-        if (!setupManager.isPlayerInSetupMode(event.getPlayer())) return;
-        event.setCancelled(true);
-    }
-
-    @EventHandler
-    public void onSwapHandItem(final PlayerSwapHandItemsEvent event) {
-        if (!setupManager.isPlayerInSetupMode(event.getPlayer())) return;
-        event.setCancelled(true);
+    public void onKickPlayer(final PlayerKickEvent event) {
+        final Player player = event.getPlayer();
+        if (!setupManager.isPlayerInSetup(player)) return;
+        setupManager.getSetupParkourByPlayer(player).cancel();
+        setupManager.playerQuit(event.getPlayer());
     }
 
 }

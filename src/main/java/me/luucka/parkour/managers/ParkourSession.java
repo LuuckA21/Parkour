@@ -6,10 +6,12 @@ import me.luucka.parkour.ParkourPlugin;
 import me.luucka.parkour.Settings;
 import me.luucka.parkour.database.models.PlayerParkourData;
 import me.luucka.parkour.entities.Parkour;
+import net.kyori.adventure.title.Title;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import java.text.MessageFormat;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
@@ -45,7 +47,7 @@ public class ParkourSession extends BukkitRunnable {
     }
 
     public void start() {
-        player.sendMessage(toComponent(messages.joinParkour(parkour.getName())));
+        player.showTitle(Title.title(toComponent(messages.parkourJoin(parkour.getName())), toComponent("")));
         player.teleport(parkour.getStartLocation());
         player.setFlying(false);
         player.getInventory().setItem(8, settings.getLeaveItem());
@@ -56,7 +58,7 @@ public class ParkourSession extends BukkitRunnable {
     public void end(final boolean parkourEnded) {
         cancel();
         if (parkourEnded) {
-            player.sendMessage(toComponent(messages.completeParkour(parkour.getName())));
+            player.showTitle(Title.title(toComponent(messages.parkourCompleted(parkour.getName())), toComponent("")));
             playerDataManager.updateParkourData(
                     player.getUniqueId(),
                     parkour.getName(),
@@ -73,7 +75,7 @@ public class ParkourSession extends BukkitRunnable {
             for (String cmd : settings.getCommandsOnQuit()) {
                 player.performCommand(cmd);
             }
-            player.sendMessage(toComponent(messages.quitParkour(parkour.getName())));
+            player.showTitle(Title.title(toComponent(messages.parkourLeave(parkour.getName())), toComponent("")));
         }
     }
 
@@ -86,6 +88,6 @@ public class ParkourSession extends BukkitRunnable {
         parkourTime = System.currentTimeMillis() - startTime;
         Instant instant = Instant.ofEpochMilli(parkourTime);
         LocalDateTime datetime = LocalDateTime.ofInstant(instant, ZoneOffset.UTC);
-        player.sendActionBar(toComponent("<#c2c2c2>" + DateTimeFormatter.ofPattern("HH:mm:ss.SSS").format(datetime)));
+        player.sendActionBar(toComponent(MessageFormat.format("<#5ce053>Time: <#c2c2c2>{0} <reset>| <#d64433>Deaths: <#c2c2c2>{1}", DateTimeFormatter.ofPattern("HH:mm:ss.SSS").format(datetime), deaths)));
     }
 }

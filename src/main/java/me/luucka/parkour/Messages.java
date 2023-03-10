@@ -17,201 +17,168 @@ public class Messages implements IConfig {
     @Getter
     private String prefix;
 
-    private String noPermission;
-
-    private String noConsole;
-
-    private String reload;
-
-    private String commandUsage;
-
-    private String joinParkour;
-
-    private String quitParkour;
-
-    private String completeParkour;
-
-    private String notExists;
-
-    private String joinDuringSetup;
-
-    private String joinDuringParkour;
-
-    private String alreadyInParkour;
-
-    private String alreadyInSetup;
-
-    private String notInParkour;
-
-    private String enterSetupMode;
-
-    private String deleteParkour;
-
-    private String setStart;
-
-    private String setEnd;
-
-    private String setPos1;
-
-    private String setPos2;
-
-    private String save;
-
-    private String cancel;
-
-    private String setAllParameters;
-
-    private String targetWallSign;
-
-    private String waitingInput;
-
-    private String addedPlayerCommands;
-
-    private String addedConsoleCommands;
-
-    private String clearPlayerCommands;
-
-    private String clearConsoleCommands;
-
-    private String waitBeforeJoin;
-
-    private String waitingCooldownInput;
-
-    private String addedCooldown;
-
-    private String insertValidCooldownValue;
-
-    public String noPermission() {
-        return prefix + noPermission;
-    }
-
-    public String noConsole() {
-        return prefix + noConsole;
-    }
+    private String reload,
+            commandUsage,
+            deleteParkour,
+            noPermission,
+            noConsole,
+            notExists,
+            joinDuringSetup,
+            joinDuringParkour,
+            alreadyInParkour,
+            alreadyInSetup,
+            notInParkour,
+            parkourJoin,
+            parkourLeave,
+            parkourCompleted,
+            parkourWaitJoin,
+            setupEnterMode,
+            setupSetStartLoc,
+            setupSetEndLoc,
+            setupTargetWallSign,
+            setupSetPos1,
+            setupSetPos2,
+            setupAddPlayerCommands,
+            setupClearPlayerCommands,
+            setupAddConsoleCommands,
+            setupClearConsoleCommands,
+            setupWaitCommandsInput,
+            setupSetCooldown,
+            setupWaitCooldownInput,
+            setupInserValidCooldown,
+            setupSave,
+            setupSetAllParameters,
+            setupCancel;
 
     public String reload() {
-        return prefix + reload;
+        return reload;
     }
 
     public String commandUsage(final String usage) {
-        return prefix + commandUsage.replace("{COMMAND_USAGE}", usage);
-    }
-
-    public String joinParkour(final String parkour) {
-        return prefix + joinParkour.replace("{PARKOUR}", parkour);
-    }
-
-    public String quitParkour(final String parkour) {
-        return prefix + quitParkour.replace("{PARKOUR}", parkour);
-    }
-
-    public String completeParkour(final String parkour) {
-        return prefix + completeParkour.replace("{PARKOUR}", parkour);
-    }
-
-    public String notExists(final String parkour) {
-        return prefix + notExists.replace("{PARKOUR}", parkour);
-    }
-
-    public String joinDuringSetup() {
-        return prefix + joinDuringSetup;
-    }
-
-    public String joinDuringParkour() {
-        return prefix + joinDuringParkour;
-    }
-
-    public String alreadyInParkour() {
-        return prefix + alreadyInParkour;
-    }
-
-    public String alreadyInSetup() {
-        return prefix + alreadyInSetup;
-    }
-
-    public String notInParkour() {
-        return prefix + notInParkour;
-    }
-
-    public String enterSetupMode(final String parkour) {
-        return prefix + enterSetupMode.replace("{PARKOUR}", parkour);
+        return commandUsage.replace("{COMMAND_USAGE}", usage);
     }
 
     public String deleteParkour(final String parkour) {
-        return prefix + deleteParkour.replace("{PARKOUR}", parkour);
+        return deleteParkour.replace("{PARKOUR}", parkour);
     }
 
-    public String setStart(final String parkour) {
-        return prefix + setStart.replace("{PARKOUR}", parkour);
+    public String noPermission() {
+        return noPermission;
     }
 
-    public String setEnd(final String parkour) {
-        return prefix + setEnd.replace("{PARKOUR}", parkour);
+    public String noConsole() {
+        return noConsole;
     }
 
-    public String setPos1(final String parkour) {
-        return prefix + setPos1.replace("{PARKOUR}", parkour);
+    public String notExists(final String parkour) {
+        return notExists.replace("{PARKOUR}", parkour);
     }
 
-    public String setPos2(final String parkour) {
-        return prefix + setPos2.replace("{PARKOUR}", parkour);
+    public String joinDuringSetup() {
+        return joinDuringSetup;
     }
 
-    public String save(final String parkour) {
-        return prefix + save.replace("{PARKOUR}", parkour);
+    public String joinDuringParkour() {
+        return joinDuringParkour;
     }
 
-    public String cancel(final String parkour) {
-        return prefix + cancel.replace("{PARKOUR}", parkour);
+    public String alreadyInParkour() {
+        return alreadyInParkour;
     }
 
-    public String setAllParameters() {
-        return prefix + setAllParameters;
+    public String alreadyInSetup() {
+        return alreadyInSetup;
     }
 
-    public String targetWallSign() {
-        return prefix + targetWallSign;
+    public String notInParkour() {
+        return notInParkour;
     }
 
-    public String waitingInput() {
-        return waitingInput;
+    public String parkourJoin(final String parkour) {
+        return parkourJoin.replace("{PARKOUR}", parkour);
     }
 
-    public String addedPlayerCommands(final String parkour) {
-        return prefix + addedPlayerCommands.replace("{PARKOUR}", parkour);
+    public String parkourLeave(final String parkour) {
+        return parkourLeave.replace("{PARKOUR}", parkour);
     }
 
-    public String addedConsoleCommands(final String parkour) {
-        return prefix + addedConsoleCommands.replace("{PARKOUR}", parkour);
+    public String parkourCompleted(final String parkour) {
+        return parkourCompleted.replace("{PARKOUR}", parkour);
     }
 
-    public String clearPlayerCommands(final String parkour) {
-        return prefix + clearPlayerCommands.replace("{PARKOUR}", parkour);
-    }
-
-    public String clearConsoleCommands(final String parkour) {
-        return prefix + clearConsoleCommands.replace("{PARKOUR}", parkour);
-    }
-
-    public String waitBeforeJoin(final String parkour, final long currentDateTime) {
-        Instant instant = Instant.ofEpochMilli(currentDateTime);
+    public String parkourWaitJoin(final String parkour, final long time) {
+        Instant instant = Instant.ofEpochMilli(time);
         LocalDateTime datetime = LocalDateTime.ofInstant(instant, ZoneOffset.UTC);
         String formatted = DateTimeFormatter.ofPattern("HH:mm:ss").format(datetime);
-
-
-        return prefix + waitBeforeJoin.replace("{PARKOUR}", parkour).replace("{TIME}", formatted);
+        return parkourWaitJoin.replace("{PARKOUR}", parkour).replace("{TIME}", formatted);
     }
 
-    public String waitingCooldownInput() {
-        return waitingCooldownInput;
+    public String setupEnterMode(final String parkour) {
+        return setupEnterMode.replace("{PARKOUR}", parkour);
     }
 
-    public String addedCooldown(final String parkour) {
-        return prefix + addedCooldown.replace("{PARKOUR}", parkour);
+    public String setupSetStartLoc(final String parkour) {
+        return setupSetStartLoc.replace("{PARKOUR}", parkour);
     }
 
-    public String getInsertValidCooldownValue() {
-        return insertValidCooldownValue;
+    public String setupSetEndLoc(final String parkour) {
+        return setupSetEndLoc.replace("{PARKOUR}", parkour);
+    }
+
+    public String setupTargetWallSign() {
+        return setupTargetWallSign;
+    }
+
+    public String setupSetPos1(final String parkour) {
+        return setupSetPos1.replace("{PARKOUR}", parkour);
+    }
+
+    public String setupSetPos2(final String parkour) {
+        return setupSetPos2.replace("{PARKOUR}", parkour);
+    }
+
+    public String setupAddPlayerCommands(final String parkour) {
+        return setupAddPlayerCommands.replace("{PARKOUR}", parkour);
+    }
+
+    public String setupClearPlayerCommands(final String parkour) {
+        return setupClearPlayerCommands.replace("{PARKOUR}", parkour);
+    }
+
+    public String setupAddConsoleCommands(final String parkour) {
+        return setupAddConsoleCommands.replace("{PARKOUR}", parkour);
+    }
+
+    public String setupClearConsoleCommands(final String parkour) {
+        return setupClearConsoleCommands.replace("{PARKOUR}", parkour);
+    }
+
+    public String setupWaitCommandsInput() {
+        return setupWaitCommandsInput;
+    }
+
+    public String setupSetCooldown(final String parkour) {
+        return setupSetCooldown.replace("{PARKOUR}", parkour);
+    }
+
+    public String setupWaitCooldownInput() {
+        return setupWaitCooldownInput;
+    }
+
+    public String setupInserValidCooldown() {
+        return setupInserValidCooldown;
+    }
+
+    public String setupSave(final String parkour) {
+        return setupSave.replace("{PARKOUR}", parkour);
+    }
+
+    public String setupSetAllParameters() {
+        return setupSetAllParameters;
+    }
+
+    public String setupCancel(final String parkour) {
+        return setupCancel.replace("{PARKOUR}", parkour);
     }
 
     public Messages(ParkourPlugin plugin) {
@@ -222,43 +189,41 @@ public class Messages implements IConfig {
     @Override
     public void reloadConfig() {
         config.load();
-        prefix = _getPrefix();
-        noPermission = config.getString("no-permission", "");
-        noConsole = config.getString("no-console", "");
-        reload = config.getString("reload", "");
-        commandUsage = config.getString("command-usage", "");
-        joinParkour = config.getString("join-parkour", "");
-        quitParkour = config.getString("quit-parkour", "");
-        completeParkour = config.getString("complete-parkour", "");
-        notExists = config.getString("not-exists", "");
-        joinDuringSetup = config.getString("join-during-setup", "");
-        joinDuringParkour = config.getString("join-during-parkour", "");
-        alreadyInParkour = config.getString("already-in-parkour", "");
-        alreadyInSetup = config.getString("already-in-setup", "");
-        notInParkour = config.getString("not-in-parkour", "");
-        enterSetupMode = config.getString("enter-setup-mode", "");
-        deleteParkour = config.getString("delete-parkour", "");
-        setStart = config.getString("set-start", "");
-        setEnd = config.getString("set-end", "");
-        setPos1 = config.getString("set-pos1", "");
-        setPos2 = config.getString("set-pos2", "");
-        save = config.getString("save", "");
-        cancel = config.getString("cancel", "");
-        setAllParameters = config.getString("set-all-parameters", "");
-        targetWallSign = config.getString("target-wall-sign", "");
-        waitingInput = config.getString("waiting-input", "");
-        addedPlayerCommands = config.getString("added-player-commands", "");
-        addedConsoleCommands = config.getString("added-console-commands", "");
-        clearPlayerCommands = config.getString("clear-player-commands", "");
-        clearConsoleCommands = config.getString("clear-console-commands", "");
-        waitBeforeJoin = config.getString("wait-before-join", "");
-        waitingCooldownInput = config.getString("waiting-cooldown-input", "");
-        addedCooldown = config.getString("added-cooldown", "");
-        insertValidCooldownValue = config.getString("insert-valid-cooldown-value", "");
-    }
+        prefix = config.getString("prefix", "");
+        reload = config.getString("reload", "").replace("{PREFIX}", prefix);
+        commandUsage = config.getString("command-usage", "").replace("{PREFIX}", prefix);
+        deleteParkour = config.getString("delete-parkour", "").replace("{PREFIX}", prefix);
 
-    private String _getPrefix() {
-        String prefix = config.getString("prefix", "");
-        return prefix.isEmpty() ? "" : prefix + " ";
+        noPermission = config.getString("error.no-permission", "").replace("{PREFIX}", prefix);
+        noConsole = config.getString("error.no-console", "").replace("{PREFIX}", prefix);
+        notExists = config.getString("error.not-exists", "").replace("{PREFIX}", prefix);
+        joinDuringSetup = config.getString("error.join-during-setup", "").replace("{PREFIX}", prefix);
+        joinDuringParkour = config.getString("error.join-during-parkour", "").replace("{PREFIX}", prefix);
+        alreadyInParkour = config.getString("error.already-in-parkour", "").replace("{PREFIX}", prefix);
+        alreadyInSetup = config.getString("error.already-in-setup", "").replace("{PREFIX}", prefix);
+        notInParkour = config.getString("error.not-in-parkour", "").replace("{PREFIX}", prefix);
+
+        parkourJoin = config.getString("parkour.join", "").replace("{PREFIX}", prefix);
+        parkourLeave = config.getString("parkour.leave", "").replace("{PREFIX}", prefix);
+        parkourCompleted = config.getString("parkour.completed", "").replace("{PREFIX}", prefix);
+        parkourWaitJoin = config.getString("parkour.wait-join", "").replace("{PREFIX}", prefix);
+
+        setupEnterMode = config.getString("setup.enter-mode", "").replace("{PREFIX}", prefix);
+        setupSetStartLoc = config.getString("setup.set-start-loc", "").replace("{PREFIX}", prefix);
+        setupSetEndLoc = config.getString("setup.set-end-loc", "").replace("{PREFIX}", prefix);
+        setupTargetWallSign = config.getString("setup.target-wall-sign", "").replace("{PREFIX}", prefix);
+        setupSetPos1 = config.getString("setup.set-pos1", "").replace("{PREFIX}", prefix);
+        setupSetPos2 = config.getString("setup.set-pos2", "").replace("{PREFIX}", prefix);
+        setupAddPlayerCommands = config.getString("setup.add-player-commands", "").replace("{PREFIX}", prefix);
+        setupClearPlayerCommands = config.getString("setup.clear-player-commands", "").replace("{PREFIX}", prefix);
+        setupAddConsoleCommands = config.getString("setup.add-console-commands", "").replace("{PREFIX}", prefix);
+        setupClearConsoleCommands = config.getString("setup.clear-console-commands", "").replace("{PREFIX}", prefix);
+        setupWaitCommandsInput = config.getString("setup.wait-commands-input", "").replace("{PREFIX}", prefix);
+        setupSetCooldown = config.getString("setup.set-cooldown", "").replace("{PREFIX}", prefix);
+        setupWaitCooldownInput = config.getString("setup.wait-cooldown-input", "").replace("{PREFIX}", prefix);
+        setupInserValidCooldown = config.getString("setup.insert-valid-cooldown-value", "").replace("{PREFIX}", prefix);
+        setupSave = config.getString("setup.save", "").replace("{PREFIX}", prefix);
+        setupSetAllParameters = config.getString("setup.set-all-parameters", "").replace("{PREFIX}", prefix);
+        setupCancel = config.getString("setup.cancel", "").replace("{PREFIX}", prefix);
     }
 }

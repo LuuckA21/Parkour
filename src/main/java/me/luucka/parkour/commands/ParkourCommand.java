@@ -71,7 +71,7 @@ public class ParkourCommand extends BaseCommand {
                                 long now = System.currentTimeMillis();
                                 long nextPlayableTime = playerDataManager.getPlayerParkourData(player.getUniqueId(), parkour).getLastPlayedTime() + (parkour.getCooldown() * 1000L);
                                 if (now < nextPlayableTime) {
-                                    throw new RuntimeException(messages.waitBeforeJoin(parkour.getName(), nextPlayableTime - now));
+                                    throw new RuntimeException(messages.parkourWaitJoin(parkour.getName(), nextPlayableTime - now));
                                 }
                             }
                             return parkour;

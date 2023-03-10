@@ -66,7 +66,7 @@ public class PAdminCommand extends BaseCommand {
                                 () -> new SetupParkour(plugin, parkourName)
                         )
                 );
-                player.sendMessage(toComponent(messages.enterSetupMode(parkourName)));
+                player.sendMessage(toComponent(messages.setupEnterMode(parkourName)));
             }
             case DELETE -> {
                 if (args.length < cmd.argsNeeded)

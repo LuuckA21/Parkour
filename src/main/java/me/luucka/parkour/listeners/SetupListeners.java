@@ -63,7 +63,7 @@ public class SetupListeners implements Listener {
                 case "SETSTART" -> {
                     if (event.getAction() != Action.RIGHT_CLICK_AIR) return;
                     parkour.setStartLocation(player.getLocation());
-                    player.sendMessage(toComponent(messages.setStart(parkour.getName())));
+                    player.sendMessage(toComponent(messages.setupSetStartLoc(parkour.getName())));
                     event.setCancelled(true);
                 }
                 case "SETEND" -> {
@@ -71,11 +71,11 @@ public class SetupListeners implements Listener {
                     final Block targetBlock = event.getClickedBlock();
                     if (targetBlock == null) return;
                     if (!MaterialUtil.isWallSign(targetBlock.getType())) {
-                        player.sendMessage(toComponent(messages.targetWallSign()));
+                        player.sendMessage(toComponent(messages.setupTargetWallSign()));
                         return;
                     }
                     parkour.setEndLocation(targetBlock.getLocation());
-                    player.sendMessage(toComponent(messages.setEnd(parkour.getName())));
+                    player.sendMessage(toComponent(messages.setupSetEndLoc(parkour.getName())));
                     event.setCancelled(true);
                 }
                 case "WAND" -> {
@@ -84,25 +84,25 @@ public class SetupListeners implements Listener {
                         targetBlock = event.getClickedBlock();
                         if (targetBlock == null) return;
                         parkour.setMinRegion(targetBlock.getLocation());
-                        player.sendMessage(toComponent(messages.setPos1(parkour.getName())));
+                        player.sendMessage(toComponent(messages.setupSetPos1(parkour.getName())));
                         event.setCancelled(true);
                     } else if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
                         targetBlock = event.getClickedBlock();
                         if (targetBlock == null) return;
                         parkour.setMaxRegion(event.getClickedBlock().getLocation());
-                        player.sendMessage(toComponent(messages.setPos2(parkour.getName())));
+                        player.sendMessage(toComponent(messages.setupSetPos2(parkour.getName())));
                         event.setCancelled(true);
                     }
                 }
                 case "PLAYER-CMD" -> {
                     if (event.getAction() == Action.RIGHT_CLICK_AIR) {
                         new AnvilGUI.Builder()
-                                .title(toLegacy(toComponent(messages.waitingInput())))
+                                .title(toLegacy(toComponent(messages.setupWaitCommandsInput())))
                                 .text("...")
                                 .itemLeft(new ItemStack(settings.getPlayerCommandsItem().getType()))
                                 .onComplete(completion -> {
                                     parkour.addPlayerCommands(completion.getText());
-                                    player.sendMessage(toComponent(messages.addedPlayerCommands(parkour.getName())));
+                                    player.sendMessage(toComponent(messages.setupAddPlayerCommands(parkour.getName())));
                                     return List.of(AnvilGUI.ResponseAction.close());
                                 })
                                 .plugin(plugin)
@@ -110,19 +110,19 @@ public class SetupListeners implements Listener {
                     }
                     if (player.isSneaking() && event.getAction() == Action.LEFT_CLICK_AIR) {
                         parkour.clearPlayerCommands();
-                        player.sendMessage(toComponent(messages.clearPlayerCommands(parkour.getName())));
+                        player.sendMessage(toComponent(messages.setupClearPlayerCommands(parkour.getName())));
                     }
                     event.setCancelled(true);
                 }
                 case "CONSOLE-CMD" -> {
                     if (event.getAction() == Action.RIGHT_CLICK_AIR) {
                         new AnvilGUI.Builder()
-                                .title(toLegacy(toComponent(messages.waitingInput())))
+                                .title(toLegacy(toComponent(messages.setupWaitCommandsInput())))
                                 .text("...")
                                 .itemLeft(new ItemStack(settings.getConsoleCommandsItem().getType()))
                                 .onComplete(completion -> {
                                     parkour.addConsoleCommands(completion.getText());
-                                    player.sendMessage(toComponent(messages.addedConsoleCommands(parkour.getName())));
+                                    player.sendMessage(toComponent(messages.setupAddConsoleCommands(parkour.getName())));
                                     return List.of(AnvilGUI.ResponseAction.close());
                                 })
                                 .plugin(plugin)
@@ -130,14 +130,14 @@ public class SetupListeners implements Listener {
                     }
                     if (player.isSneaking() && event.getAction() == Action.LEFT_CLICK_AIR) {
                         parkour.clearConsoleCommands();
-                        player.sendMessage(toComponent(messages.clearConsoleCommands(parkour.getName())));
+                        player.sendMessage(toComponent(messages.setupClearConsoleCommands(parkour.getName())));
                     }
                     event.setCancelled(true);
                 }
                 case "COOLDOWN" -> {
                     if (event.getAction() == Action.RIGHT_CLICK_AIR) {
                         new AnvilGUI.Builder()
-                                .title(toLegacy(toComponent(messages.waitingCooldownInput())))
+                                .title(toLegacy(toComponent(messages.setupWaitCooldownInput())))
                                 .text("...")
                                 .itemLeft(new ItemStack(settings.getCooldownItem().getType()))
                                 .onComplete(completion -> {
@@ -145,10 +145,10 @@ public class SetupListeners implements Listener {
                                     try {
                                         cooldown = Long.parseLong(completion.getText());
                                     } catch (final NumberFormatException e) {
-                                        return List.of(AnvilGUI.ResponseAction.replaceInputText(toLegacy(toComponent(messages.getInsertValidCooldownValue()))));
+                                        return List.of(AnvilGUI.ResponseAction.replaceInputText(toLegacy(toComponent(messages.setupInserValidCooldown()))));
                                     }
                                     parkour.setCooldown(cooldown);
-                                    player.sendMessage(toComponent(messages.addedCooldown(parkour.getName())));
+                                    player.sendMessage(toComponent(messages.setupSetCooldown(parkour.getName())));
                                     return List.of(AnvilGUI.ResponseAction.close());
                                 })
                                 .plugin(plugin)
@@ -159,20 +159,20 @@ public class SetupListeners implements Listener {
                 case "SAVE" -> {
                     if (event.getAction() != Action.RIGHT_CLICK_AIR) return;
                     if (!parkour.canSave()) {
-                        player.sendMessage(toComponent(messages.setAllParameters()));
+                        player.sendMessage(toComponent(messages.setupSetAllParameters()));
                         event.setCancelled(true);
                         return;
                     }
                     parkour.save();
                     setupManager.playerQuit(player);
-                    player.sendMessage(toComponent(messages.save(parkour.getName())));
+                    player.sendMessage(toComponent(messages.setupSave(parkour.getName())));
                     event.setCancelled(true);
                 }
                 case "CANCEL" -> {
                     if (event.getAction() != Action.RIGHT_CLICK_AIR) return;
                     parkour.cancel();
                     setupManager.playerQuit(player);
-                    player.sendMessage(toComponent(messages.cancel(parkour.getName())));
+                    player.sendMessage(toComponent(messages.setupCancel(parkour.getName())));
                     event.setCancelled(true);
                 }
             }
@@ -186,7 +186,7 @@ public class SetupListeners implements Listener {
         final SetupParkour parkour = setupManager.getSetupParkourByPlayer(player);
         parkour.cancel();
         setupManager.playerQuit(player);
-        player.sendMessage(toComponent(messages.cancel(parkour.getName())));
+        player.sendMessage(toComponent(messages.setupCancel(parkour.getName())));
     }
 
     @EventHandler

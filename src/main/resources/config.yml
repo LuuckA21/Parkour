@@ -1,5 +1,15 @@
+# This config use Kyori Adventure format for color and decoration
+# For help visit: https://docs.advntr.dev/minimessage/format.html
+
+# The old format does not work (&a)
+
+# With parkour.bypass permission you can join every parkour and bypass the cooldown
+
+# If this is TRUE you need parkour.join.<name> permission to join a parkour
 per-parkour-permission: false
 
+# This section refer to setup-mode items
+# For help visit: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html (list of material)
 setup-items:
   set-start:
     material: "EMERALD"
@@ -50,6 +60,8 @@ setup-items:
       - "<grey>(Right Click)"
       - "<#2772e3>Exit setup without save"
 
+# This section refer to parkour items
+# For help visit: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html (list of material)
 parkour-item:
   leave:
     material: "BARRIER"
@@ -58,6 +70,7 @@ parkour-item:
       - "<grey>(Right Click)"
       - "<#2772e3>Leave parkour"
 
+# This section represents the complete sign for ending parkour
 complete-wall-sign:
   one: "{PREFIX}"
   two: ""

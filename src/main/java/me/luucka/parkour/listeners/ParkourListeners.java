@@ -13,6 +13,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
@@ -163,6 +164,12 @@ public class ParkourListeners implements Listener {
 
     @EventHandler
     public void onBlockBreak(final BlockBreakEvent event) {
+        if (!gameManager.isPlayerInParkourSession(event.getPlayer())) return;
+        event.setCancelled(true);
+    }
+
+    @EventHandler
+    public void onBlockPlace(final BlockPlaceEvent event) {
         if (!gameManager.isPlayerInParkourSession(event.getPlayer())) return;
         event.setCancelled(true);
     }

@@ -48,7 +48,7 @@ public class Settings implements IConfig {
     private ItemStack cancelItem;
 
     @Getter
-    private ItemStack exitItem;
+    private ItemStack leaveItem;
 
     private String[] completeSign;
 
@@ -78,15 +78,15 @@ public class Settings implements IConfig {
     public void reloadConfig() {
         config.load();
         perParkourPermission = config.getBoolean("per-parkour-permission", false);
-        startItem = toItemStack(config.getItem("setup-items.set-start"), "SETSTART");
-        endItem = toItemStack(config.getItem("setup-items.set-end"), "SETEND");
-        wandItem = toItemStack(config.getItem("setup-items.wand"), "WAND");
-        playerCommandsItem = toItemStack(config.getItem("setup-items.complete-player-cmd"), "PLAYER-CMD");
-        consoleCommandsItem = toItemStack(config.getItem("setup-items.complete-console-cmd"), "CONSOLE-CMD");
-        cooldownItem = toItemStack(config.getItem("setup-items.set-cooldown"), "COOLDOWN");
-        saveItem = toItemStack(config.getItem("setup-items.save"), "SAVE");
-        cancelItem = toItemStack(config.getItem("setup-items.cancel"), "CANCEL");
-        exitItem = toItemStack(config.getItem("parkour-item.exit"), "EXIT");
+        startItem = toItemStack(config.getItem("setup-items.set-start"), "setup-item", "SETSTART");
+        endItem = toItemStack(config.getItem("setup-items.set-end"), "setup-item", "SETEND");
+        wandItem = toItemStack(config.getItem("setup-items.wand"), "setup-item", "WAND");
+        playerCommandsItem = toItemStack(config.getItem("setup-items.complete-player-cmd"), "setup-item", "PLAYER-CMD");
+        consoleCommandsItem = toItemStack(config.getItem("setup-items.complete-console-cmd"), "setup-item", "CONSOLE-CMD");
+        cooldownItem = toItemStack(config.getItem("setup-items.set-cooldown"), "setup-item", "COOLDOWN");
+        saveItem = toItemStack(config.getItem("setup-items.save"), "setup-item", "SAVE");
+        cancelItem = toItemStack(config.getItem("setup-items.cancel"), "setup-item", "CANCEL");
+        leaveItem = toItemStack(config.getItem("parkour-item.leave"), "parkour-item", "LEAVE");
         completeSign = new String[]{
                 config.getString("complete-wall-sign.one", ""),
                 config.getString("complete-wall-sign.two", ""),
@@ -97,11 +97,11 @@ public class Settings implements IConfig {
         mongoDbConnectionUri = config.getString("mongodb-connection-uri", "");
     }
 
-    private ItemStack toItemStack(final LazyItem item, final String persistentValue) {
+    private ItemStack toItemStack(final LazyItem item, final String key, final String persistentValue) {
         return new ItemBuilder(item.material())
                 .setDisplayName(item.name())
                 .setLore(item.lore())
-                .setPersistentDataContainerValue(plugin, "setup-item", persistentValue)
+                .setPersistentDataContainerValue(plugin, key, persistentValue)
                 .toItemStack();
     }
 

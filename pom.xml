@@ -6,7 +6,7 @@
 
     <groupId>me.luucka</groupId>
     <artifactId>Parkour</artifactId>
-    <version>Build-10</version>
+    <version>Build-11</version>
     <packaging>jar</packaging>
 
     <name>Parkour</name>

@@ -2,6 +2,7 @@ package me.luucka.parkour.managers;
 
 import me.luucka.parkour.ParkourPlugin;
 import me.luucka.parkour.database.MongoStorage;
+import me.luucka.parkour.database.models.PlayerParkourData;
 import me.luucka.parkour.entities.Parkour;
 import org.bukkit.entity.Player;
 
@@ -20,12 +21,12 @@ public class PlayerDataManager {
         mongoStorage.createPlayerData(player);
     }
 
-    public Long getLastPlayedTime(final UUID uuid, final Parkour parkour) {
-        return mongoStorage.getLastPlayedTime(uuid, parkour);
+    public PlayerParkourData getPlayerParkourData(final UUID uuid, final Parkour parkour) {
+        return mongoStorage.getPlayerParkourData(uuid, parkour);
     }
 
-    public void updateLastPlayedTime(final UUID uuid, final String parkour, final Long lastPlayedTime) {
-        mongoStorage.updateLastPlayedTime(uuid, parkour, lastPlayedTime);
+    public void updateParkourData(final UUID uuid, final String parkour, final PlayerParkourData parkourData) {
+        mongoStorage.updateParkourData(uuid, parkour, parkourData);
     }
 
     public void shutdown() {

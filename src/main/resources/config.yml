@@ -51,12 +51,12 @@ setup-items:
       - "<#2772e3>Exit setup without save"
 
 parkour-item:
-  exit:
+  leave:
     material: "BARRIER"
-    name: "<#d63e4d><b>Exit"
+    name: "<#d63e4d><b>Leave"
     lore:
       - "<grey>(Right Click)"
-      - "<#2772e3>Exit parkour"
+      - "<#2772e3>Leave parkour"
 
 complete-wall-sign:
   one: "{PREFIX}"

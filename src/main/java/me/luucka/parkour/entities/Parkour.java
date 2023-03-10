@@ -57,7 +57,7 @@ public class Parkour {
         this.configuration = configuration;
         this.configuration.load();
         this.startLocation = configuration.getLocation("start-location").location();
-        this.endLocation = configuration.getLocation("start-location").location();
+        this.endLocation = configuration.getLocation("end-location").location();
         this.minRegion = configuration.getLocation("region.min").location();
         this.maxRegion = configuration.getLocation("region.max").location();
         this.playerCommands.addAll(configuration.getList("complete-commands.player", String.class));

@@ -10,6 +10,7 @@ import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
 import me.luucka.parkour.ParkourPlugin;
 import me.luucka.parkour.Settings;
+import me.luucka.parkour.database.models.PlayerParkourData;
 import me.luucka.parkour.database.models.User;
 import me.luucka.parkour.entities.Parkour;
 import org.bson.UuidRepresentation;
@@ -52,18 +53,18 @@ public class MongoStorage {
         }
     }
 
-    public Long getLastPlayedTime(final UUID uuid, final Parkour parkour) {
+    public PlayerParkourData getPlayerParkourData(final UUID uuid, final Parkour parkour) {
         MongoCollection<User> collection = database.getCollection("playersdata", User.class);
         final User user = collection.find(Filters.eq("_id", uuid)).first();
-        if (user == null) return -1L;
-        return user.getLastPlayedTimes().getOrDefault(parkour.getName(), -1L);
+        if (user == null) return new PlayerParkourData(-1L, -1, -1L);
+        return user.getPlayerParkourData().getOrDefault(parkour.getName(), new PlayerParkourData(-1L, -1, -1L));
     }
 
-    public void updateLastPlayedTime(final UUID uuid, final String parkour, final Long lastPlayedTime) {
+    public void updateParkourData(final UUID uuid, final String parkour, final PlayerParkourData parkourData) {
         MongoCollection<User> collection = database.getCollection("playersdata", User.class);
         final User user = collection.find(Filters.eq("_id", uuid)).first();
         if (user == null) return;
-        user.updateParkourLastPlayedTime(parkour, lastPlayedTime);
+        user.updateParkourData(parkour, parkourData);
         collection.replaceOne(Filters.eq("_id", uuid), user);
     }
 

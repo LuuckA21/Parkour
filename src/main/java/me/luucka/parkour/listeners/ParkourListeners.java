@@ -3,6 +3,7 @@ package me.luucka.parkour.listeners;
 import me.luucka.parkour.ParkourPlugin;
 import me.luucka.parkour.entities.Parkour;
 import me.luucka.parkour.managers.GameManager;
+import me.luucka.parkour.managers.ParkourSession;
 import me.luucka.parkour.utils.MaterialUtil;
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
@@ -35,7 +36,7 @@ public class ParkourListeners implements Listener {
     @EventHandler
     public void playerUseExitItems(final PlayerInteractEvent event) {
         final Player player = event.getPlayer();
-        if (!gameManager.isPlayerInGame(player)) return;
+        if (!gameManager.isPlayerInParkourSession(player)) return;
         if (event.getHand() != EquipmentSlot.HAND) return;
         if (!event.hasItem()) return;
 
@@ -47,7 +48,7 @@ public class ParkourListeners implements Listener {
         if (container.has(key, PersistentDataType.STRING)) {
             final String sKey = container.get(key, PersistentDataType.STRING);
             if (sKey == null) return;
-            if (sKey.equalsIgnoreCase("EXIT")) {
+            if (sKey.equalsIgnoreCase("LEAVE")) {
                 if (event.getAction() != Action.RIGHT_CLICK_AIR) return;
                 gameManager.playerQuit(player, false);
                 event.setCancelled(true);
@@ -58,24 +59,26 @@ public class ParkourListeners implements Listener {
     @EventHandler
     public void onParkourEnd(final PlayerInteractEvent event) {
         final Player player = event.getPlayer();
-        if (!gameManager.isPlayerInGame(player)) return;
+        if (!gameManager.isPlayerInParkourSession(player)) return;
         if (event.getAction() != Action.RIGHT_CLICK_BLOCK) return;
         final Block targetBlock = event.getClickedBlock();
         if (targetBlock == null) return;
         if (!MaterialUtil.isWallSign(targetBlock.getType())) return;
-        final Parkour parkour = gameManager.getParkourByPlayer(player);
-        if (parkour.getEndLocation().equals(targetBlock.getLocation())) {
-            gameManager.playerQuit(event.getPlayer(), true);
+        final Parkour parkour = gameManager.getParkourSessionByPlayer(player).getParkour();
+        if (targetBlock.getLocation().equals(parkour.getEndLocation())) {
+            gameManager.playerQuit(player, true);
         }
     }
 
     @EventHandler
     public void onPlayerMove(final PlayerMoveEvent event) {
         final Player player = event.getPlayer();
-        if (!gameManager.isPlayerInGame(player)) return;
+        if (!gameManager.isPlayerInParkourSession(player)) return;
 
-        final Parkour parkour = gameManager.getParkourByPlayer(player);
+        final ParkourSession session = gameManager.getParkourSessionByPlayer(player);
+        final Parkour parkour = session.getParkour();
         if (!parkour.getRegion().contains(event.getTo())) {
+            session.incrementDeaths();
             player.teleport(parkour.getStartLocation());
         }
     }
@@ -83,14 +86,14 @@ public class ParkourListeners implements Listener {
     @EventHandler
     public void onDamage(final EntityDamageEvent event) {
         if (!(event.getEntity() instanceof final Player player)) return;
-        if (!gameManager.isPlayerInGame(player)) return;
+        if (!gameManager.isPlayerInParkourSession(player)) return;
         if (event.getCause() == EntityDamageEvent.DamageCause.FALL) event.setCancelled(true);
     }
 
     @EventHandler
     public void onServerQuit(final PlayerQuitEvent event) {
         final Player player = event.getPlayer();
-        if (gameManager.isPlayerInGame(player)) {
+        if (gameManager.isPlayerInParkourSession(player)) {
             gameManager.playerQuit(player, false);
         }
     }
@@ -98,7 +101,7 @@ public class ParkourListeners implements Listener {
     @EventHandler
     public void onKickPlayer(final PlayerKickEvent event) {
         final Player player = event.getPlayer();
-        if (gameManager.isPlayerInGame(player)) {
+        if (gameManager.isPlayerInParkourSession(player)) {
             gameManager.playerQuit(player, false);
         }
     }
@@ -106,7 +109,7 @@ public class ParkourListeners implements Listener {
     @EventHandler
     public void onChangeWorld(final PlayerChangedWorldEvent event) {
         final Player player = event.getPlayer();
-        if (gameManager.isPlayerInGame(player)) {
+        if (gameManager.isPlayerInParkourSession(player)) {
             gameManager.playerQuit(player, false);
         }
     }
@@ -114,14 +117,14 @@ public class ParkourListeners implements Listener {
     @EventHandler
     public void onBowShoot(final EntityShootBowEvent event) {
         if (!(event.getEntity() instanceof final Player player)) return;
-        if (!gameManager.isPlayerInGame(player)) return;
+        if (!gameManager.isPlayerInParkourSession(player)) return;
         event.setCancelled(true);
     }
 
     @EventHandler
     public void onEnderPearlThrow(final ProjectileLaunchEvent event) {
         if (!(event.getEntity().getShooter() instanceof final Player player)) return;
-        if (gameManager.isPlayerInGame(player)) {
+        if (gameManager.isPlayerInParkourSession(player)) {
             if (event.getEntityType() == EntityType.ENDER_PEARL) {
                 event.setCancelled(true);
             }
@@ -130,44 +133,44 @@ public class ParkourListeners implements Listener {
 
     @EventHandler
     public void onDropItem(final PlayerDropItemEvent event) {
-        if (!gameManager.isPlayerInGame(event.getPlayer())) return;
+        if (!gameManager.isPlayerInParkourSession(event.getPlayer())) return;
         event.setCancelled(true);
     }
 
     @EventHandler
     public void onFlyChange(final PlayerToggleFlightEvent event) {
-        if (!gameManager.isPlayerInGame(event.getPlayer())) return;
+        if (!gameManager.isPlayerInParkourSession(event.getPlayer())) return;
         if (event.isFlying()) event.setCancelled(true);
     }
 
     @EventHandler
     public void onVelocityChange(final PlayerVelocityEvent event) {
-        if (!gameManager.isPlayerInGame(event.getPlayer())) return;
+        if (!gameManager.isPlayerInParkourSession(event.getPlayer())) return;
         event.setCancelled(true);
     }
 
     @EventHandler
     public void onGameModeChange(final PlayerGameModeChangeEvent event) {
-        if (!gameManager.isPlayerInGame(event.getPlayer())) return;
+        if (!gameManager.isPlayerInParkourSession(event.getPlayer())) return;
         event.setCancelled(true);
     }
 
     @EventHandler
     public void onSwapHandItems(final PlayerSwapHandItemsEvent event) {
-        if (!gameManager.isPlayerInGame(event.getPlayer())) return;
+        if (!gameManager.isPlayerInParkourSession(event.getPlayer())) return;
         event.setCancelled(true);
     }
 
     @EventHandler
     public void onBlockBreak(final BlockBreakEvent event) {
-        if (!gameManager.isPlayerInGame(event.getPlayer())) return;
+        if (!gameManager.isPlayerInParkourSession(event.getPlayer())) return;
         event.setCancelled(true);
     }
 
     @EventHandler
     public void onInvClick(final InventoryClickEvent event) {
         if (!(event.getWhoClicked() instanceof Player player)) return;
-        if (!gameManager.isPlayerInGame(player)) return;
+        if (!gameManager.isPlayerInParkourSession(player)) return;
         event.setCancelled(true);
     }
 

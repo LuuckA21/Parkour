@@ -4,14 +4,11 @@ import me.luucka.parkour.Messages;
 import me.luucka.parkour.ParkourPlugin;
 import me.luucka.parkour.Settings;
 import me.luucka.parkour.entities.Parkour;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
-
-import static me.luucka.parkour.utils.MMColor.toComponent;
 
 public class GameManager {
 
@@ -21,7 +18,7 @@ public class GameManager {
     private final Settings settings;
     private final PlayerRollbackManager rollbackManager;
 
-    private final Map<UUID, Parkour> playersInGame = new HashMap<>();
+    private final Map<UUID, ParkourSession> parkourSessions = new HashMap<>();
 
     public GameManager(ParkourPlugin plugin) {
         this.plugin = plugin;
@@ -32,46 +29,26 @@ public class GameManager {
     }
 
     public void playerJoin(final Player player, final Parkour parkour) {
-        player.sendMessage(toComponent(messages.joinParkour(parkour.getName())));
-        playersInGame.put(player.getUniqueId(), parkour);
+        ParkourSession session = new ParkourSession(plugin, player, parkour);
+        parkourSessions.put(player.getUniqueId(), session);
         rollbackManager.save(player);
-        player.teleport(parkour.getStartLocation());
-        player.setFlying(false);
-        player.getInventory().setItem(8, settings.getExitItem());
+        session.start();
     }
 
     public void playerQuit(final Player player, final boolean ended) {
-        final Parkour parkour = playersInGame.get(player.getUniqueId());
-        playersInGame.remove(player.getUniqueId());
+        ParkourSession session = parkourSessions.get(player.getUniqueId());
+        parkourSessions.remove(player.getUniqueId());
         rollbackManager.restore(player);
+        session.end(ended);
 
-        if (ended) {
-            player.sendMessage(toComponent(messages.completeParkour(parkour.getName())));
-            playerDataManager.updateLastPlayedTime(
-                    player.getUniqueId(),
-                    parkour.getName(),
-                    System.currentTimeMillis()
-            );
-            for (String cmd : parkour.getConsoleCommands()) {
-                cmd = cmd.replace("{PLAYER}", player.getName());
-                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), cmd);
-            }
-            for (String cmd : parkour.getPlayerCommands()) {
-                player.performCommand(cmd);
-            }
-        } else {
-            for (String cmd : settings.getCommandsOnQuit()) {
-                player.performCommand(cmd);
-            }
-            player.sendMessage(toComponent(messages.quitParkour(parkour.getName())));
-        }
+
     }
 
-    public boolean isPlayerInGame(final Player player) {
-        return playersInGame.containsKey(player.getUniqueId());
+    public boolean isPlayerInParkourSession(final Player player) {
+        return parkourSessions.containsKey(player.getUniqueId());
     }
 
-    public Parkour getParkourByPlayer(final Player player) {
-        return playersInGame.get(player.getUniqueId());
+    public ParkourSession getParkourSessionByPlayer(final Player player) {
+        return parkourSessions.get(player.getUniqueId());
     }
 }

@@ -30,7 +30,7 @@ public class ParkourCommand extends BaseCommand {
         this.messages = plugin.getMessages();
         this.settings = plugin.getSettings();
         this.playerDataManager = plugin.getPlayerDataManager();
-        this.setUsage("/parkour < join | quit > [parkour]");
+        this.setUsage("/parkour < join | leave > [parkour]");
     }
 
     @Override
@@ -60,7 +60,7 @@ public class ParkourCommand extends BaseCommand {
                             if (setupManager.isPlayerInSetup(player))
                                 throw new RuntimeException(messages.joinDuringSetup());
 
-                            if (gameManager.isPlayerInGame(player))
+                            if (gameManager.isPlayerInParkourSession(player))
                                 throw new RuntimeException(messages.alreadyInParkour());
 
                             if (!player.hasPermission("parkour.bypass")) {
@@ -69,7 +69,7 @@ public class ParkourCommand extends BaseCommand {
                                     throw new RuntimeException(messages.noPermission());
                                 }
                                 long now = System.currentTimeMillis();
-                                long nextPlayableTime = playerDataManager.getLastPlayedTime(player.getUniqueId(), parkour) + (parkour.getCooldown() * 1000L);
+                                long nextPlayableTime = playerDataManager.getPlayerParkourData(player.getUniqueId(), parkour).getLastPlayedTime() + (parkour.getCooldown() * 1000L);
                                 if (now < nextPlayableTime) {
                                     throw new RuntimeException(messages.waitBeforeJoin(parkour.getName(), nextPlayableTime - now));
                                 }
@@ -80,8 +80,8 @@ public class ParkourCommand extends BaseCommand {
                         })
                 );
             }
-            case QUIT -> {
-                if (!gameManager.isPlayerInGame(player)) throw new Exception(messages.notInParkour());
+            case LEAVE -> {
+                if (!gameManager.isPlayerInParkourSession(player)) throw new Exception(messages.notInParkour());
                 gameManager.playerQuit(player, false);
             }
         }
@@ -113,7 +113,7 @@ public class ParkourCommand extends BaseCommand {
 
     private enum CommandType {
         JOIN(2),
-        QUIT(1);
+        LEAVE(1);
 
         private final int argsNeeded;
 

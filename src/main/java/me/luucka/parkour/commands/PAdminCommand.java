@@ -53,7 +53,7 @@ public class PAdminCommand extends BaseCommand {
                 if (args.length < cmd.argsNeeded) throw new Exception(messages.commandUsage("/padmin setup <parkour>"));
 
                 final String parkourName = args[1].toLowerCase();
-                if (gameManager.isPlayerInGame(player))
+                if (gameManager.isPlayerInParkourSession(player))
                     throw new Exception(messages.joinDuringParkour());
                 if (setupManager.isPlayerInSetup(player))
                     throw new Exception(messages.alreadyInSetup());

@@ -42,9 +42,9 @@ public class Messages implements IConfig {
             setupSetPos2,
             setupAddCompleteCommands,
             setupClearCompleteCommands,
-            setupWaitCommandsInput,
+            completeCommandsGuiTitle,
             setupSetCooldown,
-            setupWaitCooldownInput,
+            setCooldownGuiTitle,
             setupInserValidCooldown,
             setupSave,
             setupSetAllParameters,
@@ -156,16 +156,16 @@ public class Messages implements IConfig {
         return setupClearCompleteCommands.replace("{PARKOUR}", parkour);
     }
 
-    public String setupWaitCommandsInput() {
-        return setupWaitCommandsInput;
+    public String completeCommandsGuiTitle() {
+        return completeCommandsGuiTitle;
     }
 
     public String setupSetCooldown(final String parkour) {
         return setupSetCooldown.replace("{PARKOUR}", parkour);
     }
 
-    public String setupWaitCooldownInput() {
-        return setupWaitCooldownInput;
+    public String setCooldownGuiTitle() {
+        return setCooldownGuiTitle;
     }
 
     public String setupInserValidCooldown() {
@@ -229,9 +229,9 @@ public class Messages implements IConfig {
         setupSetPos2 = config.getString("setup.set-pos2", "").replace("{PREFIX}", prefix);
         setupAddCompleteCommands = config.getString("setup.add-complete-commands", "").replace("{PREFIX}", prefix);
         setupClearCompleteCommands = config.getString("setup.clear-complete-commands", "").replace("{PREFIX}", prefix);
-        setupWaitCommandsInput = config.getString("setup.wait-commands-input", "").replace("{PREFIX}", prefix);
+        completeCommandsGuiTitle = config.getString("setup.complete-commands-gui-title", "").replace("{PREFIX}", prefix);
         setupSetCooldown = config.getString("setup.set-cooldown", "").replace("{PREFIX}", prefix);
-        setupWaitCooldownInput = config.getString("setup.wait-cooldown-input", "").replace("{PREFIX}", prefix);
+        setCooldownGuiTitle = config.getString("setup.set-cooldown-gui-title", "").replace("{PREFIX}", prefix);
         setupInserValidCooldown = config.getString("setup.insert-valid-cooldown-value", "").replace("{PREFIX}", prefix);
         setupSave = config.getString("setup.save", "").replace("{PREFIX}", prefix);
         setupSetAllParameters = config.getString("setup.set-all-parameters", "").replace("{PREFIX}", prefix);

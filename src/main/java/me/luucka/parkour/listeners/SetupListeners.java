@@ -99,7 +99,7 @@ public class SetupListeners implements Listener {
                         List<String> completeCommands = setupManager.getSetupParkourByPlayer(player).getCompleteCommands();
                         String text = completeCommands.size() >= 1 ? String.join(";", completeCommands) : "...";
                         new AnvilGUI.Builder()
-                                .title(toLegacy(toComponent(messages.setupWaitCommandsInput())))
+                                .title(toLegacy(toComponent(messages.completeCommandsGuiTitle())))
                                 .text(text)
                                 .itemLeft(new ItemStack(items.getCompleteCommands().getType()))
                                 .onComplete(completion -> {
@@ -121,7 +121,7 @@ public class SetupListeners implements Listener {
                         long textCooldown = setupManager.getSetupParkourByPlayer(player).getCooldown();
                         String text = textCooldown >= 1L ? String.valueOf(textCooldown) : "...";
                         new AnvilGUI.Builder()
-                                .title(toLegacy(toComponent(messages.setupWaitCooldownInput())))
+                                .title(toLegacy(toComponent(messages.setCooldownGuiTitle())))
                                 .text(text)
                                 .itemLeft(new ItemStack(items.getCooldownItem().getType()))
                                 .onComplete(completion -> {

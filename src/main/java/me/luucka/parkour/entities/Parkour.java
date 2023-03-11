@@ -32,10 +32,7 @@ public class Parkour {
     }
 
     @Getter
-    private List<String> playerCommands = new ArrayList<>();
-
-    @Getter
-    private List<String> consoleCommands = new ArrayList<>();
+    private List<String> completeCommands = new ArrayList<>();
 
     @Getter
     private long cooldown;
@@ -60,8 +57,7 @@ public class Parkour {
         this.endLocation = configuration.getLocation("end-location").location();
         this.minRegion = configuration.getLocation("region.min").location();
         this.maxRegion = configuration.getLocation("region.max").location();
-        this.playerCommands.addAll(configuration.getList("complete-commands.player", String.class));
-        this.consoleCommands.addAll(configuration.getList("complete-commands.console", String.class));
+        this.completeCommands.addAll(configuration.getList("complete-commands", String.class));
         this.cooldown = configuration.getLong("cooldown", -1L);
         this.status = Status.PLAY;
     }
@@ -73,8 +69,7 @@ public class Parkour {
         this.endLocation = setupParkour.getEndLocation();
         this.minRegion = setupParkour.getMinRegion();
         this.maxRegion = setupParkour.getMaxRegion();
-        this.playerCommands = setupParkour.getPlayerCommands();
-        this.consoleCommands = setupParkour.getConsoleCommands();
+        this.completeCommands = setupParkour.getCompleteCommands();
         this.cooldown = setupParkour.getCooldown();
         save();
     }
@@ -85,8 +80,7 @@ public class Parkour {
         this.endLocation = setupParkour.getEndLocation();
         this.minRegion = setupParkour.getMinRegion();
         this.maxRegion = setupParkour.getMaxRegion();
-        this.playerCommands = setupParkour.getPlayerCommands();
-        this.consoleCommands = setupParkour.getConsoleCommands();
+        this.completeCommands = setupParkour.getCompleteCommands();
         this.cooldown = setupParkour.getCooldown();
         save();
     }
@@ -96,8 +90,7 @@ public class Parkour {
         configuration.setProperty("end-location", endLocation);
         configuration.setProperty("region.min", minRegion);
         configuration.setProperty("region.max", maxRegion);
-        configuration.setProperty("complete-commands.player", playerCommands);
-        configuration.setProperty("complete-commands.console", consoleCommands);
+        configuration.setProperty("complete-commands", completeCommands);
         configuration.setProperty("cooldown", cooldown);
         configuration.save();
         playMode();

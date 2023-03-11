@@ -2,11 +2,10 @@ package me.luucka.parkour.entities;
 
 import lombok.Getter;
 import lombok.Setter;
+import me.luucka.parkour.Messages;
 import me.luucka.parkour.ParkourPlugin;
-import me.luucka.parkour.Settings;
 import me.luucka.parkour.managers.DataManager;
 import org.bukkit.Location;
-import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 
 import java.util.ArrayList;
@@ -17,7 +16,7 @@ import static me.luucka.parkour.utils.MMColor.toComponent;
 
 public class SetupParkour {
     private final DataManager dataManager;
-    private final Settings settings;
+    private final Messages messages;
 
     @Getter
     private String name;
@@ -41,10 +40,7 @@ public class SetupParkour {
     private Location maxRegion;
 
     @Getter
-    private List<String> playerCommands = new ArrayList<>();
-
-    @Getter
-    private List<String> consoleCommands = new ArrayList<>();
+    private List<String> completeCommands = new ArrayList<>();
 
     @Getter
     @Setter
@@ -52,39 +48,31 @@ public class SetupParkour {
 
     public SetupParkour(final ParkourPlugin plugin, final Parkour parkour) {
         this.dataManager = plugin.getDataManager();
-        this.settings = plugin.getSettings();
+        this.messages = plugin.getMessages();
         this.name = parkour.getName();
         this.parkour = parkour;
         this.startLocation = parkour.getStartLocation();
         this.endLocation = parkour.getEndLocation();
         this.minRegion = parkour.getMinRegion();
         this.maxRegion = parkour.getMaxRegion();
-        this.playerCommands = parkour.getPlayerCommands();
-        this.consoleCommands = parkour.getConsoleCommands();
+        this.completeCommands = parkour.getCompleteCommands();
         this.cooldown = parkour.getCooldown();
         parkour.setupMode();
     }
 
     public SetupParkour(final ParkourPlugin plugin, final String name) {
         this.dataManager = plugin.getDataManager();
-        this.settings = plugin.getSettings();
+        this.messages = plugin.getMessages();
         this.name = name;
     }
 
-    public void addPlayerCommands(final String string) {
-        playerCommands.addAll(Arrays.asList(string.split(";")));
-    }
-
-    public void clearPlayerCommands() {
-        playerCommands.clear();
-    }
-
     public void addConsoleCommands(final String string) {
-        consoleCommands.addAll(Arrays.asList(string.split(";")));
+        completeCommands.clear();
+        completeCommands.addAll(Arrays.asList(string.split(";")));
     }
 
     public void clearConsoleCommands() {
-        consoleCommands.clear();
+        completeCommands.clear();
     }
 
     public boolean canSave() {
@@ -92,8 +80,7 @@ public class SetupParkour {
                 && endLocation != null
                 && minRegion != null
                 && maxRegion != null
-                && playerCommands.size() >= 1
-                && consoleCommands.size() >= 1;
+                && completeCommands.size() >= 1;
     }
 
     public void save() {
@@ -103,9 +90,8 @@ public class SetupParkour {
             this.parkour.update(this);
         }
 
-        Block endBlock = endLocation.getBlock();
-        Sign sign = (Sign) endBlock.getState();
-        final String[] lines = settings.getCompleteSign(name);
+        Sign sign = (Sign) endLocation.getBlock().getState();
+        final String[] lines = messages.completeSign(name);
         for (int i = 0; i < lines.length; i++) {
             sign.line(i, toComponent(lines[i]));
         }

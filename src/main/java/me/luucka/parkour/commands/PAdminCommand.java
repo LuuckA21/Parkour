@@ -1,5 +1,6 @@
 package me.luucka.parkour.commands;
 
+import me.luucka.parkour.Lobby;
 import me.luucka.parkour.Messages;
 import me.luucka.parkour.ParkourPlugin;
 import me.luucka.parkour.entities.SetupParkour;
@@ -22,6 +23,7 @@ public class PAdminCommand extends BaseCommand {
     private final DataManager dataManager;
     private final SetupManager setupManager;
     private final Messages messages;
+    private final Lobby lo;
 
     public PAdminCommand(final ParkourPlugin plugin) {
         super("padmin", "Parkour admin command", "parkour.admin");
@@ -30,6 +32,7 @@ public class PAdminCommand extends BaseCommand {
         this.dataManager = plugin.getDataManager();
         this.setupManager = plugin.getSetupManager();
         this.messages = plugin.getMessages();
+        this.lo = plugin.getLobby();
         this.setUsage("/padmin < setup | delete | reload > [parkour]");
     }
 
@@ -78,6 +81,10 @@ public class PAdminCommand extends BaseCommand {
                 }));
                 player.sendMessage(toComponent(messages.deleteParkour(parkourName)));
             }
+            case LOBBY -> {
+                lo.setLobbyLocation(player.getLocation());
+                player.sendMessage(toComponent(messages.setLobby()));
+            }
             case RELOAD -> {
                 plugin.reload();
                 player.sendMessage(toComponent(messages.reload()));
@@ -105,6 +112,7 @@ public class PAdminCommand extends BaseCommand {
     private enum CommandType {
         SETUP(2),
         DELETE(2),
+        LOBBY(1),
         RELOAD(1);
 
         private final int argsNeeded;

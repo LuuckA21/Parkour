@@ -1,8 +1,6 @@
 package me.luucka.parkour.managers;
 
-import me.luucka.parkour.Messages;
 import me.luucka.parkour.ParkourPlugin;
-import me.luucka.parkour.Settings;
 import me.luucka.parkour.entities.Parkour;
 import org.bukkit.entity.Player;
 
@@ -13,18 +11,12 @@ import java.util.UUID;
 public class GameManager {
 
     private final ParkourPlugin plugin;
-    private final Messages messages;
-    private final PlayerDataManager playerDataManager;
-    private final Settings settings;
     private final PlayerRollbackManager rollbackManager;
 
     private final Map<UUID, ParkourSession> parkourSessions = new HashMap<>();
 
     public GameManager(ParkourPlugin plugin) {
         this.plugin = plugin;
-        this.messages = plugin.getMessages();
-        this.playerDataManager = plugin.getPlayerDataManager();
-        this.settings = plugin.getSettings();
         this.rollbackManager = new PlayerRollbackManager();
     }
 

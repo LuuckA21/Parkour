@@ -1,8 +1,8 @@
 package me.luucka.parkour.listeners;
 
+import me.luucka.parkour.Items;
 import me.luucka.parkour.Messages;
 import me.luucka.parkour.ParkourPlugin;
-import me.luucka.parkour.Settings;
 import me.luucka.parkour.entities.SetupParkour;
 import me.luucka.parkour.managers.SetupManager;
 import me.luucka.parkour.utils.MaterialUtil;
@@ -32,13 +32,13 @@ public class SetupListeners implements Listener {
     private final ParkourPlugin plugin;
     private final SetupManager setupManager;
     private final Messages messages;
-    private final Settings settings;
+    private final Items items;
 
     public SetupListeners(final ParkourPlugin plugin) {
         this.plugin = plugin;
         this.setupManager = plugin.getSetupManager();
         this.messages = plugin.getMessages();
-        this.settings = plugin.getSettings();
+        this.items = plugin.getItems();
     }
 
     @EventHandler
@@ -94,35 +94,17 @@ public class SetupListeners implements Listener {
                         event.setCancelled(true);
                     }
                 }
-                case "PLAYER-CMD" -> {
+                case "COMPLETE-CMD" -> {
                     if (event.getAction() == Action.RIGHT_CLICK_AIR) {
+                        List<String> completeCommands = setupManager.getSetupParkourByPlayer(player).getCompleteCommands();
+                        String text = completeCommands.size() >= 1 ? String.join(";", completeCommands) : "...";
                         new AnvilGUI.Builder()
                                 .title(toLegacy(toComponent(messages.setupWaitCommandsInput())))
-                                .text("...")
-                                .itemLeft(new ItemStack(settings.getPlayerCommandsItem().getType()))
-                                .onComplete(completion -> {
-                                    parkour.addPlayerCommands(completion.getText());
-                                    player.sendMessage(toComponent(messages.setupAddPlayerCommands(parkour.getName())));
-                                    return List.of(AnvilGUI.ResponseAction.close());
-                                })
-                                .plugin(plugin)
-                                .open(player);
-                    }
-                    if (player.isSneaking() && event.getAction() == Action.LEFT_CLICK_AIR) {
-                        parkour.clearPlayerCommands();
-                        player.sendMessage(toComponent(messages.setupClearPlayerCommands(parkour.getName())));
-                    }
-                    event.setCancelled(true);
-                }
-                case "CONSOLE-CMD" -> {
-                    if (event.getAction() == Action.RIGHT_CLICK_AIR) {
-                        new AnvilGUI.Builder()
-                                .title(toLegacy(toComponent(messages.setupWaitCommandsInput())))
-                                .text("...")
-                                .itemLeft(new ItemStack(settings.getConsoleCommandsItem().getType()))
+                                .text(text)
+                                .itemLeft(new ItemStack(items.getCompleteCommands().getType()))
                                 .onComplete(completion -> {
                                     parkour.addConsoleCommands(completion.getText());
-                                    player.sendMessage(toComponent(messages.setupAddConsoleCommands(parkour.getName())));
+                                    player.sendMessage(toComponent(messages.setupAddCompleteCommands(parkour.getName())));
                                     return List.of(AnvilGUI.ResponseAction.close());
                                 })
                                 .plugin(plugin)
@@ -130,16 +112,18 @@ public class SetupListeners implements Listener {
                     }
                     if (player.isSneaking() && event.getAction() == Action.LEFT_CLICK_AIR) {
                         parkour.clearConsoleCommands();
-                        player.sendMessage(toComponent(messages.setupClearConsoleCommands(parkour.getName())));
+                        player.sendMessage(toComponent(messages.setupClearCompleteCommands(parkour.getName())));
                     }
                     event.setCancelled(true);
                 }
                 case "COOLDOWN" -> {
                     if (event.getAction() == Action.RIGHT_CLICK_AIR) {
+                        long textCooldown = setupManager.getSetupParkourByPlayer(player).getCooldown();
+                        String text = textCooldown >= 1L ? String.valueOf(textCooldown) : "...";
                         new AnvilGUI.Builder()
                                 .title(toLegacy(toComponent(messages.setupWaitCooldownInput())))
-                                .text("...")
-                                .itemLeft(new ItemStack(settings.getCooldownItem().getType()))
+                                .text(text)
+                                .itemLeft(new ItemStack(items.getCooldownItem().getType()))
                                 .onComplete(completion -> {
                                     long cooldown = -1;
                                     try {

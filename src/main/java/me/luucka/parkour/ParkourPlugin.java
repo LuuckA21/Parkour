@@ -23,6 +23,12 @@ public final class ParkourPlugin extends JavaPlugin {
     private Settings settings;
 
     @Getter
+    private Items items;
+
+    @Getter
+    private Lobby lobby;
+
+    @Getter
     private Messages messages;
 
     @Getter
@@ -41,11 +47,17 @@ public final class ParkourPlugin extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        messages = new Messages(this);
-        configList.add(messages);
-
         settings = new Settings(this);
         configList.add(settings);
+
+        items = new Items(this);
+        configList.add(items);
+
+        lobby = new Lobby(this);
+        configList.add(lobby);
+
+        messages = new Messages(this);
+        configList.add(messages);
 
         dataManager = new DataManager(this);
         configList.add(dataManager);

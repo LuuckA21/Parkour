@@ -20,6 +20,7 @@ public class Messages implements IConfig {
     private String reload,
             commandUsage,
             deleteParkour,
+            setLobby,
             noPermission,
             noConsole,
             notExists,
@@ -32,16 +33,15 @@ public class Messages implements IConfig {
             parkourLeave,
             parkourCompleted,
             parkourWaitJoin,
+            timeDeathsLayout,
             setupEnterMode,
             setupSetStartLoc,
             setupSetEndLoc,
             setupTargetWallSign,
             setupSetPos1,
             setupSetPos2,
-            setupAddPlayerCommands,
-            setupClearPlayerCommands,
-            setupAddConsoleCommands,
-            setupClearConsoleCommands,
+            setupAddCompleteCommands,
+            setupClearCompleteCommands,
             setupWaitCommandsInput,
             setupSetCooldown,
             setupWaitCooldownInput,
@@ -49,6 +49,8 @@ public class Messages implements IConfig {
             setupSave,
             setupSetAllParameters,
             setupCancel;
+
+    private String[] completeSign;
 
     public String reload() {
         return reload;
@@ -60,6 +62,10 @@ public class Messages implements IConfig {
 
     public String deleteParkour(final String parkour) {
         return deleteParkour.replace("{PARKOUR}", parkour);
+    }
+
+    public String setLobby() {
+        return setLobby;
     }
 
     public String noPermission() {
@@ -109,8 +115,13 @@ public class Messages implements IConfig {
     public String parkourWaitJoin(final String parkour, final long time) {
         Instant instant = Instant.ofEpochMilli(time);
         LocalDateTime datetime = LocalDateTime.ofInstant(instant, ZoneOffset.UTC);
-        String formatted = DateTimeFormatter.ofPattern("HH:mm:ss").format(datetime);
-        return parkourWaitJoin.replace("{PARKOUR}", parkour).replace("{TIME}", formatted);
+        return parkourWaitJoin.replace("{PARKOUR}", parkour).replace("{TIME}", DateTimeFormatter.ofPattern("HH:mm:ss").format(datetime));
+    }
+
+    public String timeDeathsLayout(final long time, final int deaths) {
+        Instant instant = Instant.ofEpochMilli(time);
+        LocalDateTime datetime = LocalDateTime.ofInstant(instant, ZoneOffset.UTC);
+        return timeDeathsLayout.replace("{TIME}", DateTimeFormatter.ofPattern("HH:mm:ss.SSS").format(datetime)).replace("{DEATHS}", String.valueOf(deaths));
     }
 
     public String setupEnterMode(final String parkour) {
@@ -137,20 +148,12 @@ public class Messages implements IConfig {
         return setupSetPos2.replace("{PARKOUR}", parkour);
     }
 
-    public String setupAddPlayerCommands(final String parkour) {
-        return setupAddPlayerCommands.replace("{PARKOUR}", parkour);
+    public String setupAddCompleteCommands(final String parkour) {
+        return setupAddCompleteCommands.replace("{PARKOUR}", parkour);
     }
 
-    public String setupClearPlayerCommands(final String parkour) {
-        return setupClearPlayerCommands.replace("{PARKOUR}", parkour);
-    }
-
-    public String setupAddConsoleCommands(final String parkour) {
-        return setupAddConsoleCommands.replace("{PARKOUR}", parkour);
-    }
-
-    public String setupClearConsoleCommands(final String parkour) {
-        return setupClearConsoleCommands.replace("{PARKOUR}", parkour);
+    public String setupClearCompleteCommands(final String parkour) {
+        return setupClearCompleteCommands.replace("{PARKOUR}", parkour);
     }
 
     public String setupWaitCommandsInput() {
@@ -181,6 +184,14 @@ public class Messages implements IConfig {
         return setupCancel.replace("{PARKOUR}", parkour);
     }
 
+    public String[] completeSign(final String parkour) {
+        final String[] newSign = new String[4];
+        for (int i = 0; i < completeSign.length; i++) {
+            newSign[i] = completeSign[i].replace("{PARKOUR}", parkour);
+        }
+        return newSign;
+    }
+
     public Messages(ParkourPlugin plugin) {
         this.config = new BaseConfiguration(new File(plugin.getDataFolder(), "messages.yml"), "/messages.yml");
         reloadConfig();
@@ -193,6 +204,7 @@ public class Messages implements IConfig {
         reload = config.getString("reload", "").replace("{PREFIX}", prefix);
         commandUsage = config.getString("command-usage", "").replace("{PREFIX}", prefix);
         deleteParkour = config.getString("delete-parkour", "").replace("{PREFIX}", prefix);
+        setLobby = config.getString("set-lobby", "").replace("{PREFIX}", prefix);
 
         noPermission = config.getString("error.no-permission", "").replace("{PREFIX}", prefix);
         noConsole = config.getString("error.no-console", "").replace("{PREFIX}", prefix);
@@ -207,6 +219,7 @@ public class Messages implements IConfig {
         parkourLeave = config.getString("parkour.leave", "").replace("{PREFIX}", prefix);
         parkourCompleted = config.getString("parkour.completed", "").replace("{PREFIX}", prefix);
         parkourWaitJoin = config.getString("parkour.wait-join", "").replace("{PREFIX}", prefix);
+        timeDeathsLayout = config.getString("parkour.time-deaths-layout", "").replace("{PREFIX}", prefix);
 
         setupEnterMode = config.getString("setup.enter-mode", "").replace("{PREFIX}", prefix);
         setupSetStartLoc = config.getString("setup.set-start-loc", "").replace("{PREFIX}", prefix);
@@ -214,10 +227,8 @@ public class Messages implements IConfig {
         setupTargetWallSign = config.getString("setup.target-wall-sign", "").replace("{PREFIX}", prefix);
         setupSetPos1 = config.getString("setup.set-pos1", "").replace("{PREFIX}", prefix);
         setupSetPos2 = config.getString("setup.set-pos2", "").replace("{PREFIX}", prefix);
-        setupAddPlayerCommands = config.getString("setup.add-player-commands", "").replace("{PREFIX}", prefix);
-        setupClearPlayerCommands = config.getString("setup.clear-player-commands", "").replace("{PREFIX}", prefix);
-        setupAddConsoleCommands = config.getString("setup.add-console-commands", "").replace("{PREFIX}", prefix);
-        setupClearConsoleCommands = config.getString("setup.clear-console-commands", "").replace("{PREFIX}", prefix);
+        setupAddCompleteCommands = config.getString("setup.add-complete-commands", "").replace("{PREFIX}", prefix);
+        setupClearCompleteCommands = config.getString("setup.clear-complete-commands", "").replace("{PREFIX}", prefix);
         setupWaitCommandsInput = config.getString("setup.wait-commands-input", "").replace("{PREFIX}", prefix);
         setupSetCooldown = config.getString("setup.set-cooldown", "").replace("{PREFIX}", prefix);
         setupWaitCooldownInput = config.getString("setup.wait-cooldown-input", "").replace("{PREFIX}", prefix);
@@ -225,5 +236,12 @@ public class Messages implements IConfig {
         setupSave = config.getString("setup.save", "").replace("{PREFIX}", prefix);
         setupSetAllParameters = config.getString("setup.set-all-parameters", "").replace("{PREFIX}", prefix);
         setupCancel = config.getString("setup.cancel", "").replace("{PREFIX}", prefix);
+
+        completeSign = new String[]{
+                config.getString("complete-wall-sign.one", "").replace("{PREFIX}", prefix),
+                config.getString("complete-wall-sign.two", "").replace("{PREFIX}", prefix),
+                config.getString("complete-wall-sign.three", "").replace("{PREFIX}", prefix),
+                config.getString("complete-wall-sign.four", "").replace("{PREFIX}", prefix)
+        };
     }
 }

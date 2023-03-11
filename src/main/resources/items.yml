@@ -1,0 +1,63 @@
+# This plugin uses MiniMessage as the component text format.
+# LEGACY TEXT FORMATTING (§a/&a) IS NOT SUPPORTED
+# Use https://webui.adventure.kyori.net/ to preview parsed components
+# You can find full documentation on the format (including normal colors and formatting, rgb, click/hover events, and more)
+# here: https://docs.adventure.kyori.net/minimessage/format
+
+# You need help with Material name? Visit: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html
+
+# Parkour items section
+
+parkour-item:
+  leave:
+    material: "BARRIER"
+    name: "<#d63e4d><b>Leave"
+    lore:
+      - "<grey>(Right Click)"
+      - "<#2772e3>Leave parkour"
+
+# Setup-Mode items section
+
+setup-items:
+  set-start:
+    material: "EMERALD"
+    name: "<#12a3e6><b>Set start"
+    lore:
+      - "<grey>(Right Click)"
+      - "<#2772e3>Set start Location of the parkour"
+  set-end:
+    material: "DIAMOND"
+    name: "<#e07f10><b>Set end"
+    lore:
+      - "<grey>(Right Click on Wall Sign)"
+      - "<#2772e3>Set end Location of the parkour"
+  wand:
+    material: "BLAZE_ROD"
+    name: "<#e8bc38><b>Region<#2772e3><b>Wand"
+    lore:
+      - "<grey>(Left Click on block) <#2772e3><b>Pos-1"
+      - "<grey>(Right Click on block) <#2772e3><b>Pos-2"
+  complete-commands:
+    material: "PAPER"
+    name: "<#b229c2><b>Set complete commands"
+    lore:
+      - "<grey>(Right Click) <#2772e3>Add commands"
+      - "<grey>(Shift + Left Click) <#2772e3>Delete all commands"
+  set-cooldown:
+    material: "CLOCK"
+    name: "<#96e823><b>Set cooldown"
+    lore:
+      - "<grey>(Right Click)"
+      - "<#2772e3>Set cooldown Parkour"
+  save:
+    material: "BOOK"
+    name: "<#10d40d><b>Save Parkour"
+    lore:
+      - "<grey>(Right Click)"
+      - "<#2772e3>Save parkour"
+  cancel:
+    material: "BARRIER"
+    name: "<#c91818><b>Cancel"
+    lore:
+      - "<grey>(Right Click)"
+      - "<#2772e3>Exit setup without save"

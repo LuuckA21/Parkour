@@ -1,7 +1,7 @@
 package me.luucka.parkour.managers;
 
+import me.luucka.parkour.Items;
 import me.luucka.parkour.ParkourPlugin;
-import me.luucka.parkour.Settings;
 import me.luucka.parkour.entities.SetupParkour;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
@@ -11,13 +11,13 @@ import java.util.Map;
 import java.util.UUID;
 
 public class SetupManager {
-    private final Settings settings;
+    private final Items items;
     private final PlayerRollbackManager rollbackManager;
 
     private final Map<UUID, SetupParkour> playerInSetup = new HashMap<>();
 
     public SetupManager(ParkourPlugin plugin) {
-        this.settings = plugin.getSettings();
+        this.items = plugin.getItems();
         this.rollbackManager = new PlayerRollbackManager();
     }
 
@@ -45,13 +45,12 @@ public class SetupManager {
     }
 
     private void setItems(final Player player) {
-        player.getInventory().setItem(0, settings.getStartItem());
-        player.getInventory().setItem(1, settings.getEndItem());
-        player.getInventory().setItem(2, settings.getWandItem());
-        player.getInventory().setItem(3, settings.getPlayerCommandsItem());
-        player.getInventory().setItem(4, settings.getConsoleCommandsItem());
-        player.getInventory().setItem(5, settings.getCooldownItem());
-        player.getInventory().setItem(7, settings.getSaveItem());
-        player.getInventory().setItem(8, settings.getCancelItem());
+        player.getInventory().setItem(0, items.getStartItem());
+        player.getInventory().setItem(1, items.getEndItem());
+        player.getInventory().setItem(2, items.getWandItem());
+        player.getInventory().setItem(3, items.getCompleteCommands());
+        player.getInventory().setItem(4, items.getCooldownItem());
+        player.getInventory().setItem(6, items.getSaveItem());
+        player.getInventory().setItem(8, items.getCancelItem());
     }
 }

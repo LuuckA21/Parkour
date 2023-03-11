@@ -1,85 +1,16 @@
-# This config use Kyori Adventure format for color and decoration
-# For help visit: https://docs.advntr.dev/minimessage/format.html
+# This plugin uses MiniMessage as the component text format.
+# LEGACY TEXT FORMATTING (§a/&a) IS NOT SUPPORTED
+# Use https://webui.adventure.kyori.net/ to preview parsed components
+# You can find full documentation on the format (including normal colors and formatting, rgb, click/hover events, and more)
+# here: https://docs.adventure.kyori.net/minimessage/format
 
-# The old format does not work (&a)
+# Set to TRUE if you want to check permission on parkour join
+# Permission: parkour.join.<name>
+# Give parkour.bypass to skip permission check and cooldown
 
-# With parkour.bypass permission you can join every parkour and bypass the cooldown
-
-# If this is TRUE you need parkour.join.<name> permission to join a parkour
 per-parkour-permission: false
 
-# This section refer to setup-mode items
-# For help visit: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html (list of material)
-setup-items:
-  set-start:
-    material: "EMERALD"
-    name: "<#12a3e6><b>Set start"
-    lore:
-      - "<grey>(Right Click)"
-      - "<#2772e3>Set start Location of the parkour"
-  set-end:
-    material: "DIAMOND"
-    name: "<#e07f10><b>Set end"
-    lore:
-      - "<grey>(Right Click on Wall Sign)"
-      - "<#2772e3>Set end Location of the parkour"
-  wand:
-    material: "BLAZE_ROD"
-    name: "<#e8bc38><b>Region<#2772e3><b>Wand"
-    lore:
-      - "<grey>(Left Click on block) <#2772e3><b>Pos-1"
-      - "<grey>(Right Click on block) <#2772e3><b>Pos-2"
-  complete-player-cmd:
-    material: "PAPER"
-    name: "<#b229c2><b>Set player commands"
-    lore:
-      - "<grey>(Right Click) <#2772e3>Add commands"
-      - "<grey>(Shift + Left Click) <#2772e3>Delete all commands"
-  complete-console-cmd:
-    material: "MAP"
-    name: "<#b229c2><b>Set console commands"
-    lore:
-      - "<grey>(Right Click) <#2772e3>Add commands"
-      - "<grey>(Shift + Left Click) <#2772e3>Delete all commands"
-  set-cooldown:
-    material: "CLOCK"
-    name: "<#96e823><b>Set cooldown"
-    lore:
-      - "<grey>(Right Click)"
-      - "<#2772e3>Set cooldown Parkour"
-  save:
-    material: "BOOK"
-    name: "<#10d40d><b>Save Parkour"
-    lore:
-      - "<grey>(Right Click)"
-      - "<#2772e3>Save parkour"
-  cancel:
-    material: "BARRIER"
-    name: "<#c91818><b>Cancel"
-    lore:
-      - "<grey>(Right Click)"
-      - "<#2772e3>Exit setup without save"
+# Set MongoDB connection URI
+# For more information, please see https://docs.mongodb.com/manual/reference/connection-string/
 
-# This section refer to parkour items
-# For help visit: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html (list of material)
-parkour-item:
-  leave:
-    material: "BARRIER"
-    name: "<#d63e4d><b>Leave"
-    lore:
-      - "<grey>(Right Click)"
-      - "<#2772e3>Leave parkour"
-
-# This section represents the complete sign for ending parkour
-complete-wall-sign:
-  one: "{PREFIX}"
-  two: ""
-  three: "<green>{PARKOUR}"
-  four: "<grey>Click to complete"
-
-# Commands run by Player when quit parkour
-commands-on-quit:
-  - "cmd"
-
-# - For more information, please see https://docs.mongodb.com/manual/reference/connection-string/
 mongodb-connection-uri: "mongodb://localhost:27017/"

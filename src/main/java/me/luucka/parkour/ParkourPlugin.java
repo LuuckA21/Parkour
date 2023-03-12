@@ -1,6 +1,7 @@
 package me.luucka.parkour;
 
 import lombok.Getter;
+import me.luucka.papergui.PaperGUI;
 import me.luucka.parkour.commands.BaseCommand;
 import me.luucka.parkour.commands.PAdminCommand;
 import me.luucka.parkour.commands.ParkourCommand;
@@ -18,6 +19,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public final class ParkourPlugin extends JavaPlugin {
+
+    public static PaperGUI paperGUI;
 
     @Getter
     private Settings settings;
@@ -75,6 +78,8 @@ public final class ParkourPlugin extends JavaPlugin {
         new PAdminCommand(this);
         new ParkourCommand(this);
         BaseCommand.registerHelpMap("Parkour", "Parkour", "parkour.admin", "Parkour Help page");
+
+        paperGUI = new PaperGUI(this);
     }
 
     @Override

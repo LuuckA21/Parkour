@@ -37,17 +37,23 @@ setup-items:
     lore:
       - "<grey>(Left Click on block) <#2772e3><b>Pos-1"
       - "<grey>(Right Click on block) <#2772e3><b>Pos-2"
+  more-options:
+    material: "REPEATER"
+    name: "<#79828f><b>More options"
+    lore:
+      - "<grey>(Right Click)"
+      - "<#2772e3>Open more options menu"
   complete-commands:
     material: "PAPER"
     name: "<#b229c2><b>Set complete commands"
     lore:
-      - "<grey>(Right Click) <#2772e3>Add commands"
-      - "<grey>(Shift + Left Click) <#2772e3>Delete all commands"
+      - "<grey>(Left Click) <#2772e3>Add commands"
+      - "<grey>(Shift + Right Click) <#2772e3>Delete all commands"
   set-cooldown:
     material: "CLOCK"
     name: "<#96e823><b>Set cooldown"
     lore:
-      - "<grey>(Right Click)"
+      - "<grey>(Left Click)"
       - "<#2772e3>Set cooldown Parkour"
   save:
     material: "BOOK"

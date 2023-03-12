@@ -48,8 +48,7 @@ public class SetupManager {
         player.getInventory().setItem(0, items.getStartItem());
         player.getInventory().setItem(1, items.getEndItem());
         player.getInventory().setItem(2, items.getWandItem());
-        player.getInventory().setItem(3, items.getCompleteCommands());
-        player.getInventory().setItem(4, items.getCooldownItem());
+        player.getInventory().setItem(4, items.getMoreOptions());
         player.getInventory().setItem(6, items.getSaveItem());
         player.getInventory().setItem(8, items.getCancelItem());
     }

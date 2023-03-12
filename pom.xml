@@ -6,7 +6,7 @@
 
     <groupId>me.luucka</groupId>
     <artifactId>Parkour</artifactId>
-    <version>Build-14</version>
+    <version>Build-15</version>
     <packaging>jar</packaging>
 
     <name>Parkour</name>
@@ -46,6 +46,23 @@
                         </goals>
                         <configuration>
                             <createDependencyReducedPom>false</createDependencyReducedPom>
+                            <filters>
+                                <filter>
+                                    <artifact>*:*</artifact>
+                                    <excludes>
+                                        <exclude>META-INF/*.SF</exclude>
+                                        <exclude>META-INF/*.DSA</exclude>
+                                        <exclude>META-INF/*.RSA</exclude>
+                                        <exclude>META-INF/*.MF</exclude>
+                                    </excludes>
+                                </filter>
+                            </filters>
+                            <relocations>
+                                <relocation>
+                                    <pattern>me.luucka.papergui</pattern>
+                                    <shadedPattern>me.luucka.parkour.lib.papergui</shadedPattern>
+                                </relocation>
+                            </relocations>
                         </configuration>
                     </execution>
                 </executions>
@@ -105,6 +122,11 @@
             <artifactId>anvilgui</artifactId>
             <version>${libs.anvilgui}</version>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>me.luucka</groupId>
+            <artifactId>PaperGUI</artifactId>
+            <version>0.0.1</version>
         </dependency>
     </dependencies>
 </project>

@@ -34,6 +34,7 @@ setup:
   target-wall-sign: "{PREFIX} <#d63e4d>Please target a Wall Sign"
   set-pos1: "{PREFIX} <#2772e3>Region POS-1 for <grey>{PARKOUR} <#2772e3>has been set"
   set-pos2: "{PREFIX} <#2772e3>Region POS-2 for <grey>{PARKOUR} <#2772e3>has been set"
+  more-options-menu-title: "<#79828f>Parkour <#474747>{PARKOUR} <#79828f>options"
   add-complete-commands: "{PREFIX} <#2772e3>Complete commands for <grey>{PARKOUR} <#2772e3>has been added"
   clear-complete-commands: "{PREFIX} <#d63e4d>Complete commands for <grey>{PARKOUR} <#d63e4d>has been deleted"
   complete-commands-gui-title: "<#737373>Type commands sep by <grey>;"

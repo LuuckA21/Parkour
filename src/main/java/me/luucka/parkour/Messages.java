@@ -40,6 +40,7 @@ public class Messages implements IConfig {
             setupTargetWallSign,
             setupSetPos1,
             setupSetPos2,
+            moreOptionsMenuTitle,
             setupAddCompleteCommands,
             setupClearCompleteCommands,
             completeCommandsGuiTitle,
@@ -148,6 +149,10 @@ public class Messages implements IConfig {
         return setupSetPos2.replace("{PARKOUR}", parkour);
     }
 
+    public String moreOptionsMenuTitle(final String parkour) {
+        return moreOptionsMenuTitle.replace("{PARKOUR}", parkour);
+    }
+
     public String setupAddCompleteCommands(final String parkour) {
         return setupAddCompleteCommands.replace("{PARKOUR}", parkour);
     }
@@ -227,6 +232,7 @@ public class Messages implements IConfig {
         setupTargetWallSign = config.getString("setup.target-wall-sign", "").replace("{PREFIX}", prefix);
         setupSetPos1 = config.getString("setup.set-pos1", "").replace("{PREFIX}", prefix);
         setupSetPos2 = config.getString("setup.set-pos2", "").replace("{PREFIX}", prefix);
+        moreOptionsMenuTitle = config.getString("setup.more-options-menu-title", "").replace("{PREFIX}", prefix);
         setupAddCompleteCommands = config.getString("setup.add-complete-commands", "").replace("{PREFIX}", prefix);
         setupClearCompleteCommands = config.getString("setup.clear-complete-commands", "").replace("{PREFIX}", prefix);
         completeCommandsGuiTitle = config.getString("setup.complete-commands-gui-title", "").replace("{PREFIX}", prefix);

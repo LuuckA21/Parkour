@@ -26,6 +26,7 @@ public class Items implements IConfig {
             startItem,
             endItem,
             wandItem,
+            moreOptions,
             completeCommands,
             cooldownItem,
             saveItem,
@@ -37,6 +38,7 @@ public class Items implements IConfig {
         startItem = toItemStack(config.getItem("setup-items.set-start"), "setup-item", "SETSTART");
         endItem = toItemStack(config.getItem("setup-items.set-end"), "setup-item", "SETEND");
         wandItem = toItemStack(config.getItem("setup-items.wand"), "setup-item", "WAND");
+        moreOptions = toItemStack(config.getItem("setup-items.more-options"), "setup-item", "MORE-OPTIONS");
         completeCommands = toItemStack(config.getItem("setup-items.complete-commands"), "setup-item", "COMPLETE-CMD");
         cooldownItem = toItemStack(config.getItem("setup-items.set-cooldown"), "setup-item", "COOLDOWN");
         saveItem = toItemStack(config.getItem("setup-items.save"), "setup-item", "SAVE");

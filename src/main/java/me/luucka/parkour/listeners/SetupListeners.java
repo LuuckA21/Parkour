@@ -1,5 +1,7 @@
 package me.luucka.parkour.listeners;
 
+import me.luucka.papergui.buttons.PGButton;
+import me.luucka.papergui.menu.PGMenu;
 import me.luucka.parkour.Items;
 import me.luucka.parkour.Messages;
 import me.luucka.parkour.ParkourPlugin;
@@ -7,12 +9,15 @@ import me.luucka.parkour.entities.SetupParkour;
 import me.luucka.parkour.managers.SetupManager;
 import me.luucka.parkour.utils.MaterialUtil;
 import net.wesjd.anvilgui.AnvilGUI;
+import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.inventory.ClickType;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerKickEvent;
@@ -94,52 +99,6 @@ public class SetupListeners implements Listener {
                         event.setCancelled(true);
                     }
                 }
-                case "COMPLETE-CMD" -> {
-                    if (event.getAction() == Action.RIGHT_CLICK_AIR) {
-                        List<String> completeCommands = setupManager.getSetupParkourByPlayer(player).getCompleteCommands();
-                        String text = completeCommands.size() >= 1 ? String.join(";", completeCommands) : "...";
-                        new AnvilGUI.Builder()
-                                .title(toLegacy(toComponent(messages.completeCommandsGuiTitle())))
-                                .text(text)
-                                .itemLeft(new ItemStack(items.getCompleteCommands().getType()))
-                                .onComplete(completion -> {
-                                    parkour.addConsoleCommands(completion.getText());
-                                    player.sendMessage(toComponent(messages.setupAddCompleteCommands(parkour.getName())));
-                                    return List.of(AnvilGUI.ResponseAction.close());
-                                })
-                                .plugin(plugin)
-                                .open(player);
-                    }
-                    if (player.isSneaking() && event.getAction() == Action.LEFT_CLICK_AIR) {
-                        parkour.clearConsoleCommands();
-                        player.sendMessage(toComponent(messages.setupClearCompleteCommands(parkour.getName())));
-                    }
-                    event.setCancelled(true);
-                }
-                case "COOLDOWN" -> {
-                    if (event.getAction() == Action.RIGHT_CLICK_AIR) {
-                        long textCooldown = setupManager.getSetupParkourByPlayer(player).getCooldown();
-                        String text = textCooldown >= 1L ? String.valueOf(textCooldown) : "...";
-                        new AnvilGUI.Builder()
-                                .title(toLegacy(toComponent(messages.setCooldownGuiTitle())))
-                                .text(text)
-                                .itemLeft(new ItemStack(items.getCooldownItem().getType()))
-                                .onComplete(completion -> {
-                                    long cooldown = -1;
-                                    try {
-                                        cooldown = Long.parseLong(completion.getText());
-                                    } catch (final NumberFormatException e) {
-                                        return List.of(AnvilGUI.ResponseAction.replaceInputText(toLegacy(toComponent(messages.setupInserValidCooldown()))));
-                                    }
-                                    parkour.setCooldown(cooldown);
-                                    player.sendMessage(toComponent(messages.setupSetCooldown(parkour.getName())));
-                                    return List.of(AnvilGUI.ResponseAction.close());
-                                })
-                                .plugin(plugin)
-                                .open(player);
-                    }
-                    event.setCancelled(true);
-                }
                 case "SAVE" -> {
                     if (event.getAction() != Action.RIGHT_CLICK_AIR) return;
                     if (!parkour.canSave()) {
@@ -158,6 +117,65 @@ public class SetupListeners implements Listener {
                     setupManager.playerQuit(player);
                     player.sendMessage(toComponent(messages.setupCancel(parkour.getName())));
                     event.setCancelled(true);
+                }
+                case "MORE-OPTIONS" -> {
+                    if (event.getAction() != Action.RIGHT_CLICK_AIR) return;
+
+                    PGMenu menu = ParkourPlugin.paperGUI.create(messages.moreOptionsMenuTitle(parkour.getName()), 3);
+                    menu.setEnableAutomaticPagination(false);
+
+                    PGButton completeCommandsButton = new PGButton(items.getCompleteCommands())
+                            .withListener((InventoryClickEvent clickEvent) -> {
+                                if (clickEvent.getClick() == ClickType.LEFT) {
+                                    List<String> completeCommands = setupManager.getSetupParkourByPlayer(player).getCompleteCommands();
+                                    String text = completeCommands.size() >= 1 ? String.join(";", completeCommands) : "...";
+                                    new AnvilGUI.Builder()
+                                            .title(toLegacy(toComponent(messages.completeCommandsGuiTitle())))
+                                            .text(text)
+                                            .itemLeft(new ItemStack(items.getCompleteCommands().getType()))
+                                            .onComplete(completion -> {
+                                                parkour.addConsoleCommands(completion.getText());
+                                                player.sendMessage(toComponent(messages.setupAddCompleteCommands(parkour.getName())));
+                                                return List.of(AnvilGUI.ResponseAction.openInventory(menu.getInventory()));
+                                            })
+                                            .onClose(anvilPlayer -> Bukkit.getScheduler().runTask(plugin, () -> anvilPlayer.openInventory(menu.getInventory())))
+                                            .plugin(plugin)
+                                            .open(player);
+                                } else if (clickEvent.getClick() == ClickType.SHIFT_RIGHT) {
+                                    parkour.clearConsoleCommands();
+                                    player.sendMessage(toComponent(messages.setupClearCompleteCommands(parkour.getName())));
+                                }
+                            });
+                    menu.setButton(10, completeCommandsButton);
+
+                    PGButton cooldownButton = new PGButton(items.getCooldownItem())
+                            .withListener((InventoryClickEvent clickEvent) -> {
+                                if (clickEvent.getClick() == ClickType.LEFT) {
+                                    long textCooldown = setupManager.getSetupParkourByPlayer(player).getCooldown();
+                                    String text = textCooldown >= 1L ? String.valueOf(textCooldown) : "...";
+                                    new AnvilGUI.Builder()
+                                            .title(toLegacy(toComponent(messages.setCooldownGuiTitle())))
+                                            .text(text)
+                                            .itemLeft(new ItemStack(items.getCooldownItem().getType()))
+                                            .onComplete(completion -> {
+                                                long cooldown = -1;
+                                                try {
+                                                    cooldown = Long.parseLong(completion.getText());
+                                                } catch (final NumberFormatException e) {
+                                                    return List.of(AnvilGUI.ResponseAction.replaceInputText(toLegacy(toComponent(messages.setupInserValidCooldown()))));
+                                                }
+                                                parkour.setCooldown(cooldown);
+                                                player.sendMessage(toComponent(messages.setupSetCooldown(parkour.getName())));
+                                                return List.of(AnvilGUI.ResponseAction.openInventory(menu.getInventory()));
+                                            })
+                                            .onClose(anvilPlayer -> Bukkit.getScheduler().runTask(plugin, () -> anvilPlayer.openInventory(menu.getInventory())))
+                                            .plugin(plugin)
+                                            .open(player);
+                                }
+                            });
+                    menu.setButton(12, cooldownButton);
+
+                    player.openInventory(menu.getInventory());
                 }
             }
         }

@@ -53,8 +53,8 @@ setup-items:
     material: "CLOCK"
     name: "<#96e823><b>Set cooldown"
     lore:
-      - "<grey>(Left Click)"
-      - "<#2772e3>Set cooldown Parkour"
+      - "<grey>(Left Click) <#2772e3>Set cooldown"
+      - "<grey>(Shift + Right Click) <#2772e3>Reset cooldown"
   save:
     material: "BOOK"
     name: "<#10d40d><b>Save Parkour"

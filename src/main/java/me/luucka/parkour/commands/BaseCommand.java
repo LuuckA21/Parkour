@@ -12,8 +12,6 @@ import org.jetbrains.annotations.NotNull;
 import java.lang.reflect.Field;
 import java.util.*;
 
-import static me.luucka.parkour.utils.MMColor.toComponent;
-
 public abstract class BaseCommand extends BukkitCommand {
 
     private static final Set<BaseCommand> registeredCommands = new HashSet<>();
@@ -45,7 +43,7 @@ public abstract class BaseCommand extends BukkitCommand {
         try {
             execute(new CommandSource(sender), args);
         } catch (Exception e) {
-            sender.sendMessage(toComponent(e.getMessage()));
+            sender.sendRichMessage(e.getMessage());
         }
         return false;
     }

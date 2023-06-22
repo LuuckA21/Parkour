@@ -75,9 +75,7 @@ public class ParkourCommand extends BaseCommand {
                                 }
                             }
                             return parkour;
-                        }).orElseThrow(() -> {
-                            throw new RuntimeException(messages.notExists(parkourName));
-                        })
+                        }).orElseThrow(() -> new RuntimeException(messages.notExists(parkourName)))
                 );
             }
             case LEAVE -> {

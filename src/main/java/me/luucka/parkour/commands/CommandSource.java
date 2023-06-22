@@ -5,8 +5,6 @@ import lombok.Setter;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import static me.luucka.parkour.utils.MMColor.toComponent;
-
 public class CommandSource {
 
     @Getter
@@ -29,7 +27,7 @@ public class CommandSource {
     }
 
     public void sendMessage(final String message) {
-        if (!message.isEmpty()) sender.sendMessage(toComponent(message));
+        if (!message.isEmpty()) sender.sendRichMessage(message);
     }
 
     public boolean hasPermission(final String permission) {

@@ -2,7 +2,7 @@ name: Parkour
 version: '${project.version}'
 main: me.luucka.parkour.ParkourPlugin
 loader: me.luucka.parkour.ParkourPluginLoader
-api-version: 1.19
+api-version: '1.20'
 authors: [ LuuckA ]
 description: Parkour plugin
 dependencies:

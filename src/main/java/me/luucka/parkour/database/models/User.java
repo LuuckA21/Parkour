@@ -30,6 +30,7 @@ public class User {
             return;
         }
         PlayerParkourData old = playerParkourData.get(parkour);
+        
         if (parkourData.getDeaths() < old.getDeaths()) {
             old.setDeaths(parkourData.getDeaths());
         }

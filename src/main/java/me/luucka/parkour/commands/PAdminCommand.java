@@ -13,8 +13,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static me.luucka.parkour.utils.MMColor.toComponent;
-
 
 public class PAdminCommand extends BaseCommand {
 
@@ -33,7 +31,7 @@ public class PAdminCommand extends BaseCommand {
         this.setupManager = plugin.getSetupManager();
         this.messages = plugin.getMessages();
         this.lo = plugin.getLobby();
-        this.setUsage("/padmin < setup | delete | reload > [parkour]");
+        this.setUsage("/padmin < setup | delete | lobby | reload > [parkour]");
     }
 
     @Override
@@ -69,25 +67,23 @@ public class PAdminCommand extends BaseCommand {
                                 () -> new SetupParkour(plugin, parkourName)
                         )
                 );
-                player.sendMessage(toComponent(messages.setupEnterMode(parkourName)));
+                player.sendRichMessage(messages.setupEnterMode(parkourName));
             }
             case DELETE -> {
                 if (args.length < cmd.argsNeeded)
                     throw new Exception(messages.commandUsage("/padmin delete <parkour>"));
 
                 final String parkourName = args[1].toLowerCase();
-                dataManager.delete(dataManager.getParkour(parkourName).orElseThrow(() -> {
-                    throw new RuntimeException(messages.notExists(args[1]));
-                }));
-                player.sendMessage(toComponent(messages.deleteParkour(parkourName)));
+                dataManager.delete(dataManager.getParkour(parkourName).orElseThrow(() -> new RuntimeException(messages.notExists(args[1]))));
+                player.sendRichMessage(messages.deleteParkour(parkourName));
             }
             case LOBBY -> {
                 lo.setLobbyLocation(player.getLocation());
-                player.sendMessage(toComponent(messages.setLobby()));
+                player.sendRichMessage(messages.setLobby());
             }
             case RELOAD -> {
                 plugin.reload();
-                player.sendMessage(toComponent(messages.reload()));
+                player.sendRichMessage(messages.reload());
             }
         }
     }

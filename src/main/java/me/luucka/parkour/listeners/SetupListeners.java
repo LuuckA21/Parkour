@@ -10,6 +10,7 @@ import me.luucka.parkour.managers.SetupManager;
 import me.luucka.parkour.utils.MaterialUtil;
 import net.wesjd.anvilgui.AnvilGUI;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -27,6 +28,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
+import java.util.Collections;
 import java.util.List;
 
 import static me.luucka.parkour.utils.MMColor.toComponent;
@@ -68,7 +70,7 @@ public class SetupListeners implements Listener {
                 case "SETSTART" -> {
                     if (event.getAction() != Action.RIGHT_CLICK_AIR) return;
                     parkour.setStartLocation(player.getLocation());
-                    player.sendMessage(toComponent(messages.setupSetStartLoc(parkour.getName())));
+                    player.sendRichMessage(messages.setupSetStartLoc(parkour.getName()));
                     event.setCancelled(true);
                 }
                 case "SETEND" -> {
@@ -76,11 +78,11 @@ public class SetupListeners implements Listener {
                     final Block targetBlock = event.getClickedBlock();
                     if (targetBlock == null) return;
                     if (!MaterialUtil.isWallSign(targetBlock.getType())) {
-                        player.sendMessage(toComponent(messages.setupTargetWallSign()));
+                        player.sendRichMessage(messages.setupTargetWallSign());
                         return;
                     }
                     parkour.setEndLocation(targetBlock.getLocation());
-                    player.sendMessage(toComponent(messages.setupSetEndLoc(parkour.getName())));
+                    player.sendRichMessage(messages.setupSetEndLoc(parkour.getName()));
                     event.setCancelled(true);
                 }
                 case "WAND" -> {
@@ -89,33 +91,33 @@ public class SetupListeners implements Listener {
                         targetBlock = event.getClickedBlock();
                         if (targetBlock == null) return;
                         parkour.setMinRegion(targetBlock.getLocation());
-                        player.sendMessage(toComponent(messages.setupSetPos1(parkour.getName())));
+                        player.sendRichMessage(messages.setupSetPos1(parkour.getName()));
                         event.setCancelled(true);
                     } else if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
                         targetBlock = event.getClickedBlock();
                         if (targetBlock == null) return;
                         parkour.setMaxRegion(event.getClickedBlock().getLocation());
-                        player.sendMessage(toComponent(messages.setupSetPos2(parkour.getName())));
+                        player.sendRichMessage(messages.setupSetPos2(parkour.getName()));
                         event.setCancelled(true);
                     }
                 }
                 case "SAVE" -> {
                     if (event.getAction() != Action.RIGHT_CLICK_AIR) return;
                     if (!parkour.canSave()) {
-                        player.sendMessage(toComponent(messages.setupSetAllParameters()));
+                        player.sendRichMessage(messages.setupSetAllParameters());
                         event.setCancelled(true);
                         return;
                     }
                     parkour.save();
                     setupManager.playerQuit(player);
-                    player.sendMessage(toComponent(messages.setupSave(parkour.getName())));
+                    player.sendRichMessage(messages.setupSave(parkour.getName()));
                     event.setCancelled(true);
                 }
                 case "CANCEL" -> {
                     if (event.getAction() != Action.RIGHT_CLICK_AIR) return;
                     parkour.cancel();
                     setupManager.playerQuit(player);
-                    player.sendMessage(toComponent(messages.setupCancel(parkour.getName())));
+                    player.sendRichMessage(messages.setupCancel(parkour.getName()));
                     event.setCancelled(true);
                 }
                 case "MORE-OPTIONS" -> {
@@ -133,17 +135,20 @@ public class SetupListeners implements Listener {
                                             .title(toLegacy(toComponent(messages.completeCommandsGuiTitle())))
                                             .text(text)
                                             .itemLeft(new ItemStack(items.getCompleteCommands().getType()))
-                                            .onComplete(completion -> {
-                                                parkour.addConsoleCommands(completion.getText());
-                                                player.sendMessage(toComponent(messages.setupAddCompleteCommands(parkour.getName())));
-                                                return List.of(AnvilGUI.ResponseAction.openInventory(menu.getInventory()));
+                                            .onClick((slot, stateSnapshot) -> {
+                                                if (slot != AnvilGUI.Slot.OUTPUT) return Collections.emptyList();
+                                                if (stateSnapshot.getOutputItem().getType() == Material.AIR)
+                                                    return Collections.emptyList();
+                                                parkour.addConsoleCommands(stateSnapshot.getText());
+                                                stateSnapshot.getPlayer().sendRichMessage(messages.setupAddCompleteCommands(parkour.getName()));
+                                                return Collections.singletonList(AnvilGUI.ResponseAction.openInventory(menu.getInventory()));
                                             })
-                                            .onClose(anvilPlayer -> Bukkit.getScheduler().runTask(plugin, () -> anvilPlayer.openInventory(menu.getInventory())))
+                                            .onClose(stateSnapshot -> Bukkit.getScheduler().runTask(plugin, () -> stateSnapshot.getPlayer().openInventory(menu.getInventory())))
                                             .plugin(plugin)
                                             .open(player);
                                 } else if (clickEvent.getClick() == ClickType.SHIFT_RIGHT) {
                                     parkour.clearConsoleCommands();
-                                    player.sendMessage(toComponent(messages.setupClearCompleteCommands(parkour.getName())));
+                                    player.sendRichMessage(messages.setupClearCompleteCommands(parkour.getName()));
                                 }
                             });
                     menu.setButton(10, completeCommandsButton);
@@ -157,20 +162,27 @@ public class SetupListeners implements Listener {
                                             .title(toLegacy(toComponent(messages.setCooldownGuiTitle())))
                                             .text(text)
                                             .itemLeft(new ItemStack(items.getCooldownItem().getType()))
-                                            .onComplete(completion -> {
-                                                long cooldown = -1;
+                                            .onClick((slot, stateSnapshot) -> {
+                                                if (slot != AnvilGUI.Slot.OUTPUT) return Collections.emptyList();
+                                                if (stateSnapshot.getOutputItem().getType() == Material.AIR)
+                                                    return Collections.emptyList();
+
+                                                long cooldown;
                                                 try {
-                                                    cooldown = Long.parseLong(completion.getText());
+                                                    cooldown = Long.parseLong(stateSnapshot.getText());
                                                 } catch (final NumberFormatException e) {
                                                     return List.of(AnvilGUI.ResponseAction.replaceInputText(toLegacy(toComponent(messages.setupInserValidCooldown()))));
                                                 }
                                                 parkour.setCooldown(cooldown);
-                                                player.sendMessage(toComponent(messages.setupSetCooldown(parkour.getName())));
+                                                stateSnapshot.getPlayer().sendRichMessage(messages.setupSetCooldown(parkour.getName()));
                                                 return List.of(AnvilGUI.ResponseAction.openInventory(menu.getInventory()));
                                             })
-                                            .onClose(anvilPlayer -> Bukkit.getScheduler().runTask(plugin, () -> anvilPlayer.openInventory(menu.getInventory())))
+                                            .onClose(stateSnapshot -> Bukkit.getScheduler().runTask(plugin, () -> stateSnapshot.getPlayer().openInventory(menu.getInventory())))
                                             .plugin(plugin)
                                             .open(player);
+                                } else if (clickEvent.getClick() == ClickType.SHIFT_RIGHT) {
+                                    parkour.setCooldown(-1L);
+                                    player.sendRichMessage(messages.setupResetCooldown(parkour.getName()));
                                 }
                             });
                     menu.setButton(12, cooldownButton);
@@ -188,7 +200,7 @@ public class SetupListeners implements Listener {
         final SetupParkour parkour = setupManager.getSetupParkourByPlayer(player);
         parkour.cancel();
         setupManager.playerQuit(player);
-        player.sendMessage(toComponent(messages.setupCancel(parkour.getName())));
+        player.sendRichMessage(messages.setupCancel(parkour.getName()));
     }
 
     @EventHandler

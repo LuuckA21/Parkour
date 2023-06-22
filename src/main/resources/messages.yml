@@ -39,6 +39,7 @@ setup:
   clear-complete-commands: "{PREFIX} <#d63e4d>Complete commands for <grey>{PARKOUR} <#d63e4d>has been deleted"
   complete-commands-gui-title: "<#737373>Type commands sep by <grey>;"
   set-cooldown: "{PREFIX} <#2772e3>Cooldown for <grey>{PARKOUR} <#2772e3>has been added"
+  reset-cooldown: "{PREFIX} <#d63e4d>Cooldown for <grey>{PARKOUR} <#d63e4d>has been reset"
   set-cooldown-gui-title: "<#737373>Type cooldown"
   insert-valid-cooldown-value: "<#d63e4d>Insert a valid value"
   save: "{PREFIX} <#31e31e>Parkour <grey>{PARKOUR} <#31e31e>Saved"

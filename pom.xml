@@ -6,7 +6,7 @@
 
     <groupId>me.luucka</groupId>
     <artifactId>Parkour</artifactId>
-    <version>Build-15</version>
+    <version>Build-16</version>
     <packaging>jar</packaging>
 
     <name>Parkour</name>
@@ -16,10 +16,11 @@
         <java.version>17</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <libs.lombok>1.18.26</libs.lombok>
+        <libs.lombok>1.18.28</libs.lombok>
         <libs.configurate-yaml>4.1.2</libs.configurate-yaml>
-        <libs.mongodb>4.9.0</libs.mongodb>
-        <libs.anvilgui>1.6.3-SNAPSHOT</libs.anvilgui>
+        <libs.mongodb>4.9.1</libs.mongodb>
+        <libs.anvilgui>1.6.6-SNAPSHOT</libs.anvilgui>
+        <libs.papergui>1.0.0</libs.papergui>
 
     </properties>
 
@@ -37,7 +38,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
-                <version>3.4.1</version>
+                <version>3.5.0</version>
                 <executions>
                     <execution>
                         <phase>package</phase>
@@ -46,23 +47,6 @@
                         </goals>
                         <configuration>
                             <createDependencyReducedPom>false</createDependencyReducedPom>
-                            <filters>
-                                <filter>
-                                    <artifact>*:*</artifact>
-                                    <excludes>
-                                        <exclude>META-INF/*.SF</exclude>
-                                        <exclude>META-INF/*.DSA</exclude>
-                                        <exclude>META-INF/*.RSA</exclude>
-                                        <exclude>META-INF/*.MF</exclude>
-                                    </excludes>
-                                </filter>
-                            </filters>
-                            <relocations>
-                                <relocation>
-                                    <pattern>me.luucka.papergui</pattern>
-                                    <shadedPattern>me.luucka.parkour.lib.papergui</shadedPattern>
-                                </relocation>
-                            </relocations>
                         </configuration>
                     </execution>
                 </executions>
@@ -89,13 +73,17 @@
             <id>codemc-snapshots</id>
             <url>https://repo.codemc.io/repository/maven-snapshots/</url>
         </repository>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
     </repositories>
 
     <dependencies>
         <dependency>
             <groupId>io.papermc.paper</groupId>
             <artifactId>paper-api</artifactId>
-            <version>1.19.3-R0.1-SNAPSHOT</version>
+            <version>1.20.1-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
 
@@ -124,9 +112,10 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>me.luucka</groupId>
+            <groupId>com.github.LuuckA21</groupId>
             <artifactId>PaperGUI</artifactId>
-            <version>0.0.1</version>
+            <version>${libs.papergui}</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 </project>

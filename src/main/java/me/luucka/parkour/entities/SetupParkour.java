@@ -7,6 +7,7 @@ import me.luucka.parkour.ParkourPlugin;
 import me.luucka.parkour.managers.DataManager;
 import org.bukkit.Location;
 import org.bukkit.block.Sign;
+import org.bukkit.block.sign.Side;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -93,7 +94,8 @@ public class SetupParkour {
         Sign sign = (Sign) endLocation.getBlock().getState();
         final String[] lines = messages.completeSign(name);
         for (int i = 0; i < lines.length; i++) {
-            sign.line(i, toComponent(lines[i]));
+//            sign.line(i, toComponent(lines[i]));
+            sign.getSide(Side.FRONT).line(i, toComponent(lines[i]));
         }
         sign.update();
     }

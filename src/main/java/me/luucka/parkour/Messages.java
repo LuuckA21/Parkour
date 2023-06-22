@@ -45,6 +45,7 @@ public class Messages implements IConfig {
             setupClearCompleteCommands,
             completeCommandsGuiTitle,
             setupSetCooldown,
+            setupResetCooldown,
             setCooldownGuiTitle,
             setupInserValidCooldown,
             setupSave,
@@ -169,6 +170,10 @@ public class Messages implements IConfig {
         return setupSetCooldown.replace("{PARKOUR}", parkour);
     }
 
+    public String setupResetCooldown(final String parkour) {
+        return setupResetCooldown.replace("{PARKOUR}", parkour);
+    }
+
     public String setCooldownGuiTitle() {
         return setCooldownGuiTitle;
     }
@@ -237,6 +242,7 @@ public class Messages implements IConfig {
         setupClearCompleteCommands = config.getString("setup.clear-complete-commands", "").replace("{PREFIX}", prefix);
         completeCommandsGuiTitle = config.getString("setup.complete-commands-gui-title", "").replace("{PREFIX}", prefix);
         setupSetCooldown = config.getString("setup.set-cooldown", "").replace("{PREFIX}", prefix);
+        setupResetCooldown = config.getString("setup.reset-cooldown", "").replace("{PREFIX}", prefix);
         setCooldownGuiTitle = config.getString("setup.set-cooldown-gui-title", "").replace("{PREFIX}", prefix);
         setupInserValidCooldown = config.getString("setup.insert-valid-cooldown-value", "").replace("{PREFIX}", prefix);
         setupSave = config.getString("setup.save", "").replace("{PREFIX}", prefix);

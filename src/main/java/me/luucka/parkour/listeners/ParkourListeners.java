@@ -1,10 +1,12 @@
 package me.luucka.parkour.listeners;
 
 import me.luucka.parkour.ParkourPlugin;
+import me.luucka.parkour.entities.Checkpoint;
 import me.luucka.parkour.entities.Parkour;
 import me.luucka.parkour.managers.GameManager;
 import me.luucka.parkour.managers.ParkourSession;
 import me.luucka.parkour.utils.MaterialUtil;
+import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
 import org.bukkit.entity.EntityType;
@@ -23,6 +25,8 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
+
+import java.util.Optional;
 
 public class ParkourListeners implements Listener {
 
@@ -58,6 +62,31 @@ public class ParkourListeners implements Listener {
     }
 
     @EventHandler
+    public void playerGetCheckpoint(final PlayerInteractEvent event) {
+        final Player player = event.getPlayer();
+        if (!gameManager.isPlayerInParkourSession(player)) return;
+
+        if (event.getAction() == Action.PHYSICAL && event.getClickedBlock().getType() == Material.LIGHT_WEIGHTED_PRESSURE_PLATE) {
+            ParkourSession session = gameManager.getParkourSessionByPlayer(player);
+
+            Optional<Checkpoint> optionClickedCheckpoint = session.getParkour().getCheckpointByLocation(event.getClickedBlock().getLocation());
+            if (optionClickedCheckpoint.isEmpty()) return;
+            Checkpoint clickedCheckpoint = optionClickedCheckpoint.get();
+
+            if (session.getCurrentCheckpoint().getNumber() == clickedCheckpoint.getNumber()) return;
+
+            Optional<Checkpoint> optionalNextCheckpoint = session.getNextCheckpoint();
+            if (optionalNextCheckpoint.isEmpty()) return;
+            Checkpoint nextCheckpoint = optionalNextCheckpoint.get();
+
+            if (!clickedCheckpoint.equals(nextCheckpoint)) return;
+
+            session.setCurrentCheckpoint(nextCheckpoint);
+            player.sendRichMessage("You got the checkpoint number: " + (nextCheckpoint.getNumber() + 1));
+        }
+    }
+
+    @EventHandler
     public void onParkourEnd(final PlayerInteractEvent event) {
         final Player player = event.getPlayer();
         if (!gameManager.isPlayerInParkourSession(player)) return;
@@ -80,7 +109,7 @@ public class ParkourListeners implements Listener {
         final Parkour parkour = session.getParkour();
         if (!parkour.getRegion().contains(event.getTo())) {
             session.incrementDeaths();
-            player.teleport(parkour.getStartLocation());
+            player.teleport(session.getCurrentCheckpoint().getTpLocation());
         }
     }
 

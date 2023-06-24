@@ -37,6 +37,23 @@ setup-items:
     lore:
       - "<grey>(Left Click on block) <#2772e3><b>Pos-1"
       - "<grey>(Right Click on block) <#2772e3><b>Pos-2"
+  checkpoint:
+    material: "LIGHT_WEIGHTED_PRESSURE_PLATE"
+    name: "<#d6c50d><b>Checkpoints"
+    lore:
+      - "<grey>(Right Click) <#2772e3>Set new checkpoint"
+      - "<grey>(Shift + Right Click) <#2772e3>Open checkpoint list"
+      - "<grey>(Shift + Left Click) <#2772e3>Reset checkpoints"
+  checkpoint-list-item:
+    material: "LIGHT_WEIGHTED_PRESSURE_PLATE"
+    name: "<#d6c50d>Checkpoint: <#e87910>{NUMBER}"
+    lore:
+      - "<#cccccc>X: <#969696>{X}"
+      - "<#cccccc>Y: <#969696>{Y}"
+      - "<#cccccc>Z: <#969696>{Z}"
+      - ""
+      - "<grey>(Left Click) <#2772e3>Teleport to checkpoint"
+      - "<grey>(Shift + Right Click) <#2772e3>Remove checkpoint"
   more-options:
     material: "REPEATER"
     name: "<#79828f><b>More options"

@@ -1,16 +1,20 @@
 package me.luucka.parkour.managers;
 
 import lombok.Getter;
+import lombok.Setter;
 import me.luucka.parkour.Items;
 import me.luucka.parkour.Lobby;
 import me.luucka.parkour.Messages;
 import me.luucka.parkour.ParkourPlugin;
 import me.luucka.parkour.database.models.PlayerParkourData;
+import me.luucka.parkour.entities.Checkpoint;
 import me.luucka.parkour.entities.Parkour;
 import net.kyori.adventure.title.Title;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
+
+import java.util.Optional;
 
 import static me.luucka.parkour.utils.MMColor.toComponent;
 
@@ -26,6 +30,9 @@ public class ParkourSession extends BukkitRunnable {
     private final Player player;
     @Getter
     private final Parkour parkour;
+    @Getter
+    @Setter
+    private Checkpoint currentCheckpoint;
 
     private int deaths = 0;
 
@@ -41,6 +48,7 @@ public class ParkourSession extends BukkitRunnable {
         this.items = plugin.getItems();
         this.player = player;
         this.parkour = parkour;
+        this.currentCheckpoint = new Checkpoint(-1, parkour.getStartLocation(), parkour.getStartLocation());
     }
 
     public void start() {
@@ -73,6 +81,10 @@ public class ParkourSession extends BukkitRunnable {
 
     public void incrementDeaths() {
         deaths++;
+    }
+
+    public Optional<Checkpoint> getNextCheckpoint() {
+        return parkour.getCheckpointByNumber(currentCheckpoint.getNumber() + 1);
     }
 
     @Override

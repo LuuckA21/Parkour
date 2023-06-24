@@ -5,6 +5,7 @@ import me.luucka.papergui.menu.PGMenu;
 import me.luucka.parkour.Items;
 import me.luucka.parkour.Messages;
 import me.luucka.parkour.ParkourPlugin;
+import me.luucka.parkour.entities.Checkpoint;
 import me.luucka.parkour.entities.SetupParkour;
 import me.luucka.parkour.managers.SetupManager;
 import me.luucka.parkour.utils.MaterialUtil;
@@ -19,6 +20,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerKickEvent;
@@ -29,7 +31,10 @@ import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
 import java.util.Collections;
+import java.util.Comparator;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static me.luucka.parkour.utils.MMColor.toComponent;
 import static me.luucka.parkour.utils.MMColor.toLegacy;
@@ -188,6 +193,40 @@ public class SetupListeners implements Listener {
                     menu.setButton(12, cooldownButton);
 
                     player.openInventory(menu.getInventory());
+                }
+                case "CHECKPOINT" -> {
+                    if (event.getAction().isRightClick()) {
+                        if (!player.isSneaking()) {
+                            final Block block = player.getLocation().getBlock();
+                            parkour.addCheckpoint(new Checkpoint(parkour.getCheckpoints().size(), player.getLocation(), block.getLocation()));
+                            block.setType(Material.LIGHT_WEIGHTED_PRESSURE_PLATE);
+                            player.sendRichMessage("Set new checkpoint");
+                        } else {
+                            PGMenu menu = ParkourPlugin.paperGUI.create("Checkpoints", 3);
+                            menu.setEnableAutomaticPagination(true);
+
+                            LinkedHashSet<Checkpoint> sortCheckpoints = parkour.getCheckpoints().stream().sorted(Comparator.comparing(Checkpoint::getNumber)).collect(Collectors.toCollection(LinkedHashSet::new));
+                            for (Checkpoint checkpoint : sortCheckpoints) {
+
+                                PGButton button = new PGButton(items.getCheckpointListItem(checkpoint.getNumber() + 1, checkpoint.getBlockLocation()))
+                                        .withListener((InventoryClickEvent clickEvent) -> {
+                                            if (clickEvent.getClick() == ClickType.LEFT) {
+                                                player.teleport(checkpoint.getTpLocation());
+                                            } else if (clickEvent.getClick() == ClickType.SHIFT_RIGHT) {
+                                                parkour.removeCheckpoint(checkpoint);
+                                                player.closeInventory(InventoryCloseEvent.Reason.PLUGIN);
+                                                checkpoint.getBlockLocation().getBlock().setType(Material.AIR);
+                                            }
+                                        });
+                                menu.addButton(button);
+                            }
+                            player.openInventory(menu.getInventory());
+                        }
+                    } else if (event.getAction().isLeftClick() && player.isSneaking()) {
+                        parkour.getCheckpoints().forEach(checkpoint -> checkpoint.getBlockLocation().getBlock().setType(Material.AIR));
+                        parkour.resetAllCheckpoints();
+                        player.sendRichMessage("Reset checkpoints done");
+                    }
                 }
             }
         }

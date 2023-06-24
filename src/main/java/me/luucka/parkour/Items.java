@@ -5,9 +5,14 @@ import me.luucka.parkour.config.BaseConfiguration;
 import me.luucka.parkour.config.IConfig;
 import me.luucka.parkour.config.entities.LazyItem;
 import me.luucka.parkour.utils.ItemBuilder;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextReplacementConfig;
+import org.bukkit.Location;
 import org.bukkit.inventory.ItemStack;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Items implements IConfig {
 
@@ -26,11 +31,29 @@ public class Items implements IConfig {
             startItem,
             endItem,
             wandItem,
+            checkpointItem,
+            checkpointListItem,
             moreOptions,
             completeCommands,
             cooldownItem,
             saveItem,
             cancelItem;
+
+    private LazyItem lazyCheckpointListItem;
+
+    public ItemStack getCheckpointListItem(final int number, final Location location) {
+        Component newName = lazyCheckpointListItem.name();
+        List<Component> newLore = new ArrayList<>(lazyCheckpointListItem.lore());
+        newLore.replaceAll(component -> component
+                .replaceText(TextReplacementConfig.builder().matchLiteral("{X}").replacement(Double.toString(location.getX())).build())
+                .replaceText(TextReplacementConfig.builder().matchLiteral("{Y}").replacement(Double.toString(location.getY())).build())
+                .replaceText(TextReplacementConfig.builder().matchLiteral("{Z}").replacement(Double.toString(location.getZ())).build())
+        );
+        return new ItemBuilder(lazyCheckpointListItem.material())
+                .setDisplayName(newName.replaceText(TextReplacementConfig.builder().matchLiteral("{NUMBER}").replacement(Integer.toString(number)).build()))
+                .setLore(newLore)
+                .toItemStack();
+    }
 
     @Override
     public void reloadConfig() {
@@ -38,6 +61,8 @@ public class Items implements IConfig {
         startItem = toItemStack(config.getItem("setup-items.set-start"), "setup-item", "SETSTART");
         endItem = toItemStack(config.getItem("setup-items.set-end"), "setup-item", "SETEND");
         wandItem = toItemStack(config.getItem("setup-items.wand"), "setup-item", "WAND");
+        checkpointItem = toItemStack(config.getItem("setup-items.checkpoint"), "setup-item", "CHECKPOINT");
+        lazyCheckpointListItem = config.getItem("setup-items.checkpoint-list-item");
         moreOptions = toItemStack(config.getItem("setup-items.more-options"), "setup-item", "MORE-OPTIONS");
         completeCommands = toItemStack(config.getItem("setup-items.complete-commands"), "setup-item", "COMPLETE-CMD");
         cooldownItem = toItemStack(config.getItem("setup-items.set-cooldown"), "setup-item", "COOLDOWN");

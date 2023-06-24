@@ -9,9 +9,7 @@ import org.bukkit.Location;
 import org.bukkit.block.Sign;
 import org.bukkit.block.sign.Side;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 import static me.luucka.parkour.utils.MMColor.toComponent;
 
@@ -47,6 +45,10 @@ public class SetupParkour {
     @Setter
     private long cooldown = -1L;
 
+
+    @Getter
+    private Set<Checkpoint> checkpoints = new HashSet<>();
+
     public SetupParkour(final ParkourPlugin plugin, final Parkour parkour) {
         this.dataManager = plugin.getDataManager();
         this.messages = plugin.getMessages();
@@ -58,6 +60,7 @@ public class SetupParkour {
         this.maxRegion = parkour.getMaxRegion();
         this.completeCommands = parkour.getCompleteCommands();
         this.cooldown = parkour.getCooldown();
+        this.checkpoints = parkour.getCheckpoints();
         parkour.setupMode();
     }
 
@@ -74,6 +77,18 @@ public class SetupParkour {
 
     public void clearConsoleCommands() {
         completeCommands.clear();
+    }
+
+    public void addCheckpoint(final Checkpoint checkpoint) {
+        checkpoints.add(checkpoint);
+    }
+
+    public void removeCheckpoint(final Checkpoint checkpoint) {
+        checkpoints.remove(checkpoint);
+    }
+
+    public void resetAllCheckpoints() {
+        checkpoints.clear();
     }
 
     public boolean canSave() {
@@ -94,7 +109,6 @@ public class SetupParkour {
         Sign sign = (Sign) endLocation.getBlock().getState();
         final String[] lines = messages.completeSign(name);
         for (int i = 0; i < lines.length; i++) {
-//            sign.line(i, toComponent(lines[i]));
             sign.getSide(Side.FRONT).line(i, toComponent(lines[i]));
         }
         sign.update();

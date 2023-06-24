@@ -4,8 +4,7 @@ import lombok.Getter;
 import me.luucka.parkour.config.BaseConfiguration;
 import org.bukkit.Location;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class Parkour {
 
@@ -40,6 +39,9 @@ public class Parkour {
     @Getter
     private Status status;
 
+    @Getter
+    private Set<Checkpoint> checkpoints = new HashSet<>();
+
     public void setupMode() {
         if (this.status == Status.SETUP) return;
         this.status = Status.SETUP;
@@ -48,6 +50,15 @@ public class Parkour {
     public void playMode() {
         if (this.status == Status.PLAY) return;
         this.status = Status.PLAY;
+    }
+
+
+    public Optional<Checkpoint> getCheckpointByNumber(int number) {
+        return checkpoints.stream().filter(checkpoint -> checkpoint.getNumber() == number).findFirst();
+    }
+
+    public Optional<Checkpoint> getCheckpointByLocation(final Location location) {
+        return checkpoints.stream().filter(checkpoint -> checkpoint.getBlockLocation().equals(location)).findFirst();
     }
 
     public Parkour(final BaseConfiguration configuration) {
@@ -60,6 +71,12 @@ public class Parkour {
         this.completeCommands.addAll(configuration.getList("complete-commands", String.class));
         this.cooldown = configuration.getLong("cooldown", -1L);
         this.status = Status.PLAY;
+        if (configuration.hasProperty("checkpoints")) {
+            Set<String> keys = configuration.getKeys("checkpoints");
+            for (final String chkp : keys) {
+                checkpoints.add(new Checkpoint(Integer.parseInt(chkp), configuration.getLocation("checkpoints." + chkp + ".tp").location(), configuration.getLocation("checkpoints." + chkp + ".block").location()));
+            }
+        }
     }
 
     public Parkour(final BaseConfiguration configuration, final SetupParkour setupParkour) {
@@ -71,6 +88,7 @@ public class Parkour {
         this.maxRegion = setupParkour.getMaxRegion();
         this.completeCommands = setupParkour.getCompleteCommands();
         this.cooldown = setupParkour.getCooldown();
+        this.checkpoints = setupParkour.getCheckpoints();
         save();
     }
 
@@ -82,6 +100,7 @@ public class Parkour {
         this.maxRegion = setupParkour.getMaxRegion();
         this.completeCommands = setupParkour.getCompleteCommands();
         this.cooldown = setupParkour.getCooldown();
+        this.checkpoints = setupParkour.getCheckpoints();
         save();
     }
 
@@ -92,6 +111,11 @@ public class Parkour {
         configuration.setProperty("region.max", maxRegion);
         configuration.setProperty("complete-commands", completeCommands);
         configuration.setProperty("cooldown", cooldown);
+        configuration.removeProperty("checkpoints");
+        checkpoints.forEach(checkpoint -> {
+            configuration.setProperty("checkpoints." + checkpoint.getNumber() + ".tp", checkpoint.getTpLocation());
+            configuration.setProperty("checkpoints." + checkpoint.getNumber() + ".block", checkpoint.getBlockLocation());
+        });
         configuration.save();
         playMode();
     }

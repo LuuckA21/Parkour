@@ -32,8 +32,6 @@ public class GameManager {
         parkourSessions.remove(player.getUniqueId());
         rollbackManager.restore(player);
         session.end(ended);
-
-
     }
 
     public boolean isPlayerInParkourSession(final Player player) {

@@ -53,6 +53,7 @@ setup-items:
       - "<#cccccc>Z: <#969696>{Z}"
       - ""
       - "<grey>(Left Click) <#2772e3>Teleport to checkpoint"
+      - "<grey>(Middle Click) <#2772e3>Update checkpoint location"
       - "<grey>(Shift + Right Click) <#2772e3>Remove checkpoint"
   more-options:
     material: "REPEATER"

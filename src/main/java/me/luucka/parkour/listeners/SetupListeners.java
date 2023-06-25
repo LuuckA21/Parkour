@@ -197,12 +197,10 @@ public class SetupListeners implements Listener {
                 case "CHECKPOINT" -> {
                     if (event.getAction().isRightClick()) {
                         if (!player.isSneaking()) {
-                            final Block block = player.getLocation().getBlock();
-                            parkour.addCheckpoint(new Checkpoint(parkour.getCheckpoints().size(), player.getLocation(), block.getLocation()));
-                            block.setType(Material.LIGHT_WEIGHTED_PRESSURE_PLATE);
-                            player.sendRichMessage("Set new checkpoint");
+                            parkour.addCheckpoint(new Checkpoint(parkour.getCheckpoints().size(), player.getLocation(), player.getLocation().getBlock().getLocation()));
+                            player.sendRichMessage(messages.getSetNewCheckpoint(parkour.getName(), parkour.getCheckpoints().size()));
                         } else {
-                            PGMenu menu = ParkourPlugin.paperGUI.create("Checkpoints", 3);
+                            PGMenu menu = ParkourPlugin.paperGUI.create(messages.getCheckpointMenuTitle(parkour.getName()), 3);
                             menu.setEnableAutomaticPagination(true);
 
                             LinkedHashSet<Checkpoint> sortCheckpoints = parkour.getCheckpoints().stream().sorted(Comparator.comparing(Checkpoint::getNumber)).collect(Collectors.toCollection(LinkedHashSet::new));
@@ -211,21 +209,34 @@ public class SetupListeners implements Listener {
                                 PGButton button = new PGButton(items.getCheckpointListItem(checkpoint.getNumber() + 1, checkpoint.getBlockLocation()))
                                         .withListener((InventoryClickEvent clickEvent) -> {
                                             if (clickEvent.getClick() == ClickType.LEFT) {
+                                                // tp
                                                 player.teleport(checkpoint.getTpLocation());
+                                                player.sendRichMessage(messages.getTpToCheckpoint(parkour.getName(), checkpoint.getNumber() + 1));
                                             } else if (clickEvent.getClick() == ClickType.SHIFT_RIGHT) {
+                                                // remove
                                                 parkour.removeCheckpoint(checkpoint);
+                                                parkour.getCheckpoints().forEach(checkp -> {
+                                                    if (checkp.getNumber() > checkpoint.getNumber()) {
+                                                        checkp.setNumber(checkp.getNumber() - 1);
+                                                    }
+                                                });
                                                 player.closeInventory(InventoryCloseEvent.Reason.PLUGIN);
-                                                checkpoint.getBlockLocation().getBlock().setType(Material.AIR);
+                                                player.sendRichMessage(messages.getRemoveCheckpoint(parkour.getName(), checkpoint.getNumber() + 1));
+                                            } else if (clickEvent.getClick() == ClickType.MIDDLE) {
+                                                // update
+                                                checkpoint.updateLocation(player.getLocation(), player.getLocation().getBlock().getLocation());
+                                                player.closeInventory(InventoryCloseEvent.Reason.PLUGIN);
+                                                player.sendRichMessage(messages.getUpdateCheckpoint(parkour.getName(), checkpoint.getNumber() + 1));
                                             }
+                                            clickEvent.setCancelled(true);
                                         });
                                 menu.addButton(button);
                             }
                             player.openInventory(menu.getInventory());
                         }
                     } else if (event.getAction().isLeftClick() && player.isSneaking()) {
-                        parkour.getCheckpoints().forEach(checkpoint -> checkpoint.getBlockLocation().getBlock().setType(Material.AIR));
                         parkour.resetAllCheckpoints();
-                        player.sendRichMessage("Reset checkpoints done");
+                        player.sendRichMessage(messages.getResetAllCheckpoints(parkour.getName()));
                     }
                 }
             }

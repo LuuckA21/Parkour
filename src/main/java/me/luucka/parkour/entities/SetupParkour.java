@@ -6,6 +6,7 @@ import me.luucka.parkour.Messages;
 import me.luucka.parkour.ParkourPlugin;
 import me.luucka.parkour.managers.DataManager;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.block.Sign;
 import org.bukkit.block.sign.Side;
 
@@ -80,14 +81,17 @@ public class SetupParkour {
     }
 
     public void addCheckpoint(final Checkpoint checkpoint) {
+        checkpoint.getBlockLocation().getBlock().setType(Material.LIGHT_WEIGHTED_PRESSURE_PLATE);
         checkpoints.add(checkpoint);
     }
 
     public void removeCheckpoint(final Checkpoint checkpoint) {
+        checkpoint.getBlockLocation().getBlock().setType(Material.AIR);
         checkpoints.remove(checkpoint);
     }
 
     public void resetAllCheckpoints() {
+        checkpoints.forEach(checkpoint -> checkpoint.getBlockLocation().getBlock().setType(Material.AIR));
         checkpoints.clear();
     }
 
@@ -111,6 +115,7 @@ public class SetupParkour {
         for (int i = 0; i < lines.length; i++) {
             sign.getSide(Side.FRONT).line(i, toComponent(lines[i]));
         }
+        sign.setWaxed(true);
         sign.update();
     }
 

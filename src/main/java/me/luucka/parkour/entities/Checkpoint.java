@@ -2,12 +2,15 @@ package me.luucka.parkour.entities;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 import org.bukkit.Location;
+import org.bukkit.Material;
 
 @AllArgsConstructor
 public class Checkpoint {
 
     @Getter
+    @Setter
     private int number;
 
     @Getter
@@ -15,6 +18,13 @@ public class Checkpoint {
 
     @Getter
     private Location blockLocation;
+
+    public void updateLocation(final Location tpLocation, final Location blockLocation) {
+        this.blockLocation.getBlock().setType(Material.AIR);
+        this.tpLocation = tpLocation;
+        this.blockLocation = blockLocation;
+        this.blockLocation.getBlock().setType(Material.LIGHT_WEIGHTED_PRESSURE_PLATE);
+    }
 
     @Override
     public boolean equals(Object o) {

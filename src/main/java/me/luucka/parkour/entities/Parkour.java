@@ -5,6 +5,7 @@ import me.luucka.parkour.config.BaseConfiguration;
 import org.bukkit.Location;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class Parkour {
 
@@ -112,10 +113,11 @@ public class Parkour {
         configuration.setProperty("complete-commands", completeCommands);
         configuration.setProperty("cooldown", cooldown);
         configuration.removeProperty("checkpoints");
-        checkpoints.forEach(checkpoint -> {
-            configuration.setProperty("checkpoints." + checkpoint.getNumber() + ".tp", checkpoint.getTpLocation());
-            configuration.setProperty("checkpoints." + checkpoint.getNumber() + ".block", checkpoint.getBlockLocation());
-        });
+        checkpoints.stream().sorted(Comparator.comparing(Checkpoint::getNumber)).collect(Collectors.toCollection(LinkedHashSet::new))
+                .forEach(checkpoint -> {
+                    configuration.setProperty("checkpoints." + checkpoint.getNumber() + ".tp", checkpoint.getTpLocation());
+                    configuration.setProperty("checkpoints." + checkpoint.getNumber() + ".block", checkpoint.getBlockLocation());
+                });
         configuration.save();
         playMode();
     }

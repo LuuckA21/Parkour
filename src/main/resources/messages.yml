@@ -45,6 +45,12 @@ setup:
   save: "{PREFIX} <#31e31e>Parkour <grey>{PARKOUR} <#31e31e>Saved"
   set-all-parameters: "{PREFIX} <#d63e4d>Please sets all parkour parameters"
   cancel: "{PREFIX} <#d63e4d>Parkour <grey>{PARKOUR} <#d63e4d>setup canceled"
+  checkpoint-menu-title: "<#474747>{PARKOUR} <#d6c50d>Checkpoints"
+  set-new-checkpoint: "{PREFIX} <#2772e3>Checkpoint <#e87910>{NUMBER} <#2772e3>in <grey>{PARKOUR} <#2772e3>has been set"
+  tp-to-checkpoint: "{PREFIX} <#2772e3>Teleported to Checkpoint <#e87910>{NUMBER} <#2772e3>in <grey>{PARKOUR}"
+  remove-checkpoint: "{PREFIX} <#d63e4d>Checkpoint <#e87910>{NUMBER} <#d63e4d>in <grey>{PARKOUR} <#d63e4d>has been delete"
+  update-checkpoint: "{PREFIX} <#2772e3>Checkpoint <#e87910>{NUMBER} <#2772e3>in <grey>{PARKOUR} <#2772e3>has been update"
+  reset-all-checkpoints: "{PREFIX} <#d63e4d>Checkpoints for <grey>{PARKOUR} <#d63e4d>has been deleted"
 
 # This section represents the complete sign for ending parkour
 

@@ -50,7 +50,13 @@ public class Messages implements IConfig {
             setupInserValidCooldown,
             setupSave,
             setupSetAllParameters,
-            setupCancel;
+            setupCancel,
+            checkpointMenuTitle,
+            setNewCheckpoint,
+            tpToCheckpoint,
+            removeCheckpoint,
+            updateCheckpoint,
+            resetAllCheckpoints;
 
     private String[] completeSign;
 
@@ -194,6 +200,30 @@ public class Messages implements IConfig {
         return setupCancel.replace("{PARKOUR}", parkour);
     }
 
+    public String getCheckpointMenuTitle(final String parkour) {
+        return checkpointMenuTitle.replace("{PARKOUR}", parkour);
+    }
+
+    public String getSetNewCheckpoint(final String parkour, final int number) {
+        return setNewCheckpoint.replace("{PARKOUR}", parkour).replace("{NUMBER}", Integer.toString(number));
+    }
+
+    public String getTpToCheckpoint(final String parkour, final int number) {
+        return tpToCheckpoint.replace("{PARKOUR}", parkour).replace("{NUMBER}", Integer.toString(number));
+    }
+
+    public String getRemoveCheckpoint(final String parkour, final int number) {
+        return removeCheckpoint.replace("{PARKOUR}", parkour).replace("{NUMBER}", Integer.toString(number));
+    }
+
+    public String getUpdateCheckpoint(final String parkour, final int number) {
+        return updateCheckpoint.replace("{PARKOUR}", parkour).replace("{NUMBER}", Integer.toString(number));
+    }
+
+    public String getResetAllCheckpoints(final String parkour) {
+        return resetAllCheckpoints.replace("{PARKOUR}", parkour);
+    }
+
     public String[] completeSign(final String parkour) {
         final String[] newSign = new String[4];
         for (int i = 0; i < completeSign.length; i++) {
@@ -248,6 +278,13 @@ public class Messages implements IConfig {
         setupSave = config.getString("setup.save", "").replace("{PREFIX}", prefix);
         setupSetAllParameters = config.getString("setup.set-all-parameters", "").replace("{PREFIX}", prefix);
         setupCancel = config.getString("setup.cancel", "").replace("{PREFIX}", prefix);
+
+        checkpointMenuTitle = config.getString("setup.checkpoint-menu-title", "").replace("{PREFIX}", prefix);
+        setNewCheckpoint = config.getString("setup.set-new-checkpoint", "").replace("{PREFIX}", prefix);
+        tpToCheckpoint = config.getString("setup.tp-to-checkpoint", "").replace("{PREFIX}", prefix);
+        removeCheckpoint = config.getString("setup.remove-checkpoint", "").replace("{PREFIX}", prefix);
+        updateCheckpoint = config.getString("setup.update-checkpoint", "").replace("{PREFIX}", prefix);
+        resetAllCheckpoints = config.getString("setup.reset-all-checkpoints", "").replace("{PREFIX}", prefix);
 
         completeSign = new String[]{
                 config.getString("complete-wall-sign.one", "").replace("{PREFIX}", prefix),

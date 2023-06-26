@@ -6,7 +6,7 @@
 
     <groupId>me.luucka</groupId>
     <artifactId>Parkour</artifactId>
-    <version>Build-18</version>
+    <version>Build-19</version>
     <packaging>jar</packaging>
 
     <name>Parkour</name>
@@ -21,6 +21,7 @@
         <libs.mongodb>4.9.1</libs.mongodb>
         <libs.anvilgui>1.6.6-SNAPSHOT</libs.anvilgui>
         <libs.papergui>1.0.0</libs.papergui>
+        <libs.commandapi>9.0.3</libs.commandapi>
 
     </properties>
 
@@ -115,6 +116,12 @@
             <groupId>com.github.LuuckA21</groupId>
             <artifactId>PaperGUI</artifactId>
             <version>${libs.papergui}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>dev.jorel</groupId>
+            <artifactId>commandapi-bukkit-shade</artifactId>
+            <version>${libs.commandapi}</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>

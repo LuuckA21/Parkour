@@ -1,8 +1,9 @@
 package me.luucka.parkour;
 
+import dev.jorel.commandapi.CommandAPI;
+import dev.jorel.commandapi.CommandAPIBukkitConfig;
 import lombok.Getter;
 import me.luucka.papergui.PaperGUI;
-import me.luucka.parkour.commands.BaseCommand;
 import me.luucka.parkour.commands.PAdminCommand;
 import me.luucka.parkour.commands.ParkourCommand;
 import me.luucka.parkour.config.IConfig;
@@ -49,7 +50,16 @@ public final class ParkourPlugin extends JavaPlugin {
     private final List<IConfig> configList = new ArrayList<>();
 
     @Override
+    public void onLoad() {
+        CommandAPI.onLoad(new CommandAPIBukkitConfig(this)
+                .shouldHookPaperReload(true)
+        );
+    }
+
+    @Override
     public void onEnable() {
+        CommandAPI.onEnable();
+
         settings = new Settings(this);
         configList.add(settings);
 
@@ -77,13 +87,13 @@ public final class ParkourPlugin extends JavaPlugin {
 
         new PAdminCommand(this);
         new ParkourCommand(this);
-        BaseCommand.registerHelpMap("Parkour", "Parkour", "parkour.admin", "Parkour Help page");
 
         paperGUI = new PaperGUI(this);
     }
 
     @Override
     public void onDisable() {
+        CommandAPI.onDisable();
         playerDataManager.shutdown();
     }
 

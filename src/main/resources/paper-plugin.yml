@@ -15,3 +15,6 @@ dependencies:
   - name: anvilgui
     required: true
     bootstrap: true
+  - name: commandapi-bukkit-shade
+    required: true
+    bootstrap: true

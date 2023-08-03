@@ -4,16 +4,20 @@ import dev.jorel.commandapi.CommandAPI;
 import dev.jorel.commandapi.CommandAPIBukkitConfig;
 import lombok.Getter;
 import me.luucka.papergui.PaperGUI;
-import me.luucka.parkour.commands.PAdminCommand;
-import me.luucka.parkour.commands.ParkourCommand;
+import me.luucka.parkour.command.PAdminCommand;
+import me.luucka.parkour.command.ParkourCommand;
 import me.luucka.parkour.config.IConfig;
-import me.luucka.parkour.listeners.ParkourListeners;
-import me.luucka.parkour.listeners.PlayerListener;
-import me.luucka.parkour.listeners.SetupListeners;
-import me.luucka.parkour.managers.DataManager;
-import me.luucka.parkour.managers.GameManager;
-import me.luucka.parkour.managers.PlayerDataManager;
-import me.luucka.parkour.managers.SetupManager;
+import me.luucka.parkour.listener.ParkourListeners;
+import me.luucka.parkour.listener.PlayerListener;
+import me.luucka.parkour.listener.SetupListeners;
+import me.luucka.parkour.manager.DataManager;
+import me.luucka.parkour.manager.GameManager;
+import me.luucka.parkour.manager.PlayerDataManager;
+import me.luucka.parkour.manager.SetupManager;
+import me.luucka.parkour.setting.Items;
+import me.luucka.parkour.setting.Lobby;
+import me.luucka.parkour.setting.Messages;
+import me.luucka.parkour.setting.Settings;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.ArrayList;
@@ -60,6 +64,8 @@ public final class ParkourPlugin extends JavaPlugin {
     public void onEnable() {
         CommandAPI.onEnable();
 
+        paperGUI = new PaperGUI(this);
+
         settings = new Settings(this);
         configList.add(settings);
 
@@ -87,8 +93,6 @@ public final class ParkourPlugin extends JavaPlugin {
 
         new PAdminCommand(this);
         new ParkourCommand(this);
-
-        paperGUI = new PaperGUI(this);
     }
 
     @Override

@@ -6,7 +6,7 @@
 
     <groupId>me.luucka</groupId>
     <artifactId>Parkour</artifactId>
-    <version>Build-19</version>
+    <version>Build-20</version>
     <packaging>jar</packaging>
 
     <name>Parkour</name>
@@ -18,8 +18,8 @@
 
         <libs.lombok>1.18.28</libs.lombok>
         <libs.configurate-yaml>4.1.2</libs.configurate-yaml>
-        <libs.mongodb>4.9.1</libs.mongodb>
-        <libs.anvilgui>1.6.6-SNAPSHOT</libs.anvilgui>
+        <libs.mongodb>4.10.2</libs.mongodb>
+        <libs.anvilgui>1.7.0-SNAPSHOT</libs.anvilgui>
         <libs.papergui>1.0.0</libs.papergui>
         <libs.commandapi>9.0.3</libs.commandapi>
 

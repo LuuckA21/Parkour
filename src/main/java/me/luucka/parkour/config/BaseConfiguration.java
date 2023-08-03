@@ -1,9 +1,9 @@
 package me.luucka.parkour.config;
 
-import me.luucka.parkour.config.entities.LazyItem;
-import me.luucka.parkour.config.entities.LazyLocation;
-import me.luucka.parkour.config.serializers.LazyItemTypeSerializer;
-import me.luucka.parkour.config.serializers.LocationTypeSerializer;
+import me.luucka.parkour.config.entity.LazyItem;
+import me.luucka.parkour.config.entity.LazyLocation;
+import me.luucka.parkour.config.serializer.LazyItemTypeSerializer;
+import me.luucka.parkour.config.serializer.LocationTypeSerializer;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.spongepowered.configurate.CommentedConfigurationNode;
@@ -22,7 +22,7 @@ import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import static me.luucka.parkour.utils.MMColor.toComponent;
+import static me.luucka.parkour.util.MMColor.toComponent;
 
 public final class BaseConfiguration {
 

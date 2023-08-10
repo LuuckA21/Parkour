@@ -1,8 +1,8 @@
 package me.luucka.parkour.manager;
 
-import me.luucka.parkour.setting.Items;
 import me.luucka.parkour.ParkourPlugin;
-import me.luucka.parkour.entity.SetupParkour;
+import me.luucka.parkour.model.SetupParkour;
+import me.luucka.parkour.setting.Items;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 

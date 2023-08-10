@@ -1,4 +1,4 @@
-package me.luucka.parkour.config.entity;
+package me.luucka.parkour.config.model;
 
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;

@@ -1,7 +1,7 @@
 package me.luucka.parkour.manager;
 
 import me.luucka.parkour.ParkourPlugin;
-import me.luucka.parkour.entity.Parkour;
+import me.luucka.parkour.model.Parkour;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;

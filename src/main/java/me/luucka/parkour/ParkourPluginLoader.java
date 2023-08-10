@@ -19,10 +19,10 @@ public class ParkourPluginLoader implements PluginLoader {
         resolver.addRepository(new RemoteRepository.Builder("jitpack.io", "default", "https://jitpack.io").build());
 
         resolver.addDependency(new Dependency(new DefaultArtifact("org.spongepowered:configurate-yaml:4.1.2"), null));
-        resolver.addDependency(new Dependency(new DefaultArtifact("org.mongodb:mongodb-driver-sync:4.9.1"), null));
-        resolver.addDependency(new Dependency(new DefaultArtifact("net.wesjd:anvilgui:1.6.6-SNAPSHOT"), null));
-        resolver.addDependency(new Dependency(new DefaultArtifact("com.github.LuuckA21:PaperGUI:1.0.0"), null));
+        resolver.addDependency(new Dependency(new DefaultArtifact("org.mongodb:mongodb-driver-sync:4.10.2"), null));
+        resolver.addDependency(new Dependency(new DefaultArtifact("net.wesjd:anvilgui:1.7.0-SNAPSHOT"), null));
         resolver.addDependency(new Dependency(new DefaultArtifact("dev.jorel:commandapi-bukkit-shade:9.0.3"), null));
+        resolver.addDependency(new Dependency(new DefaultArtifact("com.github.LuuckA21:paper-gui:1.0.0"), null));
 
         classpathBuilder.addLibrary(resolver);
     }

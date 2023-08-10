@@ -1,21 +1,20 @@
 package me.luucka.parkour.command;
 
+import dev.jorel.commandapi.CommandAPIBukkit;
 import dev.jorel.commandapi.CommandAPICommand;
-import dev.jorel.commandapi.arguments.Argument;
 import dev.jorel.commandapi.arguments.ArgumentSuggestions;
-import dev.jorel.commandapi.arguments.StringArgument;
-import me.luucka.parkour.setting.Lobby;
-import me.luucka.parkour.setting.Messages;
 import me.luucka.parkour.ParkourPlugin;
-import me.luucka.parkour.entity.SetupParkour;
 import me.luucka.parkour.manager.DataManager;
 import me.luucka.parkour.manager.GameManager;
 import me.luucka.parkour.manager.SetupManager;
+import me.luucka.parkour.model.Parkour;
+import me.luucka.parkour.model.SetupParkour;
+import me.luucka.parkour.setting.Lobby;
+import me.luucka.parkour.setting.Messages;
 
-import java.util.ArrayList;
-import java.util.List;
+import static me.luucka.extendlibrary.util.MMColor.toComponent;
 
-public class PAdminCommand implements ICommand {
+public final class PAdminCommand {
 
     private final ParkourPlugin plugin;
     private final GameManager gameManager;
@@ -34,11 +33,7 @@ public class PAdminCommand implements ICommand {
         register();
     }
 
-    @Override
     public void register() {
-        List<Argument<?>> arguments = new ArrayList<>();
-        arguments.add(new StringArgument("parkour").replaceSuggestions(ArgumentSuggestions.strings(dataManager.getAllParkoursName())));
-
         CommandAPICommand padminCommand = new CommandAPICommand("padmin")
                 .withHelp("Parkour plugin Main command", "Parkour plugin Main command")
                 .withPermission("parkour.admin")
@@ -46,43 +41,34 @@ public class PAdminCommand implements ICommand {
                         new CommandAPICommand("setup")
                                 .withUsage("/padmin setup <parkour>")
                                 .withShortDescription("Join setup-mode for a parkour.")
-                                .withArguments(arguments)
+                                .withArguments(ParkourArgument.setupParkourArgument("parkour")
+                                        .replaceSuggestions(ArgumentSuggestions.strings(info -> dataManager.getAllParkoursName().toArray(new String[0])))
+                                )
                                 .executesPlayer((player, args) -> {
-                                    final String parkourName = (String) args.get("parkour");
+                                    final SetupParkour setupParkour = (SetupParkour) args.get("parkour");
 
-                                    try {
-                                        if (gameManager.isPlayerInParkourSession(player))
-                                            throw new Exception(messages.joinDuringParkour());
-                                        if (setupManager.isPlayerInSetup(player))
-                                            throw new Exception(messages.alreadyInSetup());
-
-                                        setupManager.playerJoin(
-                                                player,
-                                                dataManager.getPlayableParkour(parkourName).map(
-                                                        parkour -> new SetupParkour(plugin, parkour)
-                                                ).orElseGet(
-                                                        () -> new SetupParkour(plugin, parkourName)
-                                                )
-                                        );
-                                        player.sendRichMessage(messages.setupEnterMode(parkourName));
-                                    } catch (Exception ex) {
-                                        player.sendRichMessage(ex.getMessage());
+                                    if (gameManager.isPlayerInParkourSession(player)) {
+                                        throw CommandAPIBukkit.failWithAdventureComponent(toComponent(messages.joinDuringParkour()));
                                     }
+                                    if (setupManager.isPlayerInSetup(player)) {
+                                        throw CommandAPIBukkit.failWithAdventureComponent(toComponent(messages.alreadyInSetup()));
+                                    }
+
+                                    setupManager.playerJoin(player, setupParkour);
+                                    player.sendRichMessage(messages.setupEnterMode(setupParkour.getName()));
                                 })
                 )
                 .withSubcommand(
                         new CommandAPICommand("delete")
                                 .withUsage("/padmin delete <parkour>")
                                 .withShortDescription("Delete a parkour.")
-                                .withArguments(arguments)
+                                .withArguments(ParkourArgument.parkourArgument("parkour", false)
+                                        .replaceSuggestions(ArgumentSuggestions.strings(info -> dataManager.getAllParkoursName().toArray(new String[0])))
+                                )
                                 .executesPlayer((player, args) -> {
-                                    final String parkourName = (String) args.get("parkour");
-                                    try {
-                                        dataManager.delete(dataManager.getParkour(parkourName).orElseThrow(() -> new Exception(messages.notExists(parkourName))));
-                                        player.sendRichMessage(messages.deleteParkour(parkourName));
-                                    } catch (Exception ex) {
-                                        player.sendRichMessage(ex.getMessage());
-                                    }
+                                    final Parkour parkour = (Parkour) args.get("parkour");
+                                    dataManager.delete(parkour);
+                                    player.sendRichMessage(messages.deleteParkour(parkour.getName()));
                                 })
                 )
                 .withSubcommand(
@@ -90,7 +76,7 @@ public class PAdminCommand implements ICommand {
                                 .withUsage("/padmin lobby")
                                 .withShortDescription("Set main lobby location.")
                                 .executesPlayer((player, args) -> {
-                                    this.lobby.setLobbyLocation(player.getLocation());
+                                    lobby.setLobbyLocation(player.getLocation());
                                     player.sendRichMessage(messages.setLobby());
                                 })
                 )
@@ -100,7 +86,7 @@ public class PAdminCommand implements ICommand {
                                 .withShortDescription("Reload plugin.")
                                 .executesPlayer((player, args) -> {
                                     plugin.reload();
-                                    player.sendRichMessage(messages.reload());
+                                    player.sendRichMessage(messages.reloadPlugin());
                                 })
                 );
 

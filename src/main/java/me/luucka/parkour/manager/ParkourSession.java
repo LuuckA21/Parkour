@@ -2,13 +2,13 @@ package me.luucka.parkour.manager;
 
 import lombok.Getter;
 import lombok.Setter;
+import me.luucka.parkour.ParkourPlugin;
+import me.luucka.parkour.database.model.PlayerParkourData;
+import me.luucka.parkour.model.Checkpoint;
+import me.luucka.parkour.model.Parkour;
 import me.luucka.parkour.setting.Items;
 import me.luucka.parkour.setting.Lobby;
 import me.luucka.parkour.setting.Messages;
-import me.luucka.parkour.ParkourPlugin;
-import me.luucka.parkour.database.model.PlayerParkourData;
-import me.luucka.parkour.entity.Checkpoint;
-import me.luucka.parkour.entity.Parkour;
 import net.kyori.adventure.title.Title;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -16,7 +16,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.Optional;
 
-import static me.luucka.parkour.util.MMColor.toComponent;
+import static me.luucka.extendlibrary.util.MMColor.toComponent;
 
 public class ParkourSession extends BukkitRunnable {
 

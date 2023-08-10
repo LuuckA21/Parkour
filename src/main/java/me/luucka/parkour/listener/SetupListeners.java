@@ -1,14 +1,14 @@
 package me.luucka.parkour.listener;
 
+import me.luucka.extendlibrary.util.MaterialUtil;
 import me.luucka.papergui.buttons.PGButton;
 import me.luucka.papergui.menu.PGMenu;
 import me.luucka.parkour.ParkourPlugin;
-import me.luucka.parkour.entity.Checkpoint;
-import me.luucka.parkour.entity.SetupParkour;
 import me.luucka.parkour.manager.SetupManager;
+import me.luucka.parkour.model.Checkpoint;
+import me.luucka.parkour.model.SetupParkour;
 import me.luucka.parkour.setting.Items;
 import me.luucka.parkour.setting.Messages;
-import me.luucka.parkour.util.MaterialUtil;
 import net.wesjd.anvilgui.AnvilGUI;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -36,8 +36,8 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static me.luucka.parkour.util.MMColor.toComponent;
-import static me.luucka.parkour.util.MMColor.toLegacy;
+import static me.luucka.extendlibrary.util.MMColor.toComponent;
+import static me.luucka.extendlibrary.util.MMColor.toLegacy;
 
 public class SetupListeners implements Listener {
 

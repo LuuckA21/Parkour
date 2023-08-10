@@ -6,7 +6,7 @@
 
     <groupId>me.luucka</groupId>
     <artifactId>Parkour</artifactId>
-    <version>Build-20</version>
+    <version>Build-21</version>
     <packaging>jar</packaging>
 
     <name>Parkour</name>
@@ -20,8 +20,9 @@
         <libs.configurate-yaml>4.1.2</libs.configurate-yaml>
         <libs.mongodb>4.10.2</libs.mongodb>
         <libs.anvilgui>1.7.0-SNAPSHOT</libs.anvilgui>
-        <libs.papergui>1.0.0</libs.papergui>
         <libs.commandapi>9.0.3</libs.commandapi>
+        <libs.paper-gui>1.0.0</libs.paper-gui>
+        <libs.extend-library>1.0.2</libs.extend-library>
 
     </properties>
 
@@ -48,6 +49,14 @@
                         </goals>
                         <configuration>
                             <createDependencyReducedPom>false</createDependencyReducedPom>
+                            <filters>
+                                <filter>
+                                    <artifact>com.github.LuuckA21:extend-library</artifact>
+                                    <excludes>
+                                        <exclude>META-INF/*.MF</exclude>
+                                    </excludes>
+                                </filter>
+                            </filters>
                         </configuration>
                     </execution>
                 </executions>
@@ -113,16 +122,21 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>com.github.LuuckA21</groupId>
-            <artifactId>PaperGUI</artifactId>
-            <version>${libs.papergui}</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
             <groupId>dev.jorel</groupId>
             <artifactId>commandapi-bukkit-shade</artifactId>
             <version>${libs.commandapi}</version>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.github.LuuckA21</groupId>
+            <artifactId>paper-gui</artifactId>
+            <version>${libs.paper-gui}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.github.LuuckA21</groupId>
+            <artifactId>extend-library</artifactId>
+            <version>${libs.extend-library}</version>
         </dependency>
     </dependencies>
 </project>

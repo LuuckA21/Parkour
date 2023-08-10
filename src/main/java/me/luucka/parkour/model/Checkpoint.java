@@ -1,4 +1,4 @@
-package me.luucka.parkour.entity;
+package me.luucka.parkour.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

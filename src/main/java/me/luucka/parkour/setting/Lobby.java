@@ -1,14 +1,14 @@
 package me.luucka.parkour.setting;
 
 import lombok.Getter;
+import me.luucka.extendlibrary.util.IReload;
 import me.luucka.parkour.ParkourPlugin;
 import me.luucka.parkour.config.BaseConfiguration;
-import me.luucka.parkour.config.IConfig;
 import org.bukkit.Location;
 
 import java.io.File;
 
-public class Lobby implements IConfig {
+public class Lobby implements IReload {
 
     private final BaseConfiguration config;
 
@@ -18,11 +18,11 @@ public class Lobby implements IConfig {
 
     public Lobby(final ParkourPlugin plugin) {
         this.config = new BaseConfiguration(new File(plugin.getDataFolder(), "lobby.yml"), "/lobby.yml");
-        reloadConfig();
+        reload();
     }
 
     @Override
-    public void reloadConfig() {
+    public void reload() {
         config.load();
         lobbyLocation = config.getLocation("lobby").location();
     }

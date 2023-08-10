@@ -1,4 +1,4 @@
-package me.luucka.parkour.entity;
+package me.luucka.parkour.model;
 
 import org.bukkit.Location;
 import org.bukkit.World;

@@ -1,6 +1,6 @@
 package me.luucka.parkour.config.serializer;
 
-import me.luucka.parkour.config.entity.LazyLocation;
+import me.luucka.parkour.config.model.LazyLocation;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.serialize.SerializationException;

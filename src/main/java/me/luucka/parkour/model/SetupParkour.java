@@ -1,10 +1,10 @@
-package me.luucka.parkour.entity;
+package me.luucka.parkour.model;
 
 import lombok.Getter;
 import lombok.Setter;
-import me.luucka.parkour.setting.Messages;
 import me.luucka.parkour.ParkourPlugin;
 import me.luucka.parkour.manager.DataManager;
+import me.luucka.parkour.setting.Messages;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Sign;
@@ -12,7 +12,7 @@ import org.bukkit.block.sign.Side;
 
 import java.util.*;
 
-import static me.luucka.parkour.util.MMColor.toComponent;
+import static me.luucka.extendlibrary.util.MMColor.toComponent;
 
 public class SetupParkour {
     private final DataManager dataManager;
@@ -100,7 +100,7 @@ public class SetupParkour {
                 && endLocation != null
                 && minRegion != null
                 && maxRegion != null
-                && completeCommands.size() >= 1;
+                && !completeCommands.isEmpty();
     }
 
     public void save() {

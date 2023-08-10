@@ -1,6 +1,5 @@
-package me.luucka.parkour.entity;
+package me.luucka.parkour.model;
 
-import lombok.Getter;
 import me.luucka.parkour.config.BaseConfiguration;
 import org.bukkit.Location;
 
@@ -15,32 +14,24 @@ public class Parkour {
 
     private final BaseConfiguration configuration;
 
-    @Getter
     private Location startLocation;
 
-    @Getter
     private Location endLocation;
 
-    @Getter
     private Location minRegion;
 
-    @Getter
     private Location maxRegion;
 
     public Cuboid getRegion() {
         return new Cuboid(minRegion, maxRegion);
     }
 
-    @Getter
     private List<String> completeCommands = new ArrayList<>();
 
-    @Getter
     private long cooldown;
 
-    @Getter
     private Status status;
 
-    @Getter
     private Set<Checkpoint> checkpoints = new HashSet<>();
 
     public void setupMode() {
@@ -91,6 +82,38 @@ public class Parkour {
         this.cooldown = setupParkour.getCooldown();
         this.checkpoints = setupParkour.getCheckpoints();
         save();
+    }
+
+    public Location getStartLocation() {
+        return startLocation;
+    }
+
+    public Location getEndLocation() {
+        return endLocation;
+    }
+
+    public Location getMinRegion() {
+        return minRegion;
+    }
+
+    public Location getMaxRegion() {
+        return maxRegion;
+    }
+
+    public List<String> getCompleteCommands() {
+        return completeCommands;
+    }
+
+    public long getCooldown() {
+        return cooldown;
+    }
+
+    public Status getStatus() {
+        return status;
+    }
+
+    public Set<Checkpoint> getCheckpoints() {
+        return checkpoints;
     }
 
     public void update(final SetupParkour setupParkour) {

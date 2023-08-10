@@ -1,13 +1,13 @@
 package me.luucka.parkour.setting;
 
 import lombok.Getter;
+import me.luucka.extendlibrary.util.IReload;
 import me.luucka.parkour.ParkourPlugin;
 import me.luucka.parkour.config.BaseConfiguration;
-import me.luucka.parkour.config.IConfig;
 
 import java.io.File;
 
-public class Settings implements IConfig {
+public class Settings implements IReload {
 
     private final BaseConfiguration config;
 
@@ -20,11 +20,11 @@ public class Settings implements IConfig {
 
     public Settings(final ParkourPlugin plugin) {
         this.config = new BaseConfiguration(new File(plugin.getDataFolder(), "config.yml"), "/config.yml");
-        reloadConfig();
+        reload();
     }
 
     @Override
-    public void reloadConfig() {
+    public void reload() {
         config.load();
         perParkourPermission = config.getBoolean("per-parkour-permission", false);
         mongoDbConnectionUri = config.getString("mongodb-connection-uri", "");

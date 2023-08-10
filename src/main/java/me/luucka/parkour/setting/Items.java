@@ -1,11 +1,11 @@
 package me.luucka.parkour.setting;
 
 import lombok.Getter;
+import me.luucka.extendlibrary.util.IReload;
+import me.luucka.extendlibrary.util.ItemBuilder;
 import me.luucka.parkour.ParkourPlugin;
 import me.luucka.parkour.config.BaseConfiguration;
-import me.luucka.parkour.config.IConfig;
-import me.luucka.parkour.config.entity.LazyItem;
-import me.luucka.parkour.util.ItemBuilder;
+import me.luucka.parkour.config.model.LazyItem;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextReplacementConfig;
 import org.bukkit.Location;
@@ -15,7 +15,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Items implements IConfig {
+public class Items implements IReload {
 
     private final ParkourPlugin plugin;
 
@@ -24,7 +24,7 @@ public class Items implements IConfig {
     public Items(final ParkourPlugin plugin) {
         this.plugin = plugin;
         this.config = new BaseConfiguration(new File(plugin.getDataFolder(), "items.yml"), "/items.yml");
-        reloadConfig();
+        reload();
     }
 
     @Getter
@@ -53,11 +53,11 @@ public class Items implements IConfig {
         return new ItemBuilder(lazyCheckpointListItem.material())
                 .setDisplayName(newName.replaceText(TextReplacementConfig.builder().matchLiteral("{NUMBER}").replacement(Integer.toString(number)).build()))
                 .setLore(newLore)
-                .toItemStack();
+                .build();
     }
 
     @Override
-    public void reloadConfig() {
+    public void reload() {
         config.load();
         startItem = toItemStack(config.getItem("setup-items.set-start"), "setup-item", "SETSTART");
         endItem = toItemStack(config.getItem("setup-items.set-end"), "setup-item", "SETEND");
@@ -77,6 +77,6 @@ public class Items implements IConfig {
                 .setDisplayName(item.name())
                 .setLore(item.lore())
                 .setPersistentDataContainerValue(plugin, key, persistentValue)
-                .toItemStack();
+                .build();
     }
 }

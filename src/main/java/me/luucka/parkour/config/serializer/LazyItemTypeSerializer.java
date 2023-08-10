@@ -1,6 +1,6 @@
 package me.luucka.parkour.config.serializer;
 
-import me.luucka.parkour.config.entity.LazyItem;
+import me.luucka.parkour.config.model.LazyItem;
 import org.bukkit.Material;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.spongepowered.configurate.ConfigurationNode;
@@ -10,8 +10,8 @@ import org.spongepowered.configurate.serialize.TypeSerializer;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 
-import static me.luucka.parkour.util.MMColor.toComponent;
-import static me.luucka.parkour.util.MMColor.toMMString;
+import static me.luucka.extendlibrary.util.MMColor.toComponent;
+import static me.luucka.extendlibrary.util.MMColor.toMMString;
 
 public class LazyItemTypeSerializer implements TypeSerializer<LazyItem> {
 

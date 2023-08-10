@@ -1,11 +1,11 @@
 package me.luucka.parkour.listener;
 
+import me.luucka.extendlibrary.util.MaterialUtil;
 import me.luucka.parkour.ParkourPlugin;
-import me.luucka.parkour.entity.Checkpoint;
-import me.luucka.parkour.entity.Parkour;
 import me.luucka.parkour.manager.GameManager;
 import me.luucka.parkour.manager.ParkourSession;
-import me.luucka.parkour.util.MaterialUtil;
+import me.luucka.parkour.model.Checkpoint;
+import me.luucka.parkour.model.Parkour;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;

@@ -3,10 +3,11 @@ package me.luucka.parkour;
 import dev.jorel.commandapi.CommandAPI;
 import dev.jorel.commandapi.CommandAPIBukkitConfig;
 import lombok.Getter;
+import me.luucka.extendlibrary.util.IReload;
 import me.luucka.papergui.PaperGUI;
 import me.luucka.parkour.command.PAdminCommand;
+import me.luucka.parkour.command.ParkourArgument;
 import me.luucka.parkour.command.ParkourCommand;
-import me.luucka.parkour.config.IConfig;
 import me.luucka.parkour.listener.ParkourListeners;
 import me.luucka.parkour.listener.PlayerListener;
 import me.luucka.parkour.listener.SetupListeners;
@@ -51,7 +52,7 @@ public final class ParkourPlugin extends JavaPlugin {
     @Getter
     private PlayerDataManager playerDataManager;
 
-    private final List<IConfig> configList = new ArrayList<>();
+    private final List<IReload> reloadList = new ArrayList<>();
 
     @Override
     public void onLoad() {
@@ -67,19 +68,19 @@ public final class ParkourPlugin extends JavaPlugin {
         paperGUI = new PaperGUI(this);
 
         settings = new Settings(this);
-        configList.add(settings);
+        reloadList.add(settings);
 
         items = new Items(this);
-        configList.add(items);
+        reloadList.add(items);
 
         lobby = new Lobby(this);
-        configList.add(lobby);
+        reloadList.add(lobby);
 
         messages = new Messages(this);
-        configList.add(messages);
+        reloadList.add(messages);
 
         dataManager = new DataManager(this);
-        configList.add(dataManager);
+        reloadList.add(dataManager);
 
         playerDataManager = new PlayerDataManager(this);
 
@@ -91,6 +92,7 @@ public final class ParkourPlugin extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new ParkourListeners(this), this);
         getServer().getPluginManager().registerEvents(new PlayerListener(this), this);
 
+        ParkourArgument.set(this);
         new PAdminCommand(this);
         new ParkourCommand(this);
     }
@@ -102,8 +104,8 @@ public final class ParkourPlugin extends JavaPlugin {
     }
 
     public void reload() {
-        for (final IConfig iConfig : configList) {
-            iConfig.reloadConfig();
+        for (final IReload iConfig : reloadList) {
+            iConfig.reload();
         }
     }
 

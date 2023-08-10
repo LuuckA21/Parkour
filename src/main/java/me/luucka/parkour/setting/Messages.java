@@ -1,9 +1,9 @@
 package me.luucka.parkour.setting;
 
 import lombok.Getter;
+import me.luucka.extendlibrary.util.IReload;
 import me.luucka.parkour.ParkourPlugin;
 import me.luucka.parkour.config.BaseConfiguration;
-import me.luucka.parkour.config.IConfig;
 
 import java.io.File;
 import java.time.Instant;
@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 
-public class Messages implements IConfig {
+public class Messages implements IReload {
 
     private final BaseConfiguration config;
 
@@ -61,7 +61,7 @@ public class Messages implements IConfig {
 
     private String[] completeSign;
 
-    public String reload() {
+    public String reloadPlugin() {
         return reload;
     }
 
@@ -235,11 +235,11 @@ public class Messages implements IConfig {
 
     public Messages(ParkourPlugin plugin) {
         this.config = new BaseConfiguration(new File(plugin.getDataFolder(), "messages.yml"), "/messages.yml");
-        reloadConfig();
+        reload();
     }
 
     @Override
-    public void reloadConfig() {
+    public void reload() {
         config.load();
         prefix = config.getString("prefix", "");
         reload = config.getString("reload", "").replace("{PREFIX}", prefix);

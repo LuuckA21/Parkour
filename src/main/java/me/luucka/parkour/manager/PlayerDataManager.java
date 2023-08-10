@@ -3,7 +3,7 @@ package me.luucka.parkour.manager;
 import me.luucka.parkour.ParkourPlugin;
 import me.luucka.parkour.database.MongoStorage;
 import me.luucka.parkour.database.model.PlayerParkourData;
-import me.luucka.parkour.entity.Parkour;
+import me.luucka.parkour.model.Parkour;
 import org.bukkit.entity.Player;
 
 import java.util.UUID;

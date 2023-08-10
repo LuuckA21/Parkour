@@ -1,10 +1,10 @@
 package me.luucka.parkour.manager;
 
+import me.luucka.extendlibrary.util.IReload;
 import me.luucka.parkour.ParkourPlugin;
 import me.luucka.parkour.config.BaseConfiguration;
-import me.luucka.parkour.config.IConfig;
-import me.luucka.parkour.entity.Parkour;
-import me.luucka.parkour.entity.SetupParkour;
+import me.luucka.parkour.model.Parkour;
+import me.luucka.parkour.model.SetupParkour;
 
 import java.io.File;
 import java.util.HashSet;
@@ -14,7 +14,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class DataManager implements IConfig {
+public class DataManager implements IReload {
 
     private static final Logger LOGGER = Logger.getLogger("Parkour");
     private final File dataFolder;
@@ -25,7 +25,7 @@ public class DataManager implements IConfig {
         if (!this.dataFolder.exists()) {
             this.dataFolder.mkdirs();
         }
-        reloadConfig();
+        reload();
     }
 
     public List<String> getAllParkoursName() {
@@ -58,7 +58,7 @@ public class DataManager implements IConfig {
     }
 
     @Override
-    public void reloadConfig() {
+    public void reload() {
         parkours.clear();
         final File[] fileList = dataFolder.listFiles();
         if (fileList.length >= 1) {

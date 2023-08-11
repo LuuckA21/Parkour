@@ -3,6 +3,7 @@ package me.luucka.parkour.command;
 import dev.jorel.commandapi.CommandAPIBukkit;
 import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.ArgumentSuggestions;
+import me.luucka.extendlibrary.message.Message;
 import me.luucka.parkour.ParkourPlugin;
 import me.luucka.parkour.manager.DataManager;
 import me.luucka.parkour.manager.GameManager;
@@ -10,9 +11,6 @@ import me.luucka.parkour.manager.SetupManager;
 import me.luucka.parkour.model.Parkour;
 import me.luucka.parkour.model.SetupParkour;
 import me.luucka.parkour.setting.Lobby;
-import me.luucka.parkour.setting.Messages;
-
-import static me.luucka.extendlibrary.util.MMColor.toComponent;
 
 public final class PAdminCommand {
 
@@ -20,7 +18,7 @@ public final class PAdminCommand {
     private final GameManager gameManager;
     private final DataManager dataManager;
     private final SetupManager setupManager;
-    private final Messages messages;
+    private final Message messages;
     private final Lobby lobby;
 
     public PAdminCommand(final ParkourPlugin plugin) {
@@ -48,14 +46,16 @@ public final class PAdminCommand {
                                     final SetupParkour setupParkour = (SetupParkour) args.get("parkour");
 
                                     if (gameManager.isPlayerInParkourSession(player)) {
-                                        throw CommandAPIBukkit.failWithAdventureComponent(toComponent(messages.joinDuringParkour()));
+                                        throw CommandAPIBukkit.failWithAdventureComponent(messages.from("join-during-parkour").build());
                                     }
                                     if (setupManager.isPlayerInSetup(player)) {
-                                        throw CommandAPIBukkit.failWithAdventureComponent(toComponent(messages.alreadyInSetup()));
+                                        throw CommandAPIBukkit.failWithAdventureComponent(messages.from("already-in-setup").build());
                                     }
 
                                     setupManager.playerJoin(player, setupParkour);
-                                    player.sendRichMessage(messages.setupEnterMode(setupParkour.getName()));
+                                    messages.from("setup-enter-mode")
+                                            .with("parkour", setupParkour.getName())
+                                            .send(player);
                                 })
                 )
                 .withSubcommand(
@@ -68,7 +68,9 @@ public final class PAdminCommand {
                                 .executesPlayer((player, args) -> {
                                     final Parkour parkour = (Parkour) args.get("parkour");
                                     dataManager.delete(parkour);
-                                    player.sendRichMessage(messages.deleteParkour(parkour.getName()));
+                                    messages.from("delete-parkour")
+                                            .with("parkour", parkour.getName())
+                                            .send(player);
                                 })
                 )
                 .withSubcommand(
@@ -77,7 +79,7 @@ public final class PAdminCommand {
                                 .withShortDescription("Set main lobby location.")
                                 .executesPlayer((player, args) -> {
                                     lobby.setLobbyLocation(player.getLocation());
-                                    player.sendRichMessage(messages.setLobby());
+                                    messages.from("set-lobby").send(player);
                                 })
                 )
                 .withSubcommand(
@@ -86,7 +88,7 @@ public final class PAdminCommand {
                                 .withShortDescription("Reload plugin.")
                                 .executesPlayer((player, args) -> {
                                     plugin.reload();
-                                    player.sendRichMessage(messages.reloadPlugin());
+                                    messages.from("reload").send(player);
                                 })
                 );
 

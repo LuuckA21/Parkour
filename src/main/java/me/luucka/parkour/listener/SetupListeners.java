@@ -1,5 +1,6 @@
 package me.luucka.parkour.listener;
 
+import me.luucka.extendlibrary.message.Message;
 import me.luucka.extendlibrary.util.MaterialUtil;
 import me.luucka.papergui.buttons.PGButton;
 import me.luucka.papergui.menu.PGMenu;
@@ -8,7 +9,6 @@ import me.luucka.parkour.manager.SetupManager;
 import me.luucka.parkour.model.Checkpoint;
 import me.luucka.parkour.model.SetupParkour;
 import me.luucka.parkour.setting.Items;
-import me.luucka.parkour.setting.Messages;
 import net.wesjd.anvilgui.AnvilGUI;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -36,14 +36,14 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static me.luucka.extendlibrary.util.MMColor.toComponent;
 import static me.luucka.extendlibrary.util.MMColor.toLegacy;
+import static me.luucka.extendlibrary.util.MMColor.toMMString;
 
 public class SetupListeners implements Listener {
 
     private final ParkourPlugin plugin;
     private final SetupManager setupManager;
-    private final Messages messages;
+    private final Message messages;
     private final Items items;
 
     public SetupListeners(final ParkourPlugin plugin) {
@@ -75,7 +75,9 @@ public class SetupListeners implements Listener {
                 case "SETSTART" -> {
                     if (event.getAction() != Action.RIGHT_CLICK_AIR) return;
                     parkour.setStartLocation(player.getLocation());
-                    player.sendRichMessage(messages.setupSetStartLoc(parkour.getName()));
+                    messages.from("setup-set-start-loc")
+                            .with("parkour", parkour.getName())
+                            .send(player);
                     event.setCancelled(true);
                 }
                 case "SETEND" -> {
@@ -83,11 +85,13 @@ public class SetupListeners implements Listener {
                     final Block targetBlock = event.getClickedBlock();
                     if (targetBlock == null) return;
                     if (!MaterialUtil.isWallSign(targetBlock.getType())) {
-                        player.sendRichMessage(messages.setupTargetWallSign());
+                        messages.from("setup-target-wall-sign").send(player);
                         return;
                     }
                     parkour.setEndLocation(targetBlock.getLocation());
-                    player.sendRichMessage(messages.setupSetEndLoc(parkour.getName()));
+                    messages.from("setup-set-end-loc")
+                            .with("parkour", parkour.getName())
+                            .send(player);
                     event.setCancelled(true);
                 }
                 case "WAND" -> {
@@ -96,39 +100,50 @@ public class SetupListeners implements Listener {
                         targetBlock = event.getClickedBlock();
                         if (targetBlock == null) return;
                         parkour.setMinRegion(targetBlock.getLocation());
-                        player.sendRichMessage(messages.setupSetPos1(parkour.getName()));
+                        messages.from("setup-set-pos1")
+                                .with("parkour", parkour.getName())
+                                .send(player);
                         event.setCancelled(true);
                     } else if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
                         targetBlock = event.getClickedBlock();
                         if (targetBlock == null) return;
                         parkour.setMaxRegion(event.getClickedBlock().getLocation());
-                        player.sendRichMessage(messages.setupSetPos2(parkour.getName()));
+                        messages.from("setup-set-pos2")
+                                .with("parkour", parkour.getName())
+                                .send(player);
                         event.setCancelled(true);
                     }
                 }
                 case "SAVE" -> {
                     if (event.getAction() != Action.RIGHT_CLICK_AIR) return;
                     if (!parkour.canSave()) {
-                        player.sendRichMessage(messages.setupSetAllParameters());
+                        messages.from("setup-set-all-parameters").send(player);
                         event.setCancelled(true);
                         return;
                     }
                     parkour.save();
                     setupManager.playerQuit(player);
-                    player.sendRichMessage(messages.setupSave(parkour.getName()));
+                    messages.from("setup-save")
+                            .with("parkour", parkour.getName())
+                            .send(player);
                     event.setCancelled(true);
                 }
                 case "CANCEL" -> {
                     if (event.getAction() != Action.RIGHT_CLICK_AIR) return;
                     parkour.cancel();
                     setupManager.playerQuit(player);
-                    player.sendRichMessage(messages.setupCancel(parkour.getName()));
+                    messages.from("setup-cancel")
+                            .with("parkour", parkour.getName())
+                            .send(player);
                     event.setCancelled(true);
                 }
                 case "MORE-OPTIONS" -> {
                     if (event.getAction() != Action.RIGHT_CLICK_AIR) return;
 
-                    PGMenu menu = ParkourPlugin.paperGUI.create(messages.moreOptionsMenuTitle(parkour.getName()), 3);
+                    PGMenu menu = ParkourPlugin.paperGUI.create(
+                            toMMString(messages.from("setup-more-options-menu-title").with("parkour", parkour.getName()).build()),
+                            3
+                    );
                     menu.setEnableAutomaticPagination(false);
 
                     PGButton completeCommandsButton = new PGButton(items.getCompleteCommands())
@@ -137,7 +152,7 @@ public class SetupListeners implements Listener {
                                     List<String> completeCommands = setupManager.getSetupParkourByPlayer(player).getCompleteCommands();
                                     String text = !completeCommands.isEmpty() ? String.join(";", completeCommands) : "...";
                                     new AnvilGUI.Builder()
-                                            .title(toLegacy(toComponent(messages.completeCommandsGuiTitle())))
+                                            .title(toLegacy(messages.from("setup-complete-commands-gui-title").build()))
                                             .text(text)
                                             .itemLeft(new ItemStack(items.getCompleteCommands().getType()))
                                             .onClick((slot, stateSnapshot) -> {
@@ -145,7 +160,9 @@ public class SetupListeners implements Listener {
                                                 if (stateSnapshot.getOutputItem().getType() == Material.AIR)
                                                     return Collections.emptyList();
                                                 parkour.addConsoleCommands(stateSnapshot.getText());
-                                                stateSnapshot.getPlayer().sendRichMessage(messages.setupAddCompleteCommands(parkour.getName()));
+                                                messages.from("setup-add-complete-commands")
+                                                        .with("parkour", parkour.getName())
+                                                        .send(stateSnapshot.getPlayer());
                                                 return Collections.singletonList(AnvilGUI.ResponseAction.openInventory(menu.getInventory()));
                                             })
                                             .onClose(stateSnapshot -> Bukkit.getScheduler().runTask(plugin, () -> stateSnapshot.getPlayer().openInventory(menu.getInventory())))
@@ -153,7 +170,9 @@ public class SetupListeners implements Listener {
                                             .open(player);
                                 } else if (clickEvent.getClick() == ClickType.SHIFT_RIGHT) {
                                     parkour.clearConsoleCommands();
-                                    player.sendRichMessage(messages.setupClearCompleteCommands(parkour.getName()));
+                                    messages.from("setup-clear-complete-commands")
+                                            .with("parkour", parkour.getName())
+                                            .send(player);
                                 }
                             });
                     menu.setButton(10, completeCommandsButton);
@@ -164,7 +183,7 @@ public class SetupListeners implements Listener {
                                     long textCooldown = setupManager.getSetupParkourByPlayer(player).getCooldown();
                                     String text = textCooldown >= 1L ? String.valueOf(textCooldown) : "...";
                                     new AnvilGUI.Builder()
-                                            .title(toLegacy(toComponent(messages.setCooldownGuiTitle())))
+                                            .title(toLegacy(messages.from("setup-set-cooldown-gui-title").build()))
                                             .text(text)
                                             .itemLeft(new ItemStack(items.getCooldownItem().getType()))
                                             .onClick((slot, stateSnapshot) -> {
@@ -176,10 +195,14 @@ public class SetupListeners implements Listener {
                                                 try {
                                                     cooldown = Long.parseLong(stateSnapshot.getText());
                                                 } catch (final NumberFormatException e) {
-                                                    return List.of(AnvilGUI.ResponseAction.replaceInputText(toLegacy(toComponent(messages.setupInserValidCooldown()))));
+                                                    return List.of(AnvilGUI.ResponseAction.replaceInputText(
+                                                            toLegacy(messages.from("setup-insert-valid-cooldown-value").build())
+                                                    ));
                                                 }
                                                 parkour.setCooldown(cooldown);
-                                                stateSnapshot.getPlayer().sendRichMessage(messages.setupSetCooldown(parkour.getName()));
+                                                messages.from("setup-set-cooldown")
+                                                        .with("parkour", parkour.getName())
+                                                        .send(stateSnapshot.getPlayer());
                                                 return List.of(AnvilGUI.ResponseAction.openInventory(menu.getInventory()));
                                             })
                                             .onClose(stateSnapshot -> Bukkit.getScheduler().runTask(plugin, () -> stateSnapshot.getPlayer().openInventory(menu.getInventory())))
@@ -187,7 +210,9 @@ public class SetupListeners implements Listener {
                                             .open(player);
                                 } else if (clickEvent.getClick() == ClickType.SHIFT_RIGHT) {
                                     parkour.setCooldown(-1L);
-                                    player.sendRichMessage(messages.setupResetCooldown(parkour.getName()));
+                                    messages.from("setup-reset-cooldown")
+                                            .with("parkour", parkour.getName())
+                                            .send(player);
                                 }
                             });
                     menu.setButton(12, cooldownButton);
@@ -198,9 +223,15 @@ public class SetupListeners implements Listener {
                     if (event.getAction().isRightClick()) {
                         if (!player.isSneaking()) {
                             parkour.addCheckpoint(new Checkpoint(parkour.getCheckpoints().size(), player.getLocation(), player.getLocation().getBlock().getLocation()));
-                            player.sendRichMessage(messages.getSetNewCheckpoint(parkour.getName(), parkour.getCheckpoints().size()));
+                            messages.from("setup-set-new-checkpoint")
+                                    .with("parkour", parkour.getName())
+                                    .withNumber("number", parkour.getCheckpoints().size())
+                                    .send(player);
                         } else {
-                            PGMenu menu = ParkourPlugin.paperGUI.create(messages.getCheckpointMenuTitle(parkour.getName()), 3);
+                            PGMenu menu = ParkourPlugin.paperGUI.create(
+                                    toMMString(messages.from("setup-checkpoint-menu-title").with("parkour", parkour.getName()).build()),
+                                    3
+                            );
                             menu.setEnableAutomaticPagination(true);
 
                             LinkedHashSet<Checkpoint> sortCheckpoints = parkour.getCheckpoints().stream().sorted(Comparator.comparing(Checkpoint::getNumber)).collect(Collectors.toCollection(LinkedHashSet::new));
@@ -211,7 +242,10 @@ public class SetupListeners implements Listener {
                                             if (clickEvent.getClick() == ClickType.LEFT) {
                                                 // tp
                                                 player.teleport(checkpoint.getTpLocation());
-                                                player.sendRichMessage(messages.getTpToCheckpoint(parkour.getName(), checkpoint.getNumber() + 1));
+                                                messages.from("setup-tp-to-checkpoint")
+                                                        .with("parkour", parkour.getName())
+                                                        .withNumber("number", checkpoint.getNumber() + 1)
+                                                        .send(player);
                                             } else if (clickEvent.getClick() == ClickType.SHIFT_RIGHT) {
                                                 // remove
                                                 parkour.removeCheckpoint(checkpoint);
@@ -221,12 +255,18 @@ public class SetupListeners implements Listener {
                                                     }
                                                 });
                                                 player.closeInventory(InventoryCloseEvent.Reason.PLUGIN);
-                                                player.sendRichMessage(messages.getRemoveCheckpoint(parkour.getName(), checkpoint.getNumber() + 1));
+                                                messages.from("setup-remove-checkpoint")
+                                                        .with("parkour", parkour.getName())
+                                                        .withNumber("number", checkpoint.getNumber() + 1)
+                                                        .send(player);
                                             } else if (clickEvent.getClick() == ClickType.MIDDLE) {
                                                 // update
                                                 checkpoint.updateLocation(player.getLocation(), player.getLocation().getBlock().getLocation());
                                                 player.closeInventory(InventoryCloseEvent.Reason.PLUGIN);
-                                                player.sendRichMessage(messages.getUpdateCheckpoint(parkour.getName(), checkpoint.getNumber() + 1));
+                                                messages.from("setup-update-checkpoint")
+                                                        .with("parkour", parkour.getName())
+                                                        .withNumber("number", checkpoint.getNumber() + 1)
+                                                        .send(player);
                                             }
                                             clickEvent.setCancelled(true);
                                         });
@@ -236,7 +276,9 @@ public class SetupListeners implements Listener {
                         }
                     } else if (event.getAction().isLeftClick() && player.isSneaking()) {
                         parkour.resetAllCheckpoints();
-                        player.sendRichMessage(messages.getResetAllCheckpoints(parkour.getName()));
+                        messages.from("setup-reset-all-checkpoints")
+                                .with("parkour", parkour.getName())
+                                .send(player);
                     }
                 }
             }
@@ -250,7 +292,7 @@ public class SetupListeners implements Listener {
         final SetupParkour parkour = setupManager.getSetupParkourByPlayer(player);
         parkour.cancel();
         setupManager.playerQuit(player);
-        player.sendRichMessage(messages.setupCancel(parkour.getName()));
+        messages.from("setup-cancel").with("parkour", parkour.getName()).send(player);
     }
 
     @EventHandler

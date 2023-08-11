@@ -12,7 +12,7 @@ import me.luucka.parkour.ParkourPlugin;
 import me.luucka.parkour.database.model.PlayerParkourData;
 import me.luucka.parkour.database.model.User;
 import me.luucka.parkour.model.Parkour;
-import me.luucka.parkour.setting.Settings;
+import me.luucka.parkour.setting.Setting;
 import org.bson.UuidRepresentation;
 import org.bson.codecs.configuration.CodecRegistries;
 import org.bson.codecs.configuration.CodecRegistry;
@@ -24,16 +24,16 @@ import java.util.UUID;
 
 public class MongoStorage {
 
-    private final Settings settings;
+    private final Setting setting;
     private MongoClient client;
     private MongoDatabase database;
 
     public MongoStorage(final ParkourPlugin plugin) {
-        this.settings = plugin.getSettings();
+        this.setting = plugin.getSetting();
     }
 
     public void init() {
-        ConnectionString connectionString = new ConnectionString(settings.getMongoDbConnectionUri());
+        ConnectionString connectionString = new ConnectionString(setting.getMongoDbConnectionUri());
         CodecRegistry codecRegistry = CodecRegistries.fromRegistries(MongoClientSettings.getDefaultCodecRegistry(), CodecRegistries.fromProviders(PojoCodecProvider.builder().automatic(true).build()));
         MongoClientSettings settings = MongoClientSettings.builder()
                 .uuidRepresentation(UuidRepresentation.JAVA_LEGACY)

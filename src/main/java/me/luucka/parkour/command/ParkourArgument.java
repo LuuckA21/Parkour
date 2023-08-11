@@ -3,16 +3,14 @@ package me.luucka.parkour.command;
 import dev.jorel.commandapi.arguments.Argument;
 import dev.jorel.commandapi.arguments.CustomArgument;
 import dev.jorel.commandapi.arguments.StringArgument;
+import me.luucka.extendlibrary.message.Message;
 import me.luucka.parkour.ParkourPlugin;
 import me.luucka.parkour.manager.DataManager;
 import me.luucka.parkour.model.Parkour;
 import me.luucka.parkour.model.SetupParkour;
-import me.luucka.parkour.setting.Messages;
 import org.bukkit.entity.Player;
 
 import java.util.Optional;
-
-import static me.luucka.extendlibrary.util.MMColor.toComponent;
 
 public final class ParkourArgument {
 
@@ -20,7 +18,7 @@ public final class ParkourArgument {
 
     private static DataManager dataManager;
 
-    private static Messages messages;
+    private static Message messages;
 
     private ParkourArgument() {
     }
@@ -38,11 +36,9 @@ public final class ParkourArgument {
                 if (parkour.isPresent()) {
                     return parkour.get();
                 }
-//                throw CustomArgument.CustomArgumentException.fromAdventureComponent(messages.from("not-exists").with("book", info.input()).build());
-                throw CustomArgument.CustomArgumentException.fromAdventureComponent(toComponent(messages.notExists(info.input())));
+                throw CustomArgument.CustomArgumentException.fromAdventureComponent(messages.from("not-exists").with("parkour", info.input()).build());
             }
-//            throw CustomArgument.CustomArgumentException.fromAdventureComponent(messages.from("no-console").build());
-            throw CustomArgument.CustomArgumentException.fromAdventureComponent(toComponent(messages.noConsole()));
+            throw CustomArgument.CustomArgumentException.fromAdventureComponent(messages.from("no-console").build());
         });
     }
 
@@ -52,7 +48,7 @@ public final class ParkourArgument {
                 Optional<Parkour> parkour = dataManager.getPlayableParkour(info.input());
                 return parkour.map(value -> new SetupParkour(plugin, value)).orElseGet(() -> new SetupParkour(plugin, info.input()));
             }
-            throw CustomArgument.CustomArgumentException.fromAdventureComponent(toComponent(messages.noConsole()));
+            throw CustomArgument.CustomArgumentException.fromAdventureComponent(messages.from("no-console").build());
         });
     }
 

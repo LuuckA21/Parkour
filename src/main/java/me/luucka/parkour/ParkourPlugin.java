@@ -3,6 +3,7 @@ package me.luucka.parkour;
 import dev.jorel.commandapi.CommandAPI;
 import dev.jorel.commandapi.CommandAPIBukkitConfig;
 import lombok.Getter;
+import me.luucka.extendlibrary.message.Message;
 import me.luucka.extendlibrary.util.IReload;
 import me.luucka.papergui.PaperGUI;
 import me.luucka.parkour.command.PAdminCommand;
@@ -17,8 +18,7 @@ import me.luucka.parkour.manager.PlayerDataManager;
 import me.luucka.parkour.manager.SetupManager;
 import me.luucka.parkour.setting.Items;
 import me.luucka.parkour.setting.Lobby;
-import me.luucka.parkour.setting.Messages;
-import me.luucka.parkour.setting.Settings;
+import me.luucka.parkour.setting.Setting;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.ArrayList;
@@ -29,7 +29,7 @@ public final class ParkourPlugin extends JavaPlugin {
     public static PaperGUI paperGUI;
 
     @Getter
-    private Settings settings;
+    private Setting setting;
 
     @Getter
     private Items items;
@@ -38,7 +38,7 @@ public final class ParkourPlugin extends JavaPlugin {
     private Lobby lobby;
 
     @Getter
-    private Messages messages;
+    private Message messages;
 
     @Getter
     private DataManager dataManager;
@@ -67,8 +67,8 @@ public final class ParkourPlugin extends JavaPlugin {
 
         paperGUI = new PaperGUI(this);
 
-        settings = new Settings(this);
-        reloadList.add(settings);
+        setting = new Setting(this);
+        reloadList.add(setting);
 
         items = new Items(this);
         reloadList.add(items);
@@ -76,7 +76,8 @@ public final class ParkourPlugin extends JavaPlugin {
         lobby = new Lobby(this);
         reloadList.add(lobby);
 
-        messages = new Messages(this);
+        messages = new Message(this, "messages");
+        messages.addPrefix();
         reloadList.add(messages);
 
         dataManager = new DataManager(this);

@@ -2,9 +2,9 @@ package me.luucka.parkour.model;
 
 import lombok.Getter;
 import lombok.Setter;
+import me.luucka.extendlibrary.message.Message;
 import me.luucka.parkour.ParkourPlugin;
 import me.luucka.parkour.manager.DataManager;
-import me.luucka.parkour.setting.Messages;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Sign;
@@ -16,7 +16,7 @@ import static me.luucka.extendlibrary.util.MMColor.toComponent;
 
 public class SetupParkour {
     private final DataManager dataManager;
-    private final Messages messages;
+    private final Message messages;
 
     @Getter
     private String name;
@@ -111,10 +111,10 @@ public class SetupParkour {
         }
 
         Sign sign = (Sign) endLocation.getBlock().getState();
-        final String[] lines = messages.completeSign(name);
-        for (int i = 0; i < lines.length; i++) {
-            sign.getSide(Side.FRONT).line(i, toComponent(lines[i]));
-        }
+        sign.getSide(Side.FRONT).line(0, messages.from("prefix").build());
+        sign.getSide(Side.FRONT).line(2, toComponent("<green>" + name));
+        sign.getSide(Side.FRONT).line(3, messages.from("parkour-complete-wall-sign").build());
+
         sign.setWaxed(true);
         sign.update();
     }

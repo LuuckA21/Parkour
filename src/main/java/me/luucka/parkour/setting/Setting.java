@@ -7,7 +7,7 @@ import me.luucka.parkour.config.BaseConfiguration;
 
 import java.io.File;
 
-public class Settings implements IReload {
+public class Setting implements IReload {
 
     private final BaseConfiguration config;
 
@@ -18,7 +18,7 @@ public class Settings implements IReload {
     private String mongoDbConnectionUri;
 
 
-    public Settings(final ParkourPlugin plugin) {
+    public Setting(final ParkourPlugin plugin) {
         this.config = new BaseConfiguration(new File(plugin.getDataFolder(), "config.yml"), "/config.yml");
         reload();
     }
@@ -27,6 +27,6 @@ public class Settings implements IReload {
     public void reload() {
         config.load();
         perParkourPermission = config.getBoolean("per-parkour-permission", false);
-        mongoDbConnectionUri = config.getString("mongodb-connection-uri", "");
+        mongoDbConnectionUri = config.getString("mongodb-connection-uri", "mongodb://localhost:27017/");
     }
 }

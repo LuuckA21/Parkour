@@ -16,6 +16,6 @@ public class PlayerListener implements Listener {
 
     @EventHandler
     public void onPlayerJoin(final PlayerJoinEvent event) {
-        playerDataManager.createPlayerData(event.getPlayer());
+//        playerDataManager.createPlayerData(event.getPlayer());
     }
 }

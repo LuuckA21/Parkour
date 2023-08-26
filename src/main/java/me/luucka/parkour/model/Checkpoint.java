@@ -1,12 +1,10 @@
 package me.luucka.parkour.model;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.Location;
 import org.bukkit.Material;
 
-@AllArgsConstructor
 public class Checkpoint {
 
     @Getter
@@ -18,6 +16,12 @@ public class Checkpoint {
 
     @Getter
     private Location blockLocation;
+
+    public Checkpoint(int number, Location tpLocation, Location blockLocation) {
+        this.number = number;
+        this.tpLocation = tpLocation;
+        this.blockLocation = blockLocation;
+    }
 
     public void updateLocation(final Location tpLocation, final Location blockLocation) {
         this.blockLocation.getBlock().setType(Material.AIR);

@@ -83,7 +83,7 @@ public final class ParkourPlugin extends JavaPlugin {
         dataManager = new DataManager(this);
         reloadList.add(dataManager);
 
-        playerDataManager = new PlayerDataManager(this);
+//        playerDataManager = new PlayerDataManager(this);
 
         gameManager = new GameManager(this);
 
@@ -101,7 +101,7 @@ public final class ParkourPlugin extends JavaPlugin {
     @Override
     public void onDisable() {
         CommandAPI.onDisable();
-        playerDataManager.shutdown();
+//        playerDataManager.shutdown();
     }
 
     public void reload() {

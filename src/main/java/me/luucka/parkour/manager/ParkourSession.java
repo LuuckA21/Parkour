@@ -4,7 +4,6 @@ import lombok.Getter;
 import lombok.Setter;
 import me.luucka.extendlibrary.message.Message;
 import me.luucka.parkour.ParkourPlugin;
-import me.luucka.parkour.database.model.PlayerParkourData;
 import me.luucka.parkour.model.Checkpoint;
 import me.luucka.parkour.model.Parkour;
 import me.luucka.parkour.setting.Items;
@@ -73,11 +72,11 @@ public class ParkourSession extends BukkitRunnable {
                     messages.from("parkour-completed").with("parkour", parkour.getName()).build(),
                     Component.text("")
             ));
-            playerDataManager.updateParkourData(
-                    player.getUniqueId(),
-                    parkour.getName(),
-                    new PlayerParkourData(System.currentTimeMillis(), deaths, parkourTime)
-            );
+//            playerDataManager.updateParkourData(
+//                    player.getUniqueId(),
+//                    parkour.getName(),
+//                    new PlayerParkourData(System.currentTimeMillis(), deaths, parkourTime)
+//            );
             for (String cmd : parkour.getCompleteCommands()) {
                 cmd = cmd.replace("{PLAYER}", player.getName());
                 Bukkit.dispatchCommand(Bukkit.getConsoleSender(), cmd);

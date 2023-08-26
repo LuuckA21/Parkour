@@ -1,10 +1,10 @@
 # This plugin uses MiniMessage as the component text format.
-# LEGACY TEXT FORMATTING (§a/&a) IS NOT SUPPORTED
+# LEGACY TEXT FORMATTING (&) IS NOT SUPPORTED
 # Use https://webui.adventure.kyori.net/ to preview parsed components
 # You can find full documentation on the format (including normal colors and formatting, rgb, click/hover events, and more)
 # here: https://docs.adventure.kyori.net/minimessage/format
 
-# You need help with Material name? Visit: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html
+# You need help with Material name? Visit: https://mcutils.com/item-ids
 
 # Parkour items section
 

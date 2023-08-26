@@ -70,14 +70,14 @@ public final class ParkourCommand {
                                     if (setting.isPerParkourPermission() && !player.hasPermission("parkour.bypass")) {
                                         throw CommandAPIBukkit.failWithAdventureComponent(messages.from("no-permission").build());
                                     }
-                                    long now = System.currentTimeMillis();
-                                    long nextPlayableTime = playerDataManager.getPlayerParkourData(player.getUniqueId(), parkour).getLastPlayedTime() + (parkour.getCooldown() * 1000L);
-                                    if (now < nextPlayableTime) {
-                                        throw CommandAPIBukkit.failWithAdventureComponent(messages.from("parkour-wait-join")
-                                                .with("parkour", parkour.getName())
-                                                .withNumber("time", nextPlayableTime - now)
-                                                .build());
-                                    }
+//                                    long now = System.currentTimeMillis();
+//                                    long nextPlayableTime = playerDataManager.getPlayerParkourData(player.getUniqueId(), parkour).getLastPlayedTime() + (parkour.getCooldown() * 1000L);
+//                                    if (now < nextPlayableTime) {
+//                                        throw CommandAPIBukkit.failWithAdventureComponent(messages.from("parkour-wait-join")
+//                                                .with("parkour", parkour.getName())
+//                                                .withNumber("time", nextPlayableTime - now)
+//                                                .build());
+//                                    }
 
                                     gameManager.playerJoin(player, parkour);
                                 })

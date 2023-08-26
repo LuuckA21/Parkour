@@ -1,5 +1,6 @@
 package me.luucka.parkour.listener;
 
+import me.luucka.extendlibrary.message.Message;
 import me.luucka.extendlibrary.util.MaterialUtil;
 import me.luucka.parkour.ParkourPlugin;
 import me.luucka.parkour.manager.GameManager;
@@ -33,9 +34,12 @@ public class ParkourListeners implements Listener {
     private final ParkourPlugin plugin;
     private final GameManager gameManager;
 
+    private final Message messages;
+
     public ParkourListeners(final ParkourPlugin plugin) {
         this.plugin = plugin;
         this.gameManager = plugin.getGameManager();
+        this.messages = plugin.getMessages();
     }
 
     @EventHandler
@@ -69,6 +73,8 @@ public class ParkourListeners implements Listener {
         if (event.getAction() == Action.PHYSICAL && event.getClickedBlock().getType() == Material.LIGHT_WEIGHTED_PRESSURE_PLATE) {
             ParkourSession session = gameManager.getParkourSessionByPlayer(player);
 
+            // create un metodo in ParkourSession al posto di fare qua la logica
+
             Optional<Checkpoint> optionClickedCheckpoint = session.getParkour().getCheckpointByLocation(event.getClickedBlock().getLocation());
             if (optionClickedCheckpoint.isEmpty()) return;
             Checkpoint clickedCheckpoint = optionClickedCheckpoint.get();
@@ -82,7 +88,7 @@ public class ParkourListeners implements Listener {
             if (!clickedCheckpoint.equals(nextCheckpoint)) return;
 
             session.setCurrentCheckpoint(nextCheckpoint);
-            player.sendRichMessage("You got the checkpoint number: " + (nextCheckpoint.getNumber() + 1));
+            messages.from("parkour-get-checkpoint").with("number", nextCheckpoint.getNumber() + 1).send(player);
         }
     }
 

@@ -1,9 +1,3 @@
-# This plugin uses MiniMessage as the component text format.
-# LEGACY TEXT FORMATTING (§a/&a) IS NOT SUPPORTED
-# Use https://webui.adventure.kyori.net/ to preview parsed components
-# You can find full documentation on the format (including normal colors and formatting, rgb, click/hover events, and more)
-# here: https://docs.adventure.kyori.net/minimessage/format
-
 # Set to TRUE if you want to check permission on parkour join
 # Permission: parkour.join.<name>
 # Give parkour.bypass to skip permission check and cooldown
